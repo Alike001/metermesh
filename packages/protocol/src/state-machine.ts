@@ -303,8 +303,18 @@ export async function applyEnvelope(
     return fail("invalid_envelope", validation.error.code);
   }
 
+  return applyVerifiedEnvelope(parsedState.data, validation.envelope);
+}
+
+export function applyVerifiedEnvelope(
+  stateInput: SessionState,
+  envelope: Envelope,
+): ProtocolResult {
+  const parsedState = sessionStateSchema.safeParse(stateInput);
+  if (!parsedState.success) {
+    return fail("invalid_session_state", "Stored session state failed its invariants.");
+  }
   const state = cloneState(parsedState.data);
-  const envelope = validation.envelope;
   if (envelope.sessionId !== state.config.sessionId) {
     return fail("wrong_session", "Envelope session ID does not match stored state.");
   }

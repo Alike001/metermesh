@@ -1,8 +1,8 @@
 {
-  "name": "@metermesh/protocol",
+  "name": "@metermesh/db",
   "version": "0.1.0",
   "private": true,
-  "description": "Deterministic MeterMesh message and billing state machine.",
+  "description": "Durable PostgreSQL state and outbox for MeterMesh.",
   "type": "module",
   "types": "./src/index.ts",
   "exports": {
@@ -12,14 +12,19 @@
     }
   },
   "files": [
-    "dist"
+    "dist",
+    "migrations"
   ],
   "scripts": {
     "build": "tsc --project tsconfig.build.json",
     "typecheck": "tsc --project tsconfig.json"
   },
   "dependencies": {
-    "viem": "2.55.19",
-    "zod": "4.4.3"
+    "@metermesh/protocol": "workspace:*",
+    "postgres": "3.4.9"
+  },
+  "devDependencies": {
+    "@testcontainers/postgresql": "12.1.0",
+    "viem": "2.55.19"
   }
 }
