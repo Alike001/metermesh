@@ -1,0 +1,17 @@
+.next
+coverage
+dist
+node_modules
+playwright-report
+test-results
+pnpm-lock.yaml
+research
+
+AGENTS.md
+PROMPTS.md
+architecture.md
+design.doc.md
+handoff.md
+log.md
+PRD.md
+research-intake.md

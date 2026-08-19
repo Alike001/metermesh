@@ -1,0 +1,39 @@
+# Local operating and planning documents
+AGENTS.md
+PROMPTS.md
+design.doc.md
+architecture.md
+PRD.md
+research-intake.md
+handoff.md
+log.md
+
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Dependencies and build output
+node_modules/
+.pnpm-store/
+.next/
+dist/
+build/
+coverage/
+*.tsbuildinfo
+
+# Test and browser artifacts
+test-results/
+playwright-report/
+blob-report/
+
+# Local databases and runtime state
+*.db
+*.db-shm
+*.db-wal
+.xmtp/
+
+# Editors and operating systems
+.DS_Store
+.idea/
+.vscode/
