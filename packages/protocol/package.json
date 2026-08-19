@@ -1,0 +1,24 @@
+{
+  "name": "@metermesh/protocol",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Deterministic MeterMesh message and billing state machine.",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc --project tsconfig.build.json",
+    "typecheck": "tsc --project tsconfig.json"
+  },
+  "dependencies": {
+    "viem": "2.55.19",
+    "zod": "4.4.3"
+  }
+}
