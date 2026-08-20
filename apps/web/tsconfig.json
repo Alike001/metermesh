@@ -9,5 +9,12 @@
     "types": ["node", "vite/client", "vitest/globals", "@testing-library/jest-dom"]
   },
   "extends": "../../tsconfig.base.json",
-  "include": ["e2e", "src", "playwright.config.ts", "vite.config.ts", "vitest.config.ts"]
+  "include": [
+    "e2e",
+    "src",
+    "playwright.config.ts",
+    "vite.config.test.ts",
+    "vite.config.ts",
+    "vitest.config.ts"
+  ]
 }

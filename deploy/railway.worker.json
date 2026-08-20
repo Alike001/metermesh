@@ -4,6 +4,7 @@
     "builder": "RAILPACK",
     "buildCommand": "pnpm --filter @metermesh/worker... build",
     "watchPatterns": [
+      "/deploy/railway.worker.json",
       "/apps/worker/**",
       "/packages/ai/**",
       "/packages/chain/**",

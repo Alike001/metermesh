@@ -57,7 +57,7 @@
       "id": "bounded-public-trial",
       "label": "Bounded public trial",
       "state": "verified",
-      "note": "One request per wallet, the persistent global capacity, atomic concurrent claims, idempotent retries, and seller-signed refusal messages pass local verification. Public Railway deployment remains pending."
+      "note": "The public Railway deployment passed a fresh-wallet browser-to-XMTP request and returned a verified X Layer explanation. A second request from the same wallet returned the expected seller-signed trial_wallet_used refusal."
     },
     {
       "id": "mpp-testnet-mutation",

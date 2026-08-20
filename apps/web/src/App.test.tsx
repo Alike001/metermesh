@@ -47,6 +47,7 @@ describe("MeterMesh product surface", () => {
       }),
     ).toBeInTheDocument();
     expect(screen.getByText("Captured local protocol run.")).toBeInTheDocument();
+    expect(screen.getByText(/public XMTP worker.*have passed/i)).toBeInTheDocument();
   });
 
   it("records an honest local acceptance without enabling settlement", async () => {

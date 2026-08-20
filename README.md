@@ -8,7 +8,7 @@ MeterMesh connects XMTP-delivered AI work to buyer-signed OKX MPP payment vouche
 
 Long-running agents need a payment model that survives delayed messages, retries, duplicate delivery, and process restarts. MeterMesh binds each accepted work unit to a deterministic protocol envelope and a buyer-signed cumulative voucher. Rejected or replayed deliveries cannot increase the amount owed.
 
-## V1 proof
+## V1 target
 
 - One X Layer transaction-explainer service
 - One funded OKX MPP session
@@ -20,9 +20,11 @@ Long-running agents need a payment model that survives delayed messages, retries
 
 ## Status
 
-The deterministic protocol kernel, durable PostgreSQL recovery layer, landing page, and Protocol Conversation workspace are implemented and tested. A fresh browser wallet has also completed the real XMTP dev path through the Node worker, a live X Layer Testnet receipt, strict AI output, and a signed delivery verified in the browser.
+The deterministic protocol kernel, durable PostgreSQL recovery layer, landing page, and Protocol Conversation workspace are implemented and tested. The bounded public trial is deployed at [metermesh-web-production.up.railway.app](https://metermesh-web-production.up.railway.app). A fresh browser wallet completed the public XMTP dev path through the private Railway worker, a live X Layer Testnet receipt, strict AI output, and a signed delivery verified in the browser. A second request from the same wallet received the expected signed refusal.
 
 The checked-in session evidence is an offline local protocol record. It clearly states that no AI-provider response, network call, or movement of funds occurred. OKX Service Account authentication and the read-only MPP status route are verified. X Layer Testnet session mutation remains disabled until OKX confirms MPP session support for chain `1952`.
+
+The public trial moves no funds and creates no payment voucher. Each wallet can request one real explanation while the server-enforced global capacity remains available.
 
 ## Local requirements
 

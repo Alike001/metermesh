@@ -381,8 +381,8 @@ export function SessionWorkspace({ onBack }: SessionWorkspaceProps) {
       <div className="workspace-footnote">
         <MessageSquareText aria-hidden="true" size={15} />
         <span>
-          Browser wallet, XMTP delivery, X Layer receipt, AI output, and PostgreSQL recovery have
-          passed. OKX MPP mutation and public worker deployment remain gated.
+          Browser wallet, public XMTP worker, X Layer receipt, AI output, and PostgreSQL recovery
+          have passed. OKX MPP mutation remains gated.
         </span>
       </div>
 

@@ -33,16 +33,21 @@ async function readWebPackage(): Promise<{ scripts: { start: string } }> {
   return input;
 }
 
+async function readRailwayIgnore(): Promise<string> {
+  return readFile(new URL("../../../.railwayignore", import.meta.url), "utf8");
+}
+
 describe("Railway service configuration", () => {
   it("keeps the public web and private worker commands explicit", async () => {
-    const [web, worker, webPackage] = await Promise.all([
+    const [web, worker, webPackage, railwayIgnore] = await Promise.all([
       readConfig("railway.web.json"),
       readConfig("railway.worker.json"),
       readWebPackage(),
+      readRailwayIgnore(),
     ]);
 
     expect(web).toMatchObject({
-      build: { buildCommand: "pnpm --filter @metermesh/web build" },
+      build: { buildCommand: "pnpm --filter @metermesh/web... build" },
       deploy: {
         healthcheckPath: "/",
         startCommand: "pnpm --filter @metermesh/web start",
@@ -56,9 +61,14 @@ describe("Railway service configuration", () => {
       },
     });
     expect(web.build.watchPatterns).toContain("/apps/web/**");
+    expect(web.build.watchPatterns).toContain("/deploy/railway.web.json");
     expect(worker.build.watchPatterns).toContain("/apps/worker/**");
+    expect(worker.build.watchPatterns).toContain("/deploy/railway.worker.json");
     expect(worker.build.watchPatterns).toContain("/packages/db/**");
     expect(webPackage.scripts.start).toBe("serve --no-clipboard --listen $PORT dist");
     expect(webPackage.scripts.start).not.toContain("--single");
+    for (const excluded of [".env.*", ".xmtp/", "AGENTS.md", "handoff.md", "log.md"]) {
+      expect(railwayIgnore.split("\n")).toContain(excluded);
+    }
   });
 });

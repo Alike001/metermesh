@@ -12,6 +12,7 @@ import type { TransactionExplanation } from "@metermesh/ai";
 const consentStates = [0, 1] as const;
 const defaultTimeoutMs = 60_000;
 const defaultPollIntervalMs = 1_500;
+const xmtpConnectionTimeoutMs = 180_000;
 
 export const METER_MESH_SELLER_INBOX_ID =
   "36ba4d5f9a5cd2cd3b23f46b27f1173edd9c33458a818095004a26cc1a91e6f1";
@@ -192,7 +193,7 @@ export async function createBrowserXmtpConnection(
     };
     client = await withTimeout(
       Client.create(signer, clientOptions),
-      90_000,
+      xmtpConnectionTimeoutMs,
       new BrowserXmtpError("xmtp_connect_failed", "XMTP connection timed out."),
     );
   } catch (error) {
