@@ -2,7 +2,7 @@
   "name": "@metermesh/ai",
   "version": "0.1.0",
   "private": true,
-  "description": "Strict OpenAI-backed explanations for normalized X Layer transactions.",
+  "description": "Strict AI-backed explanations for normalized X Layer transactions.",
   "type": "module",
   "types": "./src/index.ts",
   "exports": {

@@ -1,8 +1,8 @@
 import { normalizedTransactionSchema, type NormalizedTransaction } from "@metermesh/chain";
 
 import {
-  DEFAULT_OPENAI_MODEL,
-  createOpenAIResponsesClient,
+  DEFAULT_GROQ_MODEL,
+  createGroqResponsesClient,
   type NarrativeProvider,
 } from "./openai-responses.js";
 import { transactionExplanationSchema, type TransactionExplanation } from "./schema.js";
@@ -29,8 +29,8 @@ export async function explainTransaction(
   options: ExplainTransactionOptions = {},
 ): Promise<TransactionExplanation> {
   const facts = normalizedTransactionSchema.parse(untrustedFacts);
-  const model = options.model ?? process.env.OPENAI_MODEL ?? DEFAULT_OPENAI_MODEL;
-  const provider = options.provider ?? createOpenAIResponsesClient();
+  const model = options.model ?? process.env.GROQ_MODEL ?? DEFAULT_GROQ_MODEL;
+  const provider = options.provider ?? createGroqResponsesClient();
   const generated = await provider.createNarrative({
     factsJson: JSON.stringify(facts),
     model,
@@ -75,7 +75,7 @@ export async function explainTransaction(
       factsFetchedAt: facts.fetchedAt,
     },
     generation: {
-      provider: "openai",
+      provider: generated.provider,
       model: generated.model,
       responseId: generated.responseId,
       aiAuthoredFields: ["summary", "outcome", "limitations"],

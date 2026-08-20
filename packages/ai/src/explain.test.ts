@@ -46,6 +46,7 @@ function provider(): {
       outcome: "The called address executed without an EVM-level revert.",
       limitations: ["The user intent is not present in the chain facts."],
     },
+    provider: "groq",
     model: "gpt-test",
     responseId: "resp_test",
   });
@@ -79,7 +80,7 @@ describe("explainTransaction", () => {
         source: "x-layer-rpc",
       },
       generation: {
-        provider: "openai",
+        provider: "groq",
         model: "gpt-test",
         responseId: "resp_test",
         aiAuthoredFields: ["summary", "outcome", "limitations"],

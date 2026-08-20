@@ -1,6 +1,10 @@
 import { describe, expect, it, vi } from "vitest";
 
-import { AiProviderError, createOpenAIResponsesClient } from "./openai-responses.js";
+import {
+  AiProviderError,
+  createGroqResponsesClient,
+  createOpenAIResponsesClient,
+} from "./openai-responses.js";
 
 function completedPayload(
   outputText = JSON.stringify({
@@ -50,6 +54,7 @@ describe("createOpenAIResponsesClient", () => {
     });
 
     expect(result.responseId).toBe("resp_123");
+    expect(result.provider).toBe("openai");
     const [, request] = fetchImplementation.mock.calls[0] ?? [];
     expect(request?.headers).toMatchObject({
       Authorization: "Bearer test-api-key",
@@ -192,5 +197,118 @@ describe("createOpenAIResponsesClient", () => {
     await expect(
       client.createNarrative({ factsJson: "{}", model: "gpt-test" }),
     ).rejects.toMatchObject({ billable: false, code: "invalid_output" });
+  });
+});
+
+describe("createGroqResponsesClient", () => {
+  it("requires a server-side API key", () => {
+    expect(() => createGroqResponsesClient({ apiKey: "" })).toThrow(
+      expect.objectContaining({ code: "missing_api_key" }),
+    );
+  });
+
+  it("uses Groq's Responses endpoint and strict structured output", async () => {
+    const fetchImplementation = vi
+      .fn<typeof fetch>()
+      .mockResolvedValue(response(completedPayload()));
+    const client = createGroqResponsesClient({
+      apiKey: "test-groq-key",
+      fetchImplementation,
+      maxRetries: 0,
+    });
+
+    await expect(
+      client.createNarrative({ factsJson: '{"chainId":1952}', model: "openai/gpt-oss-20b" }),
+    ).resolves.toMatchObject({
+      provider: "groq",
+      responseId: "resp_123",
+    });
+
+    const [endpoint, request] = fetchImplementation.mock.calls[0] ?? [];
+    expect(endpoint).toBe("https://api.groq.com/openai/v1/responses");
+    expect(request?.headers).toMatchObject({ Authorization: "Bearer test-groq-key" });
+    const requestBody = request?.body;
+    expect(typeof requestBody).toBe("string");
+    if (typeof requestBody !== "string") throw new Error("Expected a JSON request body.");
+    expect(requestBody).not.toContain("test-groq-key");
+    expect(JSON.parse(requestBody)).toMatchObject({
+      model: "openai/gpt-oss-20b",
+      reasoning: { effort: "low" },
+      text: {
+        format: {
+          type: "json_schema",
+          name: "meter_mesh_transaction_narrative",
+          strict: true,
+          schema: { additionalProperties: false },
+        },
+      },
+    });
+  });
+
+  it("does not retry rejected Groq credentials", async () => {
+    const fetchImplementation = vi
+      .fn<typeof fetch>()
+      .mockResolvedValue(response({ error: {} }, 401));
+    const client = createGroqResponsesClient({
+      apiKey: "test-groq-key",
+      fetchImplementation,
+      maxRetries: 2,
+    });
+
+    await expect(
+      client.createNarrative({ factsJson: "{}", model: "openai/gpt-oss-20b" }),
+    ).rejects.toMatchObject({ billable: false, code: "authentication_failed" });
+    expect(fetchImplementation).toHaveBeenCalledTimes(1);
+  });
+
+  it("retries a provider-reported generation failure once", async () => {
+    const fetchImplementation = vi
+      .fn<typeof fetch>()
+      .mockResolvedValueOnce(
+        response(
+          {
+            error: {
+              type: "invalid_request_error",
+              failed_generation: { reason: "Generated output could not be validated." },
+            },
+          },
+          400,
+        ),
+      )
+      .mockResolvedValueOnce(response(completedPayload()));
+    const client = createGroqResponsesClient({
+      apiKey: "test-groq-key",
+      fetchImplementation,
+      maxRetries: 1,
+      retryDelayMs: 0,
+    });
+
+    await expect(
+      client.createNarrative({ factsJson: "{}", model: "openai/gpt-oss-20b" }),
+    ).resolves.toMatchObject({ provider: "groq", responseId: "resp_123" });
+    expect(fetchImplementation).toHaveBeenCalledTimes(2);
+  });
+
+  it("does not retry an ordinary invalid request", async () => {
+    const fetchImplementation = vi.fn<typeof fetch>().mockResolvedValue(
+      response(
+        {
+          error: {
+            type: "invalid_request_error",
+          },
+        },
+        400,
+      ),
+    );
+    const client = createGroqResponsesClient({
+      apiKey: "test-groq-key",
+      fetchImplementation,
+      maxRetries: 2,
+    });
+
+    await expect(
+      client.createNarrative({ factsJson: "{}", model: "openai/gpt-oss-20b" }),
+    ).rejects.toMatchObject({ billable: false, code: "request_failed" });
+    expect(fetchImplementation).toHaveBeenCalledTimes(1);
   });
 });

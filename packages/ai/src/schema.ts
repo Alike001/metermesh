@@ -55,7 +55,7 @@ export const transactionExplanationSchema = z.strictObject({
     factsFetchedAt: z.iso.datetime({ offset: true }),
   }),
   generation: z.strictObject({
-    provider: z.literal("openai"),
+    provider: z.enum(["groq", "openai"]),
     model: z.string().min(1),
     responseId: z.string().min(1),
     aiAuthoredFields: z.tuple([

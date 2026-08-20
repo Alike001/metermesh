@@ -3,6 +3,9 @@ import { z } from "zod";
 import { aiNarrativeSchema, type AiNarrative } from "./schema.js";
 
 export const DEFAULT_OPENAI_MODEL = "gpt-5.6-luna" as const;
+export const DEFAULT_GROQ_MODEL = "openai/gpt-oss-20b" as const;
+
+export type AiProviderName = "groq" | "openai";
 
 export type AiProviderFailureCode =
   | "missing_api_key"
@@ -35,6 +38,7 @@ export interface NarrativeRequest {
 
 export interface NarrativeResponse {
   narrative: AiNarrative;
+  provider: AiProviderName;
   model: string;
   responseId: string;
 }
@@ -51,6 +55,8 @@ export interface OpenAIResponsesClientOptions {
   retryDelayMs?: number;
   timeoutMs?: number;
 }
+
+export type GroqResponsesClientOptions = OpenAIResponsesClientOptions;
 
 const openAIResponseSchema = z.object({
   id: z.string().min(1),
@@ -98,6 +104,7 @@ const providerErrorBodySchema = z.object({
     .object({
       code: z.string().nullable().optional(),
       type: z.string().nullable().optional(),
+      failed_generation: z.unknown().optional(),
     })
     .optional(),
 });
@@ -111,93 +118,125 @@ function isQuotaExhausted(payload: unknown): boolean {
   );
 }
 
-function retryableStatus(status: number, payload: unknown): boolean {
-  if (isQuotaExhausted(payload)) return false;
-  return status === 408 || status === 409 || status === 429 || status >= 500;
+function isGenerationFailure(payload: unknown): boolean {
+  const parsed = providerErrorBodySchema.safeParse(payload);
+  return parsed.success && parsed.data.error?.failed_generation !== undefined;
 }
 
-function errorForStatus(status: number, payload: unknown): AiProviderError {
+function retryableStatus(status: number, payload: unknown): boolean {
+  if (isQuotaExhausted(payload)) return false;
+  return (
+    (status === 400 && isGenerationFailure(payload)) ||
+    status === 408 ||
+    status === 409 ||
+    status === 429 ||
+    status >= 500
+  );
+}
+
+function errorForStatus(status: number, payload: unknown, providerLabel: string): AiProviderError {
   if (status === 401 || status === 403) {
-    return new AiProviderError("authentication_failed", "OpenAI rejected the server credential.");
+    return new AiProviderError(
+      "authentication_failed",
+      `${providerLabel} rejected the server credential.`,
+    );
   }
   if (isQuotaExhausted(payload)) {
     return new AiProviderError(
       "quota_exhausted",
-      "The OpenAI project has no available API quota or credit.",
+      `The ${providerLabel} project has no available API quota or credit.`,
     );
   }
   if (status === 429) {
-    return new AiProviderError("rate_limited", "OpenAI rate-limited the explanation request.");
+    return new AiProviderError(
+      "rate_limited",
+      `${providerLabel} rate-limited the explanation request.`,
+    );
   }
   if (status >= 500 || status === 408 || status === 409) {
     return new AiProviderError(
       "provider_unavailable",
-      "OpenAI could not complete the explanation request.",
+      `${providerLabel} could not complete the explanation request.`,
     );
   }
   return new AiProviderError(
     "request_failed",
-    `OpenAI rejected the explanation request with HTTP ${String(status)}.`,
+    `${providerLabel} rejected the explanation request with HTTP ${String(status)}.`,
   );
 }
 
-function parseNarrativeResponse(payload: unknown): NarrativeResponse {
+function parseNarrativeResponse(
+  payload: unknown,
+  provider: AiProviderName,
+  providerLabel: string,
+): NarrativeResponse {
   const response = openAIResponseSchema.safeParse(payload);
   if (!response.success) {
     throw new AiProviderError(
       "invalid_output",
-      "OpenAI returned a response outside the expected Responses API shape.",
+      `${providerLabel} returned a response outside the expected Responses API shape.`,
       { cause: response.error },
     );
   }
   if (response.data.status !== "completed") {
     throw new AiProviderError(
       "incomplete_response",
-      `OpenAI response was ${response.data.status}.`,
+      `${providerLabel} response was ${response.data.status}.`,
     );
   }
 
   const message = response.data.output.find((item) => item.type === "message");
   const refusal = message?.content.find((item) => item.type === "refusal");
   if (refusal?.type === "refusal") {
-    throw new AiProviderError("refused", "OpenAI refused the explanation.");
+    throw new AiProviderError("refused", `${providerLabel} refused the explanation.`);
   }
   const output = message?.content.find((item) => item.type === "output_text");
   if (output?.type !== "output_text") {
-    throw new AiProviderError("invalid_output", "OpenAI completed without structured output text.");
+    throw new AiProviderError(
+      "invalid_output",
+      `${providerLabel} completed without structured output text.`,
+    );
   }
 
   try {
     return {
       narrative: aiNarrativeSchema.parse(JSON.parse(output.text) as unknown),
+      provider,
       model: response.data.model,
       responseId: response.data.id,
     };
   } catch (error) {
     throw new AiProviderError(
       "invalid_output",
-      "OpenAI output did not satisfy MeterMesh's strict narrative schema.",
+      `${providerLabel} output did not satisfy MeterMesh's strict narrative schema.`,
       { cause: error },
     );
   }
 }
 
-export function createOpenAIResponsesClient(
-  options: OpenAIResponsesClientOptions = {},
-): NarrativeProvider {
-  const apiKey = options.apiKey ?? process.env.OPENAI_API_KEY;
+type ResponsesClientConfiguration = Omit<OpenAIResponsesClientOptions, "apiKey"> & {
+  apiKey: string | undefined;
+  apiKeyName: "GROQ_API_KEY" | "OPENAI_API_KEY";
+  defaultEndpoint: string;
+  provider: AiProviderName;
+  providerLabel: string;
+  reasoningEffort: "low" | "none";
+};
+
+function createResponsesClient(configuration: ResponsesClientConfiguration): NarrativeProvider {
+  const apiKey = configuration.apiKey;
   if (!apiKey?.trim()) {
     throw new AiProviderError(
       "missing_api_key",
-      "OPENAI_API_KEY is required in the server environment.",
+      `${configuration.apiKeyName} is required in the server environment.`,
     );
   }
 
-  const endpoint = options.endpoint ?? "https://api.openai.com/v1/responses";
-  const fetchImplementation = options.fetchImplementation ?? fetch;
-  const maxRetries = options.maxRetries ?? 2;
-  const retryDelayMs = options.retryDelayMs ?? 250;
-  const timeoutMs = options.timeoutMs ?? 15_000;
+  const endpoint = configuration.endpoint ?? configuration.defaultEndpoint;
+  const fetchImplementation = configuration.fetchImplementation ?? fetch;
+  const maxRetries = configuration.maxRetries ?? 2;
+  const retryDelayMs = configuration.retryDelayMs ?? 250;
+  const timeoutMs = configuration.timeoutMs ?? 15_000;
 
   return {
     async createNarrative(request) {
@@ -206,7 +245,7 @@ export function createOpenAIResponsesClient(
         instructions,
         input: `Normalized X Layer RPC facts:\n${request.factsJson}`,
         max_output_tokens: 700,
-        reasoning: { effort: "none" },
+        reasoning: { effort: configuration.reasoningEffort },
         text: {
           format: {
             type: "json_schema",
@@ -232,7 +271,11 @@ export function createOpenAIResponsesClient(
 
           if (!response.ok) {
             const errorPayload: unknown = await response.json().catch(() => null);
-            const providerError = errorForStatus(response.status, errorPayload);
+            const providerError = errorForStatus(
+              response.status,
+              errorPayload,
+              configuration.providerLabel,
+            );
             if (attempt < maxRetries && retryableStatus(response.status, errorPayload)) {
               lastError = providerError;
               await new Promise((resolve) => {
@@ -242,7 +285,11 @@ export function createOpenAIResponsesClient(
             }
             throw providerError;
           }
-          return parseNarrativeResponse(await response.json());
+          return parseNarrativeResponse(
+            await response.json(),
+            configuration.provider,
+            configuration.providerLabel,
+          );
         } catch (error) {
           if (error instanceof AiProviderError) throw error;
           lastError = error;
@@ -255,9 +302,37 @@ export function createOpenAIResponsesClient(
 
       throw new AiProviderError(
         "provider_unavailable",
-        "OpenAI could not be reached before the retry limit.",
+        `${configuration.providerLabel} could not be reached before the retry limit.`,
         { cause: lastError },
       );
     },
   };
+}
+
+export function createOpenAIResponsesClient(
+  options: OpenAIResponsesClientOptions = {},
+): NarrativeProvider {
+  return createResponsesClient({
+    ...options,
+    apiKey: options.apiKey ?? process.env.OPENAI_API_KEY,
+    apiKeyName: "OPENAI_API_KEY",
+    defaultEndpoint: "https://api.openai.com/v1/responses",
+    provider: "openai",
+    providerLabel: "OpenAI",
+    reasoningEffort: "none",
+  });
+}
+
+export function createGroqResponsesClient(
+  options: GroqResponsesClientOptions = {},
+): NarrativeProvider {
+  return createResponsesClient({
+    ...options,
+    apiKey: options.apiKey ?? process.env.GROQ_API_KEY,
+    apiKeyName: "GROQ_API_KEY",
+    defaultEndpoint: "https://api.groq.com/openai/v1/responses",
+    provider: "groq",
+    providerLabel: "Groq",
+    reasoningEffort: "low",
+  });
 }
