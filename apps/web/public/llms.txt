@@ -1,0 +1,13 @@
+# MeterMesh
+
+> Buyer-controlled metered payments for AI work delivered over XMTP on X Layer.
+
+Canonical integration guide: /docs/
+Service manifest: /.well-known/metermesh.json
+Public HTTP read surfaces: /openapi.json
+Captured offline evidence: /evidence/captured-session.json
+Source: https://github.com/Alike001/metermesh
+Protocol schema: https://github.com/Alike001/metermesh/blob/main/packages/protocol/src/schema.ts
+Explanation schema: https://github.com/Alike001/metermesh/blob/main/packages/ai/src/schema.ts
+
+Execution is defined by signed MeterMesh envelopes carried over XMTP. No HTTP execution endpoint is published. Delivery cannot authorize billing. Only explicit buyer acceptance can advance the cumulative voucher.

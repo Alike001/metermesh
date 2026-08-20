@@ -1,0 +1,140 @@
+{
+  "schemaVersion": "1.0",
+  "name": "MeterMesh",
+  "version": "0.1.0",
+  "capability": {
+    "id": "x-layer-transaction-explanation",
+    "summary": "Explain one X Layer Testnet transaction and bind the delivery to buyer-controlled metered billing.",
+    "transport": "xmtp-signed-envelopes",
+    "input": "MeterMesh work.request v1 with an X Layer transaction hash",
+    "output": "metermesh.transaction-explanation.v1"
+  },
+  "network": {
+    "chainId": 1952,
+    "name": "X Layer Testnet",
+    "nativeCurrency": "OKB",
+    "mppEscrowAddress": "0x5E550002e64FaF79B41D89fE8439eEb1be66CE3b",
+    "paymentToken": {
+      "address": "0x9e29b3aada05bf2d2c827af80bd28dc0b9b4fb0c",
+      "symbol": "USDt0"
+    }
+  },
+  "billing": {
+    "basis": "fixed amount per buyer-accepted delivery",
+    "authorization": "buyer signature over a cumulative voucher",
+    "rule": "Delivery alone cannot increase the amount owed. Rejection creates no voucher increase.",
+    "settlement": "highest accepted cumulative voucher through OKX MPP escrow on X Layer"
+  },
+  "authentication": {
+    "publicDocs": "none",
+    "execution": "wallet and XMTP inbox signatures",
+    "permissions": [
+      "read the public X Layer transaction",
+      "send and receive signed MeterMesh envelopes",
+      "ask the buyer wallet to sign only after explicit acceptance"
+    ]
+  },
+  "capabilityStatus": [
+    {
+      "id": "x-layer-read",
+      "label": "X Layer receipt reads",
+      "state": "verified",
+      "note": "A real X Layer Testnet receipt and provenance path passed live verification."
+    },
+    {
+      "id": "ai-explanation",
+      "label": "Structured AI explanation",
+      "state": "verified",
+      "note": "Groq strict structured output passed against a real X Layer Testnet receipt."
+    },
+    {
+      "id": "xmtp-carrier",
+      "label": "XMTP message carrier",
+      "state": "unavailable",
+      "note": "XMTP credentials and the production carrier are not configured yet."
+    },
+    {
+      "id": "mpp-testnet-mutation",
+      "label": "OKX MPP Testnet mutation",
+      "state": "gated",
+      "note": "Read-only authentication is verified. Chain 1952 session mutation support is not yet proven."
+    }
+  ],
+  "examples": {
+    "request": {
+      "createdAt": "2026-08-20T10:00:00.000Z",
+      "messageId": "request-example-001",
+      "protocol": "metermesh",
+      "senderInboxId": "buyer-example-inbox",
+      "sequence": 1,
+      "sessionId": "session-example-001",
+      "version": 1,
+      "payload": {
+        "transactionHash": "0xafe21e8d40d641bec6bba559ed40a2289689cab89d306f67c99e0ee38873973f",
+        "workUnitId": "work-example-001"
+      },
+      "type": "work.request"
+    },
+    "explanation": {
+      "schemaVersion": "1",
+      "transactionHash": "0x1111111111111111111111111111111111111111111111111111111111111111",
+      "chainId": 1952,
+      "chainName": "X Layer Testnet",
+      "status": "success",
+      "summary": "The transaction completed successfully on X Layer Testnet.",
+      "outcome": "The called address executed without an EVM-level revert.",
+      "financials": {
+        "valueWei": "0",
+        "valueOkb": "0",
+        "executionFeeWei": "42000000000000",
+        "executionFeeOkb": "0.000042"
+      },
+      "call": {
+        "from": "0x1111111111111111111111111111111111111111",
+        "to": "0x2222222222222222222222222222222222222222",
+        "createdContract": null,
+        "inputSelector": "0xa9059cbb",
+        "inputByteLength": 68
+      },
+      "emittedLogs": [
+        {
+          "logIndex": 1,
+          "emitter": "0x3333333333333333333333333333333333333333",
+          "topic0": "0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "topicCount": 1,
+          "dataByteLength": 32,
+          "decodedName": null
+        }
+      ],
+      "failureReason": null,
+      "limitations": ["The user intent is not present in the chain facts."],
+      "provenance": {
+        "source": "x-layer-rpc",
+        "blockHash": "0x2222222222222222222222222222222222222222222222222222222222222222",
+        "blockNumber": "100",
+        "confirmations": "3",
+        "factsFetchedAt": "2026-08-20T10:00:00.000Z"
+      },
+      "generation": {
+        "provider": "groq",
+        "model": "openai/gpt-oss-20b",
+        "responseId": "example-validated-fixture",
+        "aiAuthoredFields": ["summary", "outcome", "limitations"]
+      }
+    }
+  },
+  "links": {
+    "documentation": "/docs/",
+    "openapi": "/openapi.json",
+    "llms": "/llms.txt",
+    "capturedEvidence": "/evidence/captured-session.json",
+    "source": "https://github.com/Alike001/metermesh",
+    "protocolSchema": "https://github.com/Alike001/metermesh/blob/main/packages/protocol/src/schema.ts",
+    "explanationSchema": "https://github.com/Alike001/metermesh/blob/main/packages/ai/src/schema.ts"
+  },
+  "knownLimitations": [
+    "The public product surface currently replays captured local protocol evidence.",
+    "No captured or documentation-only interaction proves that funds moved.",
+    "XMTP transport and OKX MPP session mutation remain unavailable until their explicit gates pass."
+  ]
+}

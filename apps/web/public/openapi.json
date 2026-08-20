@@ -1,0 +1,42 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "MeterMesh public read surfaces",
+    "version": "0.1.0",
+    "description": "Static discovery and evidence resources. MeterMesh execution uses signed XMTP envelopes and is intentionally not represented as HTTP."
+  },
+  "servers": [{ "url": "/" }],
+  "paths": {
+    "/docs/": {
+      "get": {
+        "summary": "Read the human integration guide",
+        "responses": { "200": { "description": "MeterMesh documentation HTML" } }
+      }
+    },
+    "/.well-known/metermesh.json": {
+      "get": {
+        "summary": "Read the MeterMesh service manifest",
+        "responses": { "200": { "description": "Versioned service capability manifest" } }
+      }
+    },
+    "/openapi.json": {
+      "get": {
+        "summary": "Read this OpenAPI document",
+        "responses": { "200": { "description": "OpenAPI 3.1 JSON" } }
+      }
+    },
+    "/llms.txt": {
+      "get": {
+        "summary": "Read the machine discovery index",
+        "responses": { "200": { "description": "Plain-text discovery index" } }
+      }
+    },
+    "/evidence/captured-session.json": {
+      "get": {
+        "summary": "Read the captured offline protocol evidence",
+        "description": "This evidence states that no funds moved and no live provider call occurred.",
+        "responses": { "200": { "description": "Captured local protocol verification JSON" } }
+      }
+    }
+  }
+}

@@ -14,6 +14,9 @@ import { normalizedTransactionSchema, type NormalizedTransaction } from "./schem
 
 export const X_LAYER_TESTNET_CHAIN_ID = 1952 as const;
 export const X_LAYER_TESTNET_RPC_URL = "https://testrpc.xlayer.tech/terigon" as const;
+export const X_LAYER_TESTNET_MPP_ESCROW_ADDRESS =
+  "0x5E550002e64FaF79B41D89fE8439eEb1be66CE3b" as const;
+export const X_LAYER_TESTNET_USDT0_ADDRESS = "0x9e29b3aada05bf2d2c827af80bd28dc0b9b4fb0c" as const;
 
 export const xLayerTestnet = defineChain({
   id: X_LAYER_TESTNET_CHAIN_ID,

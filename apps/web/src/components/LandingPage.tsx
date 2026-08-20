@@ -73,6 +73,7 @@ export function LandingPage({ onOpenWorkspace }: LandingPageProps) {
         <nav aria-label="Primary navigation">
           <a href="#mechanism">Mechanism</a>
           <a href="#evidence">Evidence</a>
+          <a href="/docs/">Docs</a>
           <a href="https://github.com/Alike001/metermesh" rel="noreferrer" target="_blank">
             Source
           </a>
