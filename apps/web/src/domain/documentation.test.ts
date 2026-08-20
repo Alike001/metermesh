@@ -67,7 +67,7 @@ describe("MeterMesh machine-readable documentation", () => {
     expect(manifestJson.network.paymentToken.address).toBe(X_LAYER_TESTNET_USDT0_ADDRESS);
     expect(manifestJson.capabilityStatus).toEqual(
       expect.arrayContaining([
-        expect.objectContaining({ id: "xmtp-carrier", state: "unavailable" }),
+        expect.objectContaining({ id: "xmtp-carrier", state: "verified" }),
         expect.objectContaining({ id: "mpp-testnet-mutation", state: "gated" }),
       ]),
     );

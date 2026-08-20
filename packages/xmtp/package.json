@@ -1,0 +1,27 @@
+{
+  "name": "@metermesh/xmtp",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Replay-safe XMTP transport for signed MeterMesh envelopes.",
+  "type": "module",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc --project tsconfig.build.json",
+    "typecheck": "tsc --project tsconfig.json"
+  },
+  "dependencies": {
+    "@metermesh/ai": "workspace:*",
+    "@metermesh/protocol": "workspace:*",
+    "@xmtp/node-sdk": "6.1.0",
+    "viem": "2.55.19"
+  }
+}

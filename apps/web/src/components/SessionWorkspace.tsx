@@ -379,8 +379,8 @@ export function SessionWorkspace({ onBack }: SessionWorkspaceProps) {
       <div className="workspace-footnote">
         <MessageSquareText aria-hidden="true" size={15} />
         <span>
-          XMTP delivery and AI-provider adapters are the next integration slice after this
-          browser-tested surface.
+          The XMTP Node carrier and AI provider are verified. Buyer browser connection and live
+          orchestration are the next integration slice.
         </span>
       </div>
 

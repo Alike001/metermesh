@@ -10,8 +10,8 @@ test("a developer can understand the integration boundary and inspect machine ar
   ).toBeVisible();
   await expect(page.getByText("Fixed amount per accepted delivery")).toBeVisible();
   await expect(page.getByText("AI never signs a buyer voucher.")).toBeVisible();
-  await expect(page.getByText("XMTP message carrier")).toBeVisible();
-  await expect(page.getByText("unavailable", { exact: true })).toBeVisible();
+  await expect(page.getByText("XMTP Node carrier")).toBeVisible();
+  await expect(page.getByText(/real XMTP dev request, delivery, idempotent resend/i)).toBeVisible();
   await expect(page.getByText("OKX MPP Testnet mutation")).toBeVisible();
   await expect(page.getByText("gated", { exact: true })).toBeVisible();
 

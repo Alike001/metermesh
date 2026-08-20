@@ -49,9 +49,9 @@
     },
     {
       "id": "xmtp-carrier",
-      "label": "XMTP message carrier",
-      "state": "unavailable",
-      "note": "XMTP credentials and the production carrier are not configured yet."
+      "label": "XMTP Node carrier",
+      "state": "verified",
+      "note": "A real XMTP dev request, delivery, idempotent resend, keyed restart, and wrong-key failure passed. Buyer browser connection remains pending."
     },
     {
       "id": "mpp-testnet-mutation",
@@ -135,6 +135,6 @@
   "knownLimitations": [
     "The public product surface currently replays captured local protocol evidence.",
     "No captured or documentation-only interaction proves that funds moved.",
-    "XMTP transport and OKX MPP session mutation remain unavailable until their explicit gates pass."
+    "The XMTP Node carrier is verified, while buyer browser connection and OKX MPP session mutation remain pending."
   ]
 }
