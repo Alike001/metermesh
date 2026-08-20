@@ -1,0 +1,68 @@
+{
+  "capture": {
+    "capturedAt": "2026-08-20T10:00:00.000Z",
+    "fundsMoved": false,
+    "kind": "local-protocol-verification",
+    "networkMode": "offline"
+  },
+  "session": {
+    "asset": "USDT0",
+    "capAtomic": "5000",
+    "chainId": 1952,
+    "id": "local-verification-001",
+    "title": "Explain an X Layer token approval before signing",
+    "unitPriceAtomic": "1000"
+  },
+  "messages": [
+    {
+      "actor": "buyer",
+      "body": "Explain what this token approval allows and identify the checks I should make before signing.",
+      "id": "request-001",
+      "label": "Work requested",
+      "occurredAt": "2026-08-20T10:00:00.000Z",
+      "status": "verified"
+    },
+    {
+      "actor": "agent",
+      "body": "The call grants a contract permission to spend up to a fixed token amount. Confirm the spender address, token, amount, and whether the approval can be reduced before signing.",
+      "id": "delivery-001",
+      "label": "Local delivery fixture",
+      "occurredAt": "2026-08-20T10:00:08.000Z",
+      "status": "verified"
+    }
+  ],
+  "evidence": [
+    {
+      "detail": "Signed envelope shape and message sequence passed the protocol validator.",
+      "id": "proof-request",
+      "label": "Request envelope",
+      "protocol": "MeterMesh v1",
+      "status": "verified"
+    },
+    {
+      "detail": "Delivery references the request and carries a deterministic payload hash.",
+      "id": "proof-delivery",
+      "label": "Delivery evidence",
+      "protocol": "MeterMesh v1",
+      "status": "verified"
+    }
+  ],
+  "result": {
+    "checks": [
+      {
+        "label": "Unlimited approval",
+        "result": "No"
+      },
+      {
+        "label": "Spender identity",
+        "result": "Requires buyer check"
+      },
+      {
+        "label": "Target network",
+        "result": "X Layer Testnet"
+      }
+    ],
+    "fixtureTransactionHash": "0x1111111111111111111111111111111111111111111111111111111111111111",
+    "note": "This fixture proves the local message and billing state flow. It is not an onchain transaction or an AI-provider response."
+  }
+}

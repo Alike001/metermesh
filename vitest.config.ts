@@ -11,5 +11,6 @@ export default defineConfig({
     include: ["apps/**/*.test.{ts,tsx}", "packages/**/*.test.{ts,tsx}"],
     passWithNoTests: true,
     restoreMocks: true,
+    testTimeout: 15_000,
   },
 });

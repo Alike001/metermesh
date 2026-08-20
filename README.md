@@ -20,19 +20,34 @@ Long-running agents need a payment model that survives delayed messages, retries
 
 ## Status
 
-MeterMesh is under active hackathon development. The public issue history records meaningful features and architectural decisions as they are implemented and verified.
+The deterministic protocol kernel, durable PostgreSQL recovery layer, landing page, and Protocol Conversation workspace are implemented and tested. The frontend exposes the exact relationship between a request, delivery, buyer review, amount owed, and settlement gate.
+
+The checked-in session evidence is an offline local protocol record. It clearly states that no AI-provider response, network call, or movement of funds occurred. OKX Service Account authentication and the read-only MPP status route are verified. X Layer Testnet session mutation remains disabled until OKX confirms MPP session support for chain `1952`.
 
 ## Local requirements
 
 - Node.js 22 or newer
 - pnpm 10
-- PostgreSQL for application state once the storage issue begins
+- Docker or another Testcontainers-compatible runtime for the PostgreSQL integration suite
 
-Install and run the baseline checks:
+## Run the product
+
+Install dependencies and start the frontend:
 
 ```bash
 pnpm install
-pnpm verify
+pnpm --filter @metermesh/web dev
 ```
 
-Copy `.env.example` to a local ignored environment file when a feature needs external services. Never commit wallet keys or service credentials.
+Open `http://localhost:5173`. The landing page explains the product, and `Open metered session` enters the complete browser-tested workspace.
+
+## Verify the build
+
+```bash
+pnpm verify
+pnpm --filter @metermesh/web test:e2e
+```
+
+The full verification suite runs formatting, strict lint, TypeScript checks, protocol tests, frontend interaction tests, and PostgreSQL 17 integration tests. The Playwright suite builds the current frontend first, then runs the main product flow and evidence export in desktop and mobile Chromium.
+
+Copy `.env.example` to a local ignored environment file when an external integration needs credentials. Keep wallet keys and service credentials out of commits and browser code.
