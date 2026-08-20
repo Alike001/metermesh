@@ -1,0 +1,21 @@
+{
+  "name": "@metermesh/worker",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Durable XMTP seller worker for MeterMesh transaction explanations.",
+  "type": "module",
+  "scripts": {
+    "build": "tsc --project tsconfig.build.json",
+    "start": "node dist/main.js",
+    "typecheck": "tsc --project tsconfig.json"
+  },
+  "dependencies": {
+    "@metermesh/ai": "workspace:*",
+    "@metermesh/chain": "workspace:*",
+    "@metermesh/db": "workspace:*",
+    "@metermesh/protocol": "workspace:*",
+    "@metermesh/xmtp": "workspace:*",
+    "viem": "2.55.19",
+    "zod": "4.4.3"
+  }
+}

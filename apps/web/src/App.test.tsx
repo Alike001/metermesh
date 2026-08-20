@@ -66,6 +66,19 @@ describe("MeterMesh product surface", () => {
     expect(screen.getByRole("button", { name: "Settle on X Layer" })).toBeDisabled();
   });
 
+  it("fails safely when a live XMTP request has no injected wallet", async () => {
+    window.location.hash = "workspace";
+    render(<App />);
+    await screen.findByText("Local delivery fixture");
+
+    await userEvent.click(screen.getByRole("button", { name: "Connect wallet to XMTP" }));
+
+    expect(await screen.findByRole("alert", undefined, { timeout: 10_000 })).toHaveTextContent(
+      "Install or open an EVM wallet extension before connecting to XMTP.",
+    );
+    expect(screen.getByRole("button", { name: "Settle on X Layer" })).toBeDisabled();
+  });
+
   it("supports the empty state and restores captured evidence", async () => {
     const user = userEvent.setup();
     window.location.hash = "workspace";

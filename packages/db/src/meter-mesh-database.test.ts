@@ -21,6 +21,7 @@ const createdAt = "2026-08-19T12:00:00.000Z";
 let container: StartedPostgreSqlContainer;
 let database: MeterMeshDatabase;
 let admin: Sql;
+let started = false;
 let connectionUri: string;
 let buyer: PrivateKeyAccount;
 let seller: PrivateKeyAccount;
@@ -31,6 +32,7 @@ beforeAll(async () => {
   database = MeterMeshDatabase.connect(connectionUri, { maxConnections: 8 });
   admin = postgres(connectionUri, { max: 4 });
   await database.migrate();
+  started = true;
 }, 120_000);
 
 beforeEach(() => {
@@ -39,6 +41,7 @@ beforeEach(() => {
 });
 
 afterEach(async () => {
+  if (!started) return;
   await admin.unsafe(`
     truncate table
       outbox,
@@ -54,9 +57,12 @@ afterEach(async () => {
 });
 
 afterAll(async () => {
-  await database.close();
-  await admin.end({ timeout: 5 });
-  await container.stop({ timeout: 10_000 });
+  if (!started) return;
+  await Promise.allSettled([
+    database.close(),
+    admin.end({ timeout: 5 }),
+    container.stop({ timeout: 10_000 }),
+  ]);
 });
 
 function state(sessionId = "session-001", cap = "15"): SessionState {
@@ -401,6 +407,36 @@ describe("MeterMeshDatabase", () => {
     });
     expect(reclaimed.map(({ id }) => id)).toContain(leasedJob.id);
     await expect(database.completeOutbox(leasedJob.id, "worker-c", now)).resolves.toBe(true);
+  });
+
+  it("filters worker claims by job type and reads an idempotent job by key", async () => {
+    const now = new Date("2026-08-19T12:00:00.000Z");
+    const transport = await database.enqueueOutbox({
+      availableAt: now,
+      jobKey: "xmtp-request-001",
+      jobType: "xmtp.explain-request",
+      payload: { messageId: "request-001" },
+    });
+    await database.enqueueOutbox({
+      availableAt: now,
+      jobKey: "protocol-event-001",
+      jobType: "protocol.event",
+      payload: { messageId: "event-001" },
+    });
+
+    await expect(database.getOutboxByJobKey(transport.jobKey)).resolves.toMatchObject({
+      id: transport.id,
+      jobType: "xmtp.explain-request",
+    });
+    await expect(
+      database.claimOutbox({
+        jobTypes: ["xmtp.explain-request"],
+        leaseSeconds: 60,
+        limit: 10,
+        now,
+        workerId: "xmtp-worker",
+      }),
+    ).resolves.toEqual([expect.objectContaining({ id: transport.id })]);
   });
 
   it("records invalid carrier input idempotently and chain-operation intents once", async () => {

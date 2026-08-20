@@ -14,6 +14,13 @@ test("a judge can understand the promise and inspect accepted-work proof", async
     page.getByRole("heading", { name: "Explain an X Layer token approval before signing" }),
   ).toBeVisible();
   await expect(page.getByText("Captured local protocol run.")).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Request one real X Layer explanation" }),
+  ).toBeVisible();
+  await page.getByRole("button", { name: "Connect wallet to XMTP" }).click();
+  await expect(page.getByRole("alert")).toContainText(
+    "Install or open an EVM wallet extension before connecting to XMTP.",
+  );
 
   if (test.info().project.name === "mobile-chromium") {
     await page.getByRole("button", { name: "Proof rail" }).click();

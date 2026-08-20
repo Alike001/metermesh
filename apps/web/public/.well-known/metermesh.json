@@ -49,9 +49,9 @@
     },
     {
       "id": "xmtp-carrier",
-      "label": "XMTP Node carrier",
+      "label": "XMTP browser and worker",
       "state": "verified",
-      "note": "A real XMTP dev request, delivery, idempotent resend, keyed restart, and wrong-key failure passed. Buyer browser connection remains pending."
+      "note": "A fresh injected browser wallet sent a signed XMTP dev request. The Node worker read the real X Layer receipt, called the strict AI provider, and returned a hash-bound delivery that the browser verified. PostgreSQL outbox recovery tests also passed."
     },
     {
       "id": "mpp-testnet-mutation",
@@ -133,8 +133,8 @@
     "explanationSchema": "https://github.com/Alike001/metermesh/blob/main/packages/ai/src/schema.ts"
   },
   "knownLimitations": [
-    "The public product surface currently replays captured local protocol evidence.",
+    "The primary session visualization replays captured local protocol evidence, while the live XMTP verifier is a separate labeled panel.",
     "No captured or documentation-only interaction proves that funds moved.",
-    "The XMTP Node carrier is verified, while buyer browser connection and OKX MPP session mutation remain pending."
+    "The live XMTP and AI path is verified in development. Public worker deployment and OKX MPP session mutation remain pending."
   ]
 }

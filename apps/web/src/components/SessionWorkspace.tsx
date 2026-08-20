@@ -23,6 +23,7 @@ import {
 import { formatAtomicAmount, shortHash, type CapturedSession } from "../domain/session";
 import { useCapturedSession } from "../hooks/useCapturedSession";
 import { BrandMark } from "./BrandMark";
+import { LiveXmtpPanel } from "./LiveXmtpPanel";
 import { ProtocolDrawer } from "./ProtocolDrawer";
 import { StatusMark } from "./StatusMark";
 
@@ -133,6 +134,7 @@ export function SessionWorkspace({ onBack }: SessionWorkspaceProps) {
 
     return (
       <div className="conversation-content" data-testid="conversation-content">
+        <LiveXmtpPanel />
         <div className="capture-notice">
           <Info aria-hidden="true" size={17} />
           <p>
@@ -379,8 +381,8 @@ export function SessionWorkspace({ onBack }: SessionWorkspaceProps) {
       <div className="workspace-footnote">
         <MessageSquareText aria-hidden="true" size={15} />
         <span>
-          The XMTP Node carrier and AI provider are verified. Buyer browser connection and live
-          orchestration are the next integration slice.
+          Browser wallet, XMTP delivery, X Layer receipt, AI output, and PostgreSQL recovery have
+          passed. OKX MPP mutation and public worker deployment remain gated.
         </span>
       </div>
 

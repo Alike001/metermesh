@@ -524,6 +524,7 @@ export class MeterMeshDatabase {
   }
 
   async claimOutbox(input: {
+    jobTypes?: string[];
     leaseSeconds: number;
     limit: number;
     now?: Date;
@@ -535,7 +536,19 @@ export class MeterMeshDatabase {
     if (!Number.isSafeInteger(input.leaseSeconds) || input.leaseSeconds < 1) {
       throw new DatabaseInvariantError("Outbox lease must be a positive number of seconds.");
     }
+    if (
+      input.jobTypes !== undefined &&
+      (input.jobTypes.length < 1 ||
+        input.jobTypes.length > 20 ||
+        input.jobTypes.some((jobType) => jobType.trim() === ""))
+    ) {
+      throw new DatabaseInvariantError("Outbox job-type filter must contain 1 to 20 names.");
+    }
     const now = input.now ?? new Date();
+    const typeFilter =
+      input.jobTypes === undefined
+        ? this.#sql``
+        : this.#sql`and job_type in ${this.#sql(input.jobTypes)}`;
     const rows = await this.#sql<OutboxRow[]>`
       with candidates as (
         select id
@@ -543,6 +556,7 @@ export class MeterMeshDatabase {
         where processed_at is null
           and available_at <= ${now}
           and (lease_expires_at is null or lease_expires_at <= ${now})
+          ${typeFilter}
         order by available_at, id
         limit ${input.limit}
         for update skip locked
@@ -558,6 +572,13 @@ export class MeterMeshDatabase {
       returning jobs.*
     `;
     return rows.map(mapOutboxJob);
+  }
+
+  async getOutboxByJobKey(jobKey: string): Promise<OutboxJob | null> {
+    const [row] = await this.#sql<OutboxRow[]>`
+      select * from outbox where job_key = ${jobKey}
+    `;
+    return row === undefined ? null : mapOutboxJob(row);
   }
 
   async completeOutbox(

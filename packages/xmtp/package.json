@@ -9,6 +9,10 @@
     ".": {
       "types": "./src/index.ts",
       "import": "./dist/index.js"
+    },
+    "./codec": {
+      "types": "./src/codec.ts",
+      "import": "./dist/codec.js"
     }
   },
   "files": [

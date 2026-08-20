@@ -17,12 +17,18 @@
     "@fontsource-variable/geist": "^5.3.0",
     "@fontsource-variable/geist-mono": "^5.3.0",
     "@gsap/react": "^2.1.2",
+    "@metermesh/ai": "workspace:*",
+    "@metermesh/protocol": "workspace:*",
+    "@metermesh/xmtp": "workspace:*",
+    "@xmtp/browser-sdk": "7.1.0",
     "gsap": "^3.15.0",
     "lucide-react": "^1.33.0",
     "react": "^19.2.8",
-    "react-dom": "^19.2.8"
+    "react-dom": "^19.2.8",
+    "viem": "2.55.19"
   },
   "devDependencies": {
+    "@metermesh/chain": "workspace:*",
     "@playwright/test": "^1.62.1",
     "@testing-library/jest-dom": "^7.0.1",
     "@testing-library/react": "^16.3.2",
