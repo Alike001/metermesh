@@ -20,7 +20,7 @@ Long-running agents need a payment model that survives delayed messages, retries
 
 ## Status
 
-The deterministic protocol kernel, durable PostgreSQL recovery layer, landing page, and Protocol Conversation workspace are implemented and tested. The frontend exposes the exact relationship between a request, delivery, buyer review, amount owed, and settlement gate.
+The deterministic protocol kernel, durable PostgreSQL recovery layer, landing page, and Protocol Conversation workspace are implemented and tested. A fresh browser wallet has also completed the real XMTP dev path through the Node worker, a live X Layer Testnet receipt, strict AI output, and a signed delivery verified in the browser.
 
 The checked-in session evidence is an offline local protocol record. It clearly states that no AI-provider response, network call, or movement of funds occurred. OKX Service Account authentication and the read-only MPP status route are verified. X Layer Testnet session mutation remains disabled until OKX confirms MPP session support for chain `1952`.
 
@@ -51,3 +51,22 @@ pnpm --filter @metermesh/web test:e2e
 The full verification suite runs formatting, strict lint, TypeScript checks, protocol tests, frontend interaction tests, and PostgreSQL 17 integration tests. The Playwright suite builds the current frontend first, then runs the main product flow and evidence export in desktop and mobile Chromium.
 
 Copy `.env.example` to a local ignored environment file when an external integration needs credentials. Keep wallet keys and service credentials out of commits and browser code.
+
+## Railway deployment
+
+The repository contains separate Railway configuration files for the public web service and private worker:
+
+- `/deploy/railway.web.json`
+- `/deploy/railway.worker.json`
+
+Create two services from this GitHub repository and one Railway PostgreSQL service. Keep both code-service root directories at `/`, then set each service's absolute Railway config path to its matching file. Generate a public domain only for the web service. Keep the worker at one replica with no public domain.
+
+Set the worker's `DATABASE_URL` to `${{Postgres.DATABASE_URL}}`. Add the server-only XMTP, Groq, and X Layer values from `.env.example` directly to the worker service. For the bounded judge path, also set:
+
+```dotenv
+METERMESH_ALLOW_UNFUNDED_XMTP_WORK=1
+METERMESH_XMTP_ACCESS_MODE=public-trial
+METERMESH_TRIAL_GLOBAL_LIMIT=50
+```
+
+The first trial limit written to PostgreSQL is immutable through normal startup. Changing the environment value later makes the worker fail closed until an explicit database decision reconciles it. Each wallet receives one reserved request, duplicate processing consumes no additional slot, and the global limit bounds total AI work. This trial never creates a payment voucher or moves funds.

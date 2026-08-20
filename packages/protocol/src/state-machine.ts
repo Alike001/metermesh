@@ -40,6 +40,7 @@ export type ProtocolEvent =
   | { messageId: string; type: "work_delivered"; workUnitId: string }
   | { amount: string; messageId: string; type: "work_accepted"; workUnitId: string }
   | { messageId: string; type: "work_rejected"; workUnitId: string }
+  | { code: string; messageId: string; type: "work_failed"; workUnitId: string }
   | { amount: string; messageId: string; type: "close_requested" }
   | { amount: string; transactionHash: string; type: "settlement_confirmed" };
 
@@ -158,6 +159,41 @@ function applyDelivery(
     event: {
       messageId: envelope.messageId,
       type: "work_delivered" as const,
+      workUnitId: envelope.payload.workUnitId,
+    },
+    ok: true as const,
+    state,
+  };
+}
+
+function applyWorkError(state: SessionState, envelope: Extract<Envelope, { type: "work.error" }>) {
+  const openError = requireOpen(state);
+  if (openError !== null) return openError;
+  const unit = findWorkUnit(state, envelope.payload.workUnitId);
+  if (unit === undefined) return fail("work_unit_not_found", "Error has no matching request.");
+  if (unit.status !== "requested") {
+    return fail("invalid_work_state", `Cannot fail work in ${unit.status} state.`);
+  }
+  if (
+    unit.requestMessageId !== envelope.payload.requestMessageId ||
+    unit.transactionHash !== envelope.payload.transactionHash
+  ) {
+    return fail("reference_mismatch", "Error does not match its request evidence.");
+  }
+  replaceWorkUnit(state, {
+    ...unit,
+    errorCode: envelope.payload.code,
+    errorDetail: envelope.payload.detail,
+    failureMessageId: envelope.messageId,
+    retryable: envelope.payload.retryable,
+    status: "failed",
+  });
+  commitMessage(state, envelope);
+  return {
+    event: {
+      code: envelope.payload.code,
+      messageId: envelope.messageId,
+      type: "work_failed" as const,
       workUnitId: envelope.payload.workUnitId,
     },
     ok: true as const,
@@ -320,7 +356,8 @@ export function applyVerifiedEnvelope(
   }
   const actor = actorFor(state, envelope);
   if (actor === null) return fail("unknown_sender", "Sender inbox and signer are not authorized.");
-  const expectedRole: ActorRole = envelope.type === "work.delivery" ? "seller" : "buyer";
+  const expectedRole: ActorRole =
+    envelope.type === "work.delivery" || envelope.type === "work.error" ? "seller" : "buyer";
   if (actor !== expectedRole) {
     return fail("role_not_allowed", `${actor} cannot send ${envelope.type}.`);
   }
@@ -342,6 +379,9 @@ export function applyVerifiedEnvelope(
       break;
     case "work.delivery":
       result = applyDelivery(state, envelope);
+      break;
+    case "work.error":
+      result = applyWorkError(state, envelope);
       break;
     case "work.accept":
       result = applyAcceptance(state, envelope);

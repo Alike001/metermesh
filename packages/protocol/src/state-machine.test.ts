@@ -148,6 +148,28 @@ async function rejection(
   );
 }
 
+async function workError(
+  requestEnvelope: Extract<Envelope, { type: "work.request" }>,
+  sequence: number,
+  overrides: { requestMessageId?: string; transactionHash?: `0x${string}` } = {},
+): Promise<Envelope> {
+  return signEnvelope(
+    {
+      ...header("seller", `error-${requestEnvelope.payload.workUnitId}`, sequence),
+      payload: {
+        code: "trial_capacity_reached",
+        detail: "The public verification capacity has been used.",
+        requestMessageId: overrides.requestMessageId ?? requestEnvelope.messageId,
+        retryable: false,
+        transactionHash: overrides.transactionHash ?? requestEnvelope.payload.transactionHash,
+        workUnitId: requestEnvelope.payload.workUnitId,
+      },
+      type: "work.error",
+    },
+    seller,
+  );
+}
+
 async function close(sequence: number, finalCumulativeAmount: string): Promise<Envelope> {
   return signEnvelope(
     {
@@ -362,6 +384,35 @@ describe("MeterMesh state machine", () => {
     expectError(
       await applyEnvelope(rejected, await acceptance(deliveryEnvelope, 3, "5")),
       "invalid_work_state",
+    );
+  });
+
+  it("records a seller-signed work error as a terminal nonbillable result", async () => {
+    const requestEnvelope = (await request("unit-001", 1)) as Extract<
+      Envelope,
+      { type: "work.request" }
+    >;
+    const requested = await mustApply(createSessionState(config()), requestEnvelope);
+    const failed = await mustApply(requested, await workError(requestEnvelope, 1));
+
+    expect(failed).toMatchObject({
+      acceptedUnits: 0,
+      highestVoucherAmount: "0",
+      rejectedUnits: 0,
+      workUnits: [
+        {
+          errorCode: "trial_capacity_reached",
+          failureMessageId: "error-unit-001",
+          status: "failed",
+        },
+      ],
+    });
+    expectError(
+      await applyEnvelope(
+        requested,
+        await workError(requestEnvelope, 1, { requestMessageId: "different-request" }),
+      ),
+      "reference_mismatch",
     );
   });
 

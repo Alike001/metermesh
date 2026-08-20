@@ -7,7 +7,7 @@
     "summary": "Explain one X Layer Testnet transaction and bind the delivery to buyer-controlled metered billing.",
     "transport": "xmtp-signed-envelopes",
     "input": "MeterMesh work.request v1 with an X Layer transaction hash",
-    "output": "metermesh.transaction-explanation.v1"
+    "output": "metermesh.transaction-explanation.v1 or a signed work.error refusal"
   },
   "network": {
     "chainId": 1952,
@@ -52,6 +52,12 @@
       "label": "XMTP browser and worker",
       "state": "verified",
       "note": "A fresh injected browser wallet sent a signed XMTP dev request. The Node worker read the real X Layer receipt, called the strict AI provider, and returned a hash-bound delivery that the browser verified. PostgreSQL outbox recovery tests also passed."
+    },
+    {
+      "id": "bounded-public-trial",
+      "label": "Bounded public trial",
+      "state": "verified",
+      "note": "One request per wallet, the persistent global capacity, atomic concurrent claims, idempotent retries, and seller-signed refusal messages pass local verification. Public Railway deployment remains pending."
     },
     {
       "id": "mpp-testnet-mutation",
@@ -135,6 +141,6 @@
   "knownLimitations": [
     "The primary session visualization replays captured local protocol evidence, while the live XMTP verifier is a separate labeled panel.",
     "No captured or documentation-only interaction proves that funds moved.",
-    "The live XMTP and AI path is verified in development. Public worker deployment and OKX MPP session mutation remain pending."
+    "The live XMTP and AI path plus bounded trial controls are verified in development. Public Railway deployment and OKX MPP session mutation remain pending."
   ]
 }

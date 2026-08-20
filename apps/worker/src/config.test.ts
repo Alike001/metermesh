@@ -26,9 +26,36 @@ describe("MeterMesh worker configuration", () => {
         XMTP_ALLOWED_BUYER_ADDRESS: buyerAddress,
       }),
     ).toMatchObject({
-      allowedBuyerAddress: buyerAddress,
+      access: { allowedBuyerAddress: buyerAddress, mode: "allowlist" },
+      healthPort: 3000,
+      healthStaleMs: 30_000,
       pollIntervalMs: 750,
       workerId: "worker-test",
     });
+  });
+
+  it("parses a bounded public trial without requiring an allowlisted buyer", () => {
+    expect(
+      getMeterMeshWorkerConfig({
+        DATABASE_URL: "postgres://localhost/metermesh",
+        METERMESH_ALLOW_UNFUNDED_XMTP_WORK: "1",
+        METERMESH_TRIAL_GLOBAL_LIMIT: "25",
+        METERMESH_WORKER_HEALTH_STALE_MS: "45000",
+        METERMESH_XMTP_ACCESS_MODE: "public-trial",
+        PORT: "4000",
+      }),
+    ).toMatchObject({
+      access: { globalLimit: 25, mode: "public-trial" },
+      healthPort: 4000,
+      healthStaleMs: 45_000,
+    });
+    expect(() =>
+      getMeterMeshWorkerConfig({
+        DATABASE_URL: "postgres://localhost/metermesh",
+        METERMESH_ALLOW_UNFUNDED_XMTP_WORK: "1",
+        METERMESH_TRIAL_GLOBAL_LIMIT: "0",
+        METERMESH_XMTP_ACCESS_MODE: "public-trial",
+      }),
+    ).toThrow("METERMESH_TRIAL_GLOBAL_LIMIT");
   });
 });

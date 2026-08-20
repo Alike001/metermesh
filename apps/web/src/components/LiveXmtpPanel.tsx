@@ -39,8 +39,9 @@ export function LiveXmtpPanel() {
         />
       </div>
       <p className="live-xmtp-summary">
-        Your wallet signs the XMTP identity and request. This path moves no funds and creates no
-        voucher while OKX MPP Testnet mutation remains gated.
+        Each wallet receives one real public verification request while bounded capacity remains.
+        This path moves no funds and creates no voucher while OKX MPP Testnet mutation remains
+        gated.
       </p>
 
       {!connected && state.status !== "connecting" && (
@@ -120,8 +121,18 @@ export function LiveXmtpPanel() {
         <div className="live-xmtp-state live-xmtp-state-error" role="alert">
           <AlertTriangle aria-hidden="true" size={18} />
           <span>{state.message}</span>
-          <button className="text-action" onClick={reset} type="button">
-            Try again
+          <button
+            className="text-action"
+            onClick={
+              state.code === "trial_wallet_used" || state.code === "trial_capacity_reached"
+                ? disconnect
+                : reset
+            }
+            type="button"
+          >
+            {state.code === "trial_wallet_used" || state.code === "trial_capacity_reached"
+              ? "Close trial"
+              : "Try again"}
           </button>
         </div>
       )}
@@ -159,9 +170,9 @@ export function LiveXmtpPanel() {
             XMTP sender, signer authorization, envelope signature, transaction reference, schema,
             and result hash all passed.
           </div>
-          <button className="text-action" onClick={reset} type="button">
+          <button className="text-action" onClick={disconnect} type="button">
             <RotateCcw aria-hidden="true" size={15} />
-            Request another explanation
+            Trial complete · disconnect wallet
           </button>
         </article>
       )}

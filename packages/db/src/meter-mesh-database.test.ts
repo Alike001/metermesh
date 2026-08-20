@@ -44,6 +44,8 @@ afterEach(async () => {
   if (!started) return;
   await admin.unsafe(`
     truncate table
+      public_trial_requests,
+      public_trial_budget,
       outbox,
       chain_operations,
       vouchers,
@@ -150,6 +152,28 @@ async function acceptance(
   )) as Extract<Envelope, { type: "work.accept" }>;
 }
 
+async function workError(
+  sessionId: string,
+  requestEnvelope: Extract<Envelope, { type: "work.request" }>,
+  sequence: number,
+): Promise<Extract<Envelope, { type: "work.error" }>> {
+  return (await signEnvelope(
+    {
+      ...header("seller", `error-${requestEnvelope.payload.workUnitId}`, sequence, sessionId),
+      payload: {
+        code: "trial_wallet_used",
+        detail: "This wallet has already used its one public verification request.",
+        requestMessageId: requestEnvelope.messageId,
+        retryable: false,
+        transactionHash: requestEnvelope.payload.transactionHash,
+        workUnitId: requestEnvelope.payload.workUnitId,
+      },
+      type: "work.error",
+    },
+    seller,
+  )) as Extract<Envelope, { type: "work.error" }>;
+}
+
 describe("MeterMeshDatabase", () => {
   it("runs migrations idempotently and creates the expected durable tables", async () => {
     await database.migrate();
@@ -166,6 +190,8 @@ describe("MeterMeshDatabase", () => {
         "envelopes",
         "mpp_session_state",
         "outbox",
+        "public_trial_budget",
+        "public_trial_requests",
         "sessions",
         "vouchers",
         "work_units",
@@ -334,6 +360,40 @@ describe("MeterMeshDatabase", () => {
     });
   });
 
+  it("projects a seller-signed work error as failed and nonbillable", async () => {
+    const initial = state();
+    await database.createSession(initial);
+    const requestEnvelope = await request(initial.config.sessionId, "unit-001", 1);
+    const errorEnvelope = await workError(initial.config.sessionId, requestEnvelope, 1);
+
+    for (const envelope of [requestEnvelope, errorEnvelope]) {
+      await database.processEnvelope({
+        direction: "inbound",
+        envelope,
+        sessionId: initial.config.sessionId,
+      });
+    }
+
+    const [projection] = await admin<
+      {
+        billable_amount: string;
+        decision_message_id: string;
+        rejection_reason: string;
+        status: string;
+      }[]
+    >`
+      select status, billable_amount, decision_message_id, rejection_reason
+      from work_units
+      where session_id = ${initial.config.sessionId}
+    `;
+    expect(projection).toEqual({
+      billable_amount: "0",
+      decision_message_id: errorEnvelope.messageId,
+      rejection_reason: "trial_wallet_used",
+      status: "failed",
+    });
+  });
+
   it("updates MPP state atomically and tombstones it without deleting audit data", async () => {
     const initial = state();
     await database.createSession(initial);
@@ -437,6 +497,100 @@ describe("MeterMeshDatabase", () => {
         workerId: "xmtp-worker",
       }),
     ).resolves.toEqual([expect.objectContaining({ id: transport.id })]);
+  });
+
+  it("reserves one durable public trial per wallet and replays the same request", async () => {
+    const budget = await database.ensurePublicTrialBudget(2);
+    const input = {
+      globalLimit: 2,
+      receivedAt: budget.activatedAt,
+      requestHash: hashCanonical("trial-request-envelope-001"),
+      requestMessageId: "trial-request-001",
+      signerAddress: buyer.address,
+      transactionHash: hashCanonical("trial-transaction-001"),
+    };
+
+    expect(budget.activatedAt).toBeInstanceOf(Date);
+    expect({ globalLimit: budget.globalLimit, usedCount: budget.usedCount }).toEqual({
+      globalLimit: 2,
+      usedCount: 0,
+    });
+    await expect(database.reservePublicTrial(input)).resolves.toEqual({
+      globalLimit: 2,
+      status: "reserved",
+      usedCount: 1,
+    });
+    await expect(
+      database.reservePublicTrial({
+        ...input,
+        requestHash: hashCanonical("different-trial-request-envelope"),
+      }),
+    ).resolves.toEqual({ globalLimit: 2, status: "request_collision", usedCount: 1 });
+    await expect(database.reservePublicTrial(input)).resolves.toEqual({
+      globalLimit: 2,
+      status: "duplicate",
+      usedCount: 1,
+    });
+    await expect(
+      database.reservePublicTrial({
+        ...input,
+        requestMessageId: "trial-request-002",
+      }),
+    ).resolves.toEqual({ globalLimit: 2, status: "wallet_used", usedCount: 1 });
+    await expect(database.ensurePublicTrialBudget(3)).rejects.toThrow(
+      "does not match persisted limit",
+    );
+  });
+
+  it("atomically gives only one racing wallet the final public trial slot", async () => {
+    const other = privateKeyToAccount(generatePrivateKey());
+    const { activatedAt } = await database.ensurePublicTrialBudget(1);
+    const results = await Promise.all([
+      database.reservePublicTrial({
+        globalLimit: 1,
+        receivedAt: activatedAt,
+        requestHash: hashCanonical("trial-race-envelope-a"),
+        requestMessageId: "trial-race-a",
+        signerAddress: buyer.address,
+        transactionHash: hashCanonical("trial-race-transaction-a"),
+      }),
+      database.reservePublicTrial({
+        globalLimit: 1,
+        receivedAt: activatedAt,
+        requestHash: hashCanonical("trial-race-envelope-b"),
+        requestMessageId: "trial-race-b",
+        signerAddress: other.address,
+        transactionHash: hashCanonical("trial-race-transaction-b"),
+      }),
+    ]);
+
+    expect(results.filter(({ status }) => status === "reserved")).toHaveLength(1);
+    expect(results.filter(({ status }) => status === "capacity_reached")).toHaveLength(1);
+    const [budget] = await admin<{ global_limit: number; used_count: number }[]>`
+      select global_limit, used_count from public_trial_budget where id = 1
+    `;
+    expect(budget).toEqual({ global_limit: 1, used_count: 1 });
+  });
+
+  it("ignores requests received before the durable public trial activation time", async () => {
+    const budget = await database.ensurePublicTrialBudget(2);
+    const input = {
+      globalLimit: 2,
+      requestHash: hashCanonical("trial-request-envelope-older-than-activation"),
+      requestMessageId: "trial-request-older-than-activation",
+      signerAddress: buyer.address,
+      transactionHash: hashCanonical("trial-transaction-older-than-activation"),
+    };
+
+    await expect(
+      database.reservePublicTrial({
+        ...input,
+        receivedAt: new Date(budget.activatedAt.getTime() - 1),
+      }),
+    ).resolves.toEqual({ globalLimit: 2, status: "before_activation", usedCount: 0 });
+    await expect(
+      database.reservePublicTrial({ ...input, receivedAt: budget.activatedAt }),
+    ).resolves.toEqual({ globalLimit: 2, status: "reserved", usedCount: 1 });
   });
 
   it("records invalid carrier input idempotently and chain-operation intents once", async () => {

@@ -14,6 +14,8 @@ test("a developer can understand the integration boundary and inspect machine ar
   await expect(
     page.getByText(/fresh injected browser wallet sent a signed XMTP dev request/i),
   ).toBeVisible();
+  await expect(page.getByText("Bounded public trial")).toBeVisible();
+  await expect(page.getByText(/public Railway deployment remains pending/i)).toBeVisible();
   await expect(page.getByText("OKX MPP Testnet mutation")).toBeVisible();
   await expect(page.getByText("gated", { exact: true })).toBeVisible();
 

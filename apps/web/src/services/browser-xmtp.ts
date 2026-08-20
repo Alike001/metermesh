@@ -18,9 +18,14 @@ export const METER_MESH_SELLER_INBOX_ID =
 
 export type BrowserXmtpFailureCode =
   | "delivery_timeout"
+  | "invalid_sequence"
   | "invalid_request"
+  | "request_denied"
+  | "trial_capacity_reached"
+  | "trial_wallet_used"
   | "wallet_missing"
   | "wallet_rejected"
+  | "work_failed"
   | "xmtp_connect_failed"
   | "xmtp_send_failed";
 
@@ -310,6 +315,20 @@ export async function createBrowserXmtpConnection(
               });
               if (
                 decoded.ok &&
+                decoded.envelope.type === "work.error" &&
+                decoded.envelope.sessionId === request.envelope.sessionId &&
+                decoded.envelope.payload.requestMessageId === request.envelope.messageId &&
+                decoded.envelope.payload.transactionHash ===
+                  request.envelope.payload.transactionHash &&
+                decoded.envelope.payload.workUnitId === request.envelope.payload.workUnitId
+              ) {
+                throw new BrowserXmtpError(
+                  decoded.envelope.payload.code,
+                  decoded.envelope.payload.detail,
+                );
+              }
+              if (
+                decoded.ok &&
                 decoded.envelope.type === "work.delivery" &&
                 decoded.result !== null &&
                 decoded.envelope.sessionId === request.envelope.sessionId &&
@@ -323,7 +342,8 @@ export async function createBrowserXmtpConnection(
               }
             }
           }
-        } catch {
+        } catch (error) {
+          if (error instanceof BrowserXmtpError) throw error;
           // A bounded transient sync failure is retried until the overall delivery deadline.
         }
         await delay(pollIntervalMs);

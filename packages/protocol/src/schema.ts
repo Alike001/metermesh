@@ -36,6 +36,23 @@ export const deliveryPayloadSchema = z.strictObject({
   workUnitId: boundedIdSchema,
 });
 
+export const workErrorCodeSchema = z.enum([
+  "invalid_sequence",
+  "request_denied",
+  "trial_capacity_reached",
+  "trial_wallet_used",
+  "work_failed",
+]);
+
+export const workErrorPayloadSchema = z.strictObject({
+  code: workErrorCodeSchema,
+  detail: z.string().trim().min(1).max(240),
+  requestMessageId: boundedIdSchema,
+  retryable: z.boolean(),
+  transactionHash: hashSchema,
+  workUnitId: boundedIdSchema,
+});
+
 export const acceptancePayloadSchema = z.strictObject({
   cumulativeAmount: positiveAmountSchema,
   deliveryMessageId: boundedIdSchema,
@@ -76,6 +93,11 @@ const deliveryDraftSchema = z.strictObject({
   payload: deliveryPayloadSchema,
   type: z.literal("work.delivery"),
 });
+const workErrorDraftSchema = z.strictObject({
+  ...draftHeaderShape,
+  payload: workErrorPayloadSchema,
+  type: z.literal("work.error"),
+});
 const acceptanceDraftSchema = z.strictObject({
   ...draftHeaderShape,
   payload: acceptancePayloadSchema,
@@ -95,6 +117,7 @@ const closeDraftSchema = z.strictObject({
 export const envelopeDraftSchema = z.discriminatedUnion("type", [
   requestDraftSchema,
   deliveryDraftSchema,
+  workErrorDraftSchema,
   acceptanceDraftSchema,
   rejectionDraftSchema,
   closeDraftSchema,
@@ -112,6 +135,7 @@ const payloadHashFields = { payloadHash: hashSchema };
 export const unsignedEnvelopeSchema = z.discriminatedUnion("type", [
   requestDraftSchema.extend(payloadHashFields),
   deliveryDraftSchema.extend(payloadHashFields),
+  workErrorDraftSchema.extend(payloadHashFields),
   acceptanceDraftSchema.extend(payloadHashFields),
   rejectionDraftSchema.extend(payloadHashFields),
   closeDraftSchema.extend(payloadHashFields),
@@ -120,6 +144,7 @@ export const unsignedEnvelopeSchema = z.discriminatedUnion("type", [
 export const envelopeSchema = z.discriminatedUnion("type", [
   requestDraftSchema.extend({ ...payloadHashFields, ...signatureFields }),
   deliveryDraftSchema.extend({ ...payloadHashFields, ...signatureFields }),
+  workErrorDraftSchema.extend({ ...payloadHashFields, ...signatureFields }),
   acceptanceDraftSchema.extend({ ...payloadHashFields, ...signatureFields }),
   rejectionDraftSchema.extend({ ...payloadHashFields, ...signatureFields }),
   closeDraftSchema.extend({ ...payloadHashFields, ...signatureFields }),
@@ -189,12 +214,20 @@ const rejectedWorkUnitSchema = deliveredWorkUnitSchema.extend({
   rejectionMessageId: boundedIdSchema,
   status: z.literal("rejected"),
 });
+const failedWorkUnitSchema = requestedWorkUnitSchema.extend({
+  errorCode: workErrorCodeSchema,
+  errorDetail: z.string().trim().min(1).max(240),
+  failureMessageId: boundedIdSchema,
+  retryable: z.boolean(),
+  status: z.literal("failed"),
+});
 
 export const workUnitSchema = z.discriminatedUnion("status", [
   requestedWorkUnitSchema,
   deliveredWorkUnitSchema,
   acceptedWorkUnitSchema,
   rejectedWorkUnitSchema,
+  failedWorkUnitSchema,
 ]);
 
 export const settlementReceiptSchema = z.strictObject({
@@ -258,9 +291,12 @@ export const sessionStateSchema = z
 
     const referencedMessageIds = value.workUnits.flatMap((unit) => {
       const ids = [unit.requestMessageId];
-      if (unit.status !== "requested") ids.push(unit.deliveryMessageId);
+      if (unit.status === "delivered" || unit.status === "accepted" || unit.status === "rejected") {
+        ids.push(unit.deliveryMessageId);
+      }
       if (unit.status === "accepted") ids.push(unit.acceptanceMessageId);
       if (unit.status === "rejected") ids.push(unit.rejectionMessageId);
+      if (unit.status === "failed") ids.push(unit.failureMessageId);
       return ids;
     });
     if (value.closeRequest !== null) referencedMessageIds.push(value.closeRequest.messageId);

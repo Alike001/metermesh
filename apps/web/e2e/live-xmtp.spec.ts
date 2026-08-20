@@ -55,7 +55,7 @@ async function loadLocalServerEnvironment(): Promise<void> {
 test("a real injected buyer wallet receives one verified worker delivery", async ({
   page,
 }, testInfo) => {
-  test.setTimeout(180_000);
+  test.setTimeout(300_000);
   test.skip(
     process.env.METERMESH_LIVE_BROWSER_XMTP !== "1",
     "Set METERMESH_LIVE_BROWSER_XMTP=1 to run the live network proof.",
@@ -65,8 +65,28 @@ test("a real injected buyer wallet receives one verified worker delivery", async
   const buyerAccount = privateKeyToAccount(generatePrivateKey());
   const xmtpConfig = getMeterMeshXmtpConfig();
   const carrier = await NodeXmtpCarrier.connect(xmtpConfig);
+  let trialUsed = false;
   const worker = new MeterMeshTransportWorker({
-    allowedBuyerAddress: buyerAccount.address,
+    authorizeRequest: (request) => {
+      if (request.signature.signer.toLowerCase() !== buyerAccount.address.toLowerCase()) {
+        return Promise.resolve({
+          detail: "Historical request from another live-test wallet.",
+          ok: false as const,
+          silent: true as const,
+        });
+      }
+      if (trialUsed) {
+        return Promise.resolve({
+          code: "trial_wallet_used" as const,
+          detail: "This wallet has already used its one public verification request.",
+          ok: false as const,
+          retryable: false,
+          silent: false as const,
+        });
+      }
+      trialUsed = true;
+      return Promise.resolve({ ok: true as const });
+    },
     carrier,
     explain: async (transactionHash) =>
       explainTransaction(await fetchTransactionFacts(transactionHash)),
@@ -132,6 +152,23 @@ test("a real injected buyer wallet receives one verified worker delivery", async
     await expect(page.getByLabel("Verified live XMTP delivery")).toContainText(
       "XMTP sender, signer authorization, envelope signature",
     );
+    await page.getByRole("button", { name: /trial complete/i }).click();
+    await page.getByRole("button", { name: "Connect wallet to XMTP" }).click();
+    await expect(page.getByText("XMTP connected")).toBeVisible({ timeout: 90_000 });
+    await page.getByRole("button", { name: "Request explanation" }).click();
+    await expect(page.getByRole("button", { name: "Waiting for agent" })).toBeVisible({
+      timeout: 60_000,
+    });
+    let rejected = 0;
+    for (let attempt = 0; attempt < 10 && rejected === 0; attempt += 1) {
+      rejected = (await worker.ingest()).rejected;
+      if (rejected === 0) await new Promise((resolve) => setTimeout(resolve, 1_000));
+    }
+    expect(rejected).toBeGreaterThan(0);
+    await worker.processAvailable();
+    await expect(
+      page.getByText("This wallet has already used its one public verification request."),
+    ).toBeVisible({ timeout: 120_000 });
     expect(consoleErrors).toEqual([]);
   } finally {
     await carrier.close();

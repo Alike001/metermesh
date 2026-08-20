@@ -74,6 +74,13 @@ export interface OutboxJob {
   workerId: string | null;
 }
 
+export type PublicTrialReservation =
+  | { globalLimit: number; status: "before_activation"; usedCount: number }
+  | { globalLimit: number; status: "capacity_reached"; usedCount: number }
+  | { globalLimit: number; status: "duplicate" | "reserved"; usedCount: number }
+  | { globalLimit: number; status: "request_collision"; usedCount: number }
+  | { globalLimit: number; status: "wallet_used"; usedCount: number };
+
 export interface ProcessEnvelopeInput {
   direction: "inbound" | "outbound";
   envelope: unknown;
@@ -143,6 +150,12 @@ function parseJsonObject(value: unknown, label: string): JsonObject {
   return value as JsonObject;
 }
 
+function validatePublicTrialLimit(globalLimit: number): void {
+  if (!Number.isSafeInteger(globalLimit) || globalLimit < 1 || globalLimit > 1000) {
+    throw new DatabaseInvariantError("Public trial global limit must be between 1 and 1000.");
+  }
+}
+
 function mapSnapshot(row: SessionRow): SessionSnapshot {
   return {
     state: sessionStateSchema.parse(row.protocol_state),
@@ -170,14 +183,17 @@ function mapOutboxJob(row: OutboxRow): OutboxJob {
 function decisionMessageId(unit: WorkUnit): string | null {
   if (unit.status === "accepted") return unit.acceptanceMessageId;
   if (unit.status === "rejected") return unit.rejectionMessageId;
+  if (unit.status === "failed") return unit.failureMessageId;
   return null;
 }
 
 function deliveryValue<T>(
   unit: WorkUnit,
-  select: (value: Exclude<WorkUnit, { status: "requested" }>) => T,
+  select: (value: Extract<WorkUnit, { status: "accepted" | "delivered" | "rejected" }>) => T,
 ): T | null {
-  return unit.status === "requested" ? null : select(unit);
+  return unit.status === "delivered" || unit.status === "accepted" || unit.status === "rejected"
+    ? select(unit)
+    : null;
 }
 
 export class MeterMeshDatabase {
@@ -581,6 +597,167 @@ export class MeterMeshDatabase {
     return row === undefined ? null : mapOutboxJob(row);
   }
 
+  async reservePublicTrial(input: {
+    globalLimit: number;
+    receivedAt: Date;
+    requestHash: string;
+    requestMessageId: string;
+    signerAddress: string;
+    transactionHash: string;
+  }): Promise<PublicTrialReservation> {
+    validatePublicTrialLimit(input.globalLimit);
+    if (!Number.isFinite(input.receivedAt.getTime())) {
+      throw new DatabaseInvariantError("Public trial receive time is invalid.");
+    }
+    if (!/^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$/u.test(input.requestMessageId)) {
+      throw new DatabaseInvariantError("Public trial request message ID is invalid.");
+    }
+    if (!/^0x[0-9a-fA-F]{64}$/u.test(input.requestHash)) {
+      throw new DatabaseInvariantError("Public trial request hash is invalid.");
+    }
+    if (!/^0x[0-9a-fA-F]{40}$/u.test(input.signerAddress)) {
+      throw new DatabaseInvariantError("Public trial signer address is invalid.");
+    }
+    if (!/^0x[0-9a-fA-F]{64}$/u.test(input.transactionHash)) {
+      throw new DatabaseInvariantError("Public trial transaction hash is invalid.");
+    }
+    const signerAddress = input.signerAddress.toLowerCase();
+    const requestHash = input.requestHash.toLowerCase();
+    const transactionHash = input.transactionHash.toLowerCase();
+
+    return this.#sql.begin(async (transaction) => {
+      await transaction`
+        insert into public_trial_budget (id, global_limit)
+        values (1, ${input.globalLimit})
+        on conflict (id) do nothing
+      `;
+      const [budget] = await transaction<
+        { activated_at: Date; global_limit: number; used_count: number }[]
+      >`
+        select activated_at, global_limit, used_count
+        from public_trial_budget
+        where id = 1
+        for update
+      `;
+      if (budget === undefined) {
+        throw new DatabaseInvariantError("Public trial budget row is unavailable.");
+      }
+      if (budget.global_limit !== input.globalLimit) {
+        throw new DatabaseInvariantError(
+          `Configured public trial limit ${String(input.globalLimit)} does not match persisted limit ${String(budget.global_limit)}.`,
+        );
+      }
+      if (input.receivedAt < budget.activated_at) {
+        return {
+          globalLimit: budget.global_limit,
+          status: "before_activation",
+          usedCount: budget.used_count,
+        };
+      }
+
+      const [sameRequest] = await transaction<{ request_hash: string | null }[]>`
+        select request_hash
+        from public_trial_requests
+        where request_message_id = ${input.requestMessageId}
+      `;
+      if (sameRequest !== undefined) {
+        if (sameRequest.request_hash !== requestHash) {
+          return {
+            globalLimit: budget.global_limit,
+            status: "request_collision",
+            usedCount: budget.used_count,
+          };
+        }
+        return {
+          globalLimit: budget.global_limit,
+          status: "duplicate",
+          usedCount: budget.used_count,
+        };
+      }
+
+      const [walletRequest] = await transaction<{ request_message_id: string }[]>`
+        select request_message_id
+        from public_trial_requests
+        where signer_address = ${signerAddress}
+      `;
+      if (walletRequest !== undefined) {
+        return {
+          globalLimit: budget.global_limit,
+          status: "wallet_used",
+          usedCount: budget.used_count,
+        };
+      }
+      if (budget.used_count >= budget.global_limit) {
+        return {
+          globalLimit: budget.global_limit,
+          status: "capacity_reached",
+          usedCount: budget.used_count,
+        };
+      }
+
+      await transaction`
+        insert into public_trial_requests (
+          request_message_id,
+          request_hash,
+          signer_address,
+          transaction_hash
+        ) values (
+          ${input.requestMessageId},
+          ${requestHash},
+          ${signerAddress},
+          ${transactionHash}
+        )
+      `;
+      const [updated] = await transaction<{ global_limit: number; used_count: number }[]>`
+        update public_trial_budget
+        set used_count = used_count + 1, updated_at = now()
+        where id = 1
+        returning global_limit, used_count
+      `;
+      if (updated === undefined) {
+        throw new DatabaseInvariantError("Public trial budget update returned no row.");
+      }
+      return {
+        globalLimit: updated.global_limit,
+        status: "reserved",
+        usedCount: updated.used_count,
+      };
+    });
+  }
+
+  async checkHealth(): Promise<void> {
+    await this.#sql`select 1`;
+  }
+
+  async ensurePublicTrialBudget(
+    globalLimit: number,
+  ): Promise<{ activatedAt: Date; globalLimit: number; usedCount: number }> {
+    validatePublicTrialLimit(globalLimit);
+    await this.#sql`
+      insert into public_trial_budget (id, global_limit)
+      values (1, ${globalLimit})
+      on conflict (id) do nothing
+    `;
+    const [budget] = await this.#sql<
+      { activated_at: Date; global_limit: number; used_count: number }[]
+    >`
+      select activated_at, global_limit, used_count from public_trial_budget where id = 1
+    `;
+    if (budget === undefined) {
+      throw new DatabaseInvariantError("Public trial budget row is unavailable.");
+    }
+    if (budget.global_limit !== globalLimit) {
+      throw new DatabaseInvariantError(
+        `Configured public trial limit ${String(globalLimit)} does not match persisted limit ${String(budget.global_limit)}.`,
+      );
+    }
+    return {
+      activatedAt: budget.activated_at,
+      globalLimit: budget.global_limit,
+      usedCount: budget.used_count,
+    };
+  }
+
   async completeOutbox(
     jobId: bigint,
     workerId: string,
@@ -712,7 +889,8 @@ export class MeterMeshDatabase {
       const resultHash = deliveryValue(unit, (value) => value.resultHash);
       const billableAmount = unit.status === "accepted" ? state.config.unitPrice : "0";
       const cumulativeAmount = unit.status === "accepted" ? unit.cumulativeAmount : null;
-      const rejectionReason = unit.status === "rejected" ? unit.reason : null;
+      const rejectionReason =
+        unit.status === "rejected" ? unit.reason : unit.status === "failed" ? unit.errorCode : null;
       await transaction`
         insert into work_units (
           session_id,

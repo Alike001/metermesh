@@ -105,6 +105,30 @@ async function deliveryEnvelope(): Promise<Envelope> {
   );
 }
 
+async function errorEnvelope(): Promise<Envelope> {
+  return signEnvelope(
+    {
+      createdAt: "2026-08-20T10:00:05.000Z",
+      messageId: "error-001",
+      payload: {
+        code: "trial_wallet_used",
+        detail: "This wallet has already used its one public verification request.",
+        requestMessageId: "request-001",
+        retryable: false,
+        transactionHash,
+        workUnitId: "work-001",
+      },
+      protocol: "metermesh",
+      senderInboxId: sellerInboxId,
+      sequence: 1,
+      sessionId: "session-001",
+      type: "work.error",
+      version: 1,
+    },
+    createMeterMeshIdentity(sellerKey).envelopeSigner,
+  );
+}
+
 const authorized = vi.fn(() => Promise.resolve(true));
 
 describe("XMTP MeterMesh envelope codec", () => {
@@ -136,6 +160,21 @@ describe("XMTP MeterMesh envelope codec", () => {
         { isSignerAuthorized: authorized },
       ),
     ).resolves.toEqual({ envelope, ok: true, result: explanation });
+  });
+
+  it("round-trips a seller-signed nonbillable work error without a result body", async () => {
+    const envelope = await errorEnvelope();
+    const content = encodeCarrierEnvelope(envelope);
+
+    await expect(
+      decodeCarrierMessage(
+        { content, id: "carrier-error", senderInboxId: sellerInboxId },
+        { isSignerAuthorized: authorized },
+      ),
+    ).resolves.toEqual({ envelope, ok: true, result: null });
+    expect(() => encodeCarrierEnvelope(envelope, explanation)).toThrow(
+      "Only work.delivery content may carry an explanation result",
+    );
   });
 
   it("rejects missing, changed, or unrelated delivery results", async () => {

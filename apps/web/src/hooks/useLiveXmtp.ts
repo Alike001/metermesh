@@ -51,9 +51,14 @@ function failureFor(
     typeof error.code === "string" &&
     [
       "delivery_timeout",
+      "invalid_sequence",
       "invalid_request",
+      "request_denied",
+      "trial_capacity_reached",
+      "trial_wallet_used",
       "wallet_missing",
       "wallet_rejected",
+      "work_failed",
       "xmtp_connect_failed",
       "xmtp_send_failed",
     ].includes(error.code)

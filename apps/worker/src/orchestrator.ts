@@ -8,7 +8,6 @@ import {
   type Envelope,
 } from "@metermesh/protocol";
 import type { InspectedCarrierEnvelope, NodeXmtpCarrier } from "@metermesh/xmtp";
-import type { Address } from "viem";
 import { z } from "zod";
 
 import { createMeterMeshIdentity } from "@metermesh/xmtp";
@@ -21,8 +20,27 @@ const requestJobSchema = z.strictObject({ envelope: z.unknown() });
 const deliveryJobSchema = z.strictObject({
   envelope: z.unknown(),
   recipientInboxId: z.string().min(1),
-  result: transactionExplanationSchema,
+  result: transactionExplanationSchema.nullable(),
 });
+
+type WorkRequestEnvelope = Extract<Envelope, { type: "work.request" }>;
+type WorkErrorCode = Extract<Envelope, { type: "work.error" }>["payload"]["code"];
+
+export type WorkerRequestAuthorization =
+  | { ok: true }
+  | { detail: string; ok: false; silent: true }
+  | {
+      code: WorkErrorCode;
+      detail: string;
+      ok: false;
+      retryable: boolean;
+      silent: false;
+    };
+
+export type WorkerRequestAuthorizer = (
+  request: WorkRequestEnvelope,
+  context: { carrierMessageId: string; sentAt: Date },
+) => Promise<WorkerRequestAuthorization>;
 
 export interface WorkerOutboxStore {
   claimOutbox(input: {
@@ -65,7 +83,7 @@ export interface WorkerCarrier {
 }
 
 export interface MeterMeshTransportWorkerOptions {
-  allowedBuyerAddress: Address;
+  authorizeRequest: WorkerRequestAuthorizer;
   carrier: WorkerCarrier;
   explain: (transactionHash: string) => Promise<TransactionExplanation>;
   now?: () => Date;
@@ -96,12 +114,17 @@ async function requireRequestEnvelope(
   return validation.envelope;
 }
 
-async function requireDeliveryEnvelope(
+async function requireResponseEnvelope(
   input: unknown,
-): Promise<Extract<Envelope, { type: "work.delivery" }>> {
+): Promise<Extract<Envelope, { type: "work.delivery" | "work.error" }>> {
   const validation = await validateEnvelope(input);
-  if (!validation.ok || validation.envelope.type !== "work.delivery") {
-    throw new TypeError("Outbox delivery payload does not contain a valid work.delivery envelope.");
+  if (
+    !validation.ok ||
+    (validation.envelope.type !== "work.delivery" && validation.envelope.type !== "work.error")
+  ) {
+    throw new TypeError(
+      "Outbox response payload does not contain a valid delivery or error envelope.",
+    );
   }
   return validation.envelope;
 }
@@ -111,7 +134,7 @@ function deliveryJobKey(requestMessageId: string): string {
 }
 
 export class MeterMeshTransportWorker {
-  readonly #allowedBuyerAddress: Address;
+  readonly #authorizeRequest: WorkerRequestAuthorizer;
   readonly #carrier: WorkerCarrier;
   readonly #explain: MeterMeshTransportWorkerOptions["explain"];
   readonly #now: () => Date;
@@ -120,7 +143,7 @@ export class MeterMeshTransportWorker {
   readonly #workerId: string;
 
   constructor(options: MeterMeshTransportWorkerOptions) {
-    this.#allowedBuyerAddress = options.allowedBuyerAddress;
+    this.#authorizeRequest = options.authorizeRequest;
     this.#carrier = options.carrier;
     this.#explain = options.explain;
     this.#now = options.now ?? (() => new Date());
@@ -149,15 +172,27 @@ export class MeterMeshTransportWorker {
       }
       const { envelope } = item;
       if (envelope.type !== "work.request") continue;
-      if (
-        envelope.signature.signer.toLowerCase() !== this.#allowedBuyerAddress.toLowerCase() ||
-        envelope.sequence !== 1
-      ) {
+      const authorization: WorkerRequestAuthorization =
+        envelope.sequence === 1
+          ? await this.#authorizeRequest(envelope, {
+              carrierMessageId: item.carrierMessageId,
+              sentAt: item.sentAt,
+            })
+          : {
+              code: "invalid_sequence",
+              detail: "The verification request must use sequence 1 in a fresh session.",
+              ok: false,
+              retryable: false,
+              silent: false,
+            };
+      if (!authorization.ok) {
+        if (authorization.silent) continue;
         await this.#outbox.recordEnvelopeRejection({
           carrierMessageId: item.carrierMessageId,
           rawEnvelope: asJsonObject(envelope),
-          reason: "The nonbillable verifier accepts only the allowlisted buyer and sequence 1.",
+          reason: authorization.detail,
         });
+        await this.#queueError(envelope, authorization);
         rejected += 1;
         continue;
       }
@@ -248,9 +283,47 @@ export class MeterMeshTransportWorker {
     });
   }
 
+  async #queueError(
+    request: WorkRequestEnvelope,
+    denial: Extract<WorkerRequestAuthorization, { ok: false; silent: false }>,
+  ): Promise<void> {
+    const key = `xmtp.error:${request.messageId}`;
+    if ((await this.#outbox.getOutboxByJobKey(key)) !== null) return;
+    const signed = await signEnvelope(
+      {
+        createdAt: this.#now().toISOString(),
+        messageId: `error-${request.messageId}`,
+        payload: {
+          code: denial.code,
+          detail: denial.detail,
+          requestMessageId: request.messageId,
+          retryable: denial.retryable,
+          transactionHash: request.payload.transactionHash,
+          workUnitId: request.payload.workUnitId,
+        },
+        protocol: "metermesh",
+        senderInboxId: this.#carrier.inboxId,
+        sequence: 1,
+        sessionId: request.sessionId,
+        type: "work.error",
+        version: 1,
+      },
+      createMeterMeshIdentity(this.#sellerWalletKey).envelopeSigner,
+    );
+    await this.#outbox.enqueueOutbox({
+      jobKey: key,
+      jobType: SEND_DELIVERY_JOB,
+      payload: {
+        envelope: asJsonObject(signed),
+        recipientInboxId: request.senderInboxId,
+        result: null,
+      },
+    });
+  }
+
   async #sendDelivery(job: OutboxJob): Promise<void> {
     const parsed = deliveryJobSchema.parse(job.payload);
-    const envelope = await requireDeliveryEnvelope(parsed.envelope);
-    await this.#carrier.sendEnvelope(parsed.recipientInboxId, envelope, parsed.result);
+    const envelope = await requireResponseEnvelope(parsed.envelope);
+    await this.#carrier.sendEnvelope(parsed.recipientInboxId, envelope, parsed.result ?? undefined);
   }
 }

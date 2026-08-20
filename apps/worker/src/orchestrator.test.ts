@@ -2,7 +2,7 @@ import type { TransactionExplanation } from "@metermesh/ai";
 import type { JsonObject, OutboxJob } from "@metermesh/db";
 import { signEnvelope, type Envelope } from "@metermesh/protocol";
 import { createMeterMeshIdentity, type InspectedCarrierEnvelope } from "@metermesh/xmtp";
-import { getAddress, type Hex } from "viem";
+import type { Hex } from "viem";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import {
@@ -11,6 +11,7 @@ import {
   SEND_DELIVERY_JOB,
   type WorkerCarrier,
   type WorkerOutboxStore,
+  type WorkerRequestAuthorizer,
 } from "./orchestrator.js";
 
 const buyerKey: Hex = `0x${"11".repeat(32)}`;
@@ -210,6 +211,7 @@ describe("MeterMesh transport worker", () => {
   let outbox: MemoryOutbox;
   let sendEnvelope: ReturnType<typeof vi.fn<WorkerCarrier["sendEnvelope"]>>;
   let explain: ReturnType<typeof vi.fn<(hash: string) => Promise<TransactionExplanation>>>;
+  let authorizeRequest: ReturnType<typeof vi.fn<WorkerRequestAuthorizer>>;
   let carrier: WorkerCarrier;
 
   beforeEach(() => {
@@ -217,6 +219,7 @@ describe("MeterMesh transport worker", () => {
     outbox = new MemoryOutbox();
     sendEnvelope = vi.fn(() => Promise.resolve("carrier-delivery-001"));
     explain = vi.fn(() => Promise.resolve(explanation));
+    authorizeRequest = vi.fn(() => Promise.resolve({ ok: true }));
     carrier = {
       inboxId: sellerInboxId,
       inspectMessages: () => Promise.resolve(inspected),
@@ -227,7 +230,7 @@ describe("MeterMesh transport worker", () => {
 
   function worker(): MeterMeshTransportWorker {
     return new MeterMeshTransportWorker({
-      allowedBuyerAddress: getAddress(buyerIdentity.envelopeSigner.address),
+      authorizeRequest,
       carrier,
       explain,
       now: () => new Date("2026-08-20T12:00:05.000Z"),
@@ -237,17 +240,57 @@ describe("MeterMesh transport worker", () => {
     });
   }
 
-  it("queues an allowlisted request once and rejects a different signer", async () => {
+  it("queues an authorized request once and persists a signed denial response", async () => {
     const request = await requestEnvelope();
     inspected = [acceptedRequest(request), acceptedRequest(request)];
 
     await expect(worker().ingest()).resolves.toEqual({ queued: 2, rejected: 0 });
     expect(outbox.jobs).toHaveLength(1);
 
-    const outsider = await requestEnvelope(sellerIdentity.envelopeSigner);
-    inspected = [acceptedRequest(outsider)];
+    outbox = new MemoryOutbox();
+    authorizeRequest.mockResolvedValueOnce({
+      code: "trial_wallet_used",
+      detail: "This wallet has already used its trial.",
+      ok: false,
+      retryable: false,
+      silent: false,
+    });
+    inspected = [acceptedRequest(await requestEnvelope(sellerIdentity.envelopeSigner))];
     await expect(worker().ingest()).resolves.toEqual({ queued: 0, rejected: 1 });
     expect(outbox.rejections).toHaveLength(1);
+    expect(
+      [...outbox.jobs.values()].some(
+        (job) =>
+          job.jobType === SEND_DELIVERY_JOB &&
+          (job.payload.envelope as { type?: string }).type === "work.error",
+      ),
+    ).toBe(true);
+    await worker().processAvailable();
+    const [recipientInboxId, responseEnvelope, responseResult] = sendEnvelope.mock.calls[0] ?? [];
+    expect(recipientInboxId).toBe(buyerInboxId);
+    expect(responseEnvelope).toMatchObject({
+      payload: { code: "trial_wallet_used" },
+      type: "work.error",
+    });
+    expect(responseResult).toBeUndefined();
+    expect(explain).not.toHaveBeenCalled();
+  });
+
+  it("silently skips valid requests that predate public trial activation", async () => {
+    inspected = [acceptedRequest(await requestEnvelope())];
+    authorizeRequest.mockResolvedValueOnce({
+      detail: "The request predates public-trial activation.",
+      ok: false,
+      silent: true,
+    });
+
+    await expect(worker().ingest()).resolves.toEqual({ queued: 0, rejected: 0 });
+    expect(outbox.jobs).toHaveLength(0);
+    expect(outbox.rejections).toHaveLength(0);
+    expect(authorizeRequest).toHaveBeenCalledWith(
+      expect.any(Object),
+      expect.objectContaining({ sentAt: new Date("2026-08-20T12:00:00.000Z") }),
+    );
   });
 
   it("persists the result before sending one hash-bound delivery", async () => {

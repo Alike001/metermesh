@@ -68,6 +68,7 @@ describe("MeterMesh machine-readable documentation", () => {
     expect(manifestJson.capabilityStatus).toEqual(
       expect.arrayContaining([
         expect.objectContaining({ id: "xmtp-carrier", state: "verified" }),
+        expect.objectContaining({ id: "bounded-public-trial", state: "verified" }),
         expect.objectContaining({ id: "mpp-testnet-mutation", state: "gated" }),
       ]),
     );
