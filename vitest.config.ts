@@ -1,6 +1,16 @@
+import { fileURLToPath } from "node:url";
+
 import { defineConfig } from "vitest/config";
 
 export default defineConfig({
+  resolve: {
+    alias: {
+      "@metermesh/chain": fileURLToPath(new URL("./packages/chain/src/index.ts", import.meta.url)),
+      "@metermesh/protocol": fileURLToPath(
+        new URL("./packages/protocol/src/index.ts", import.meta.url),
+      ),
+    },
+  },
   test: {
     coverage: {
       exclude: ["**/*.config.{js,mjs,ts}", "**/*.d.ts"],

@@ -91,6 +91,24 @@ importers:
         specifier: 4.1.11
         version: 4.1.11(@types/node@24.10.13)(@vitest/coverage-v8@4.1.11)(jsdom@30.0.1(@noble/hashes@1.8.0))(vite@8.2.2(@types/node@24.10.13)(yaml@2.9.0))
 
+  packages/ai:
+    dependencies:
+      '@metermesh/chain':
+        specifier: workspace:*
+        version: link:../chain
+      zod:
+        specifier: 4.4.3
+        version: 4.4.3
+
+  packages/chain:
+    dependencies:
+      viem:
+        specifier: 2.55.19
+        version: 2.55.19(typescript@6.0.2)(zod@4.4.3)
+      zod:
+        specifier: 4.4.3
+        version: 4.4.3
+
   packages/db:
     dependencies:
       '@metermesh/protocol':
