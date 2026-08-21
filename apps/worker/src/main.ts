@@ -52,15 +52,25 @@ async function main(): Promise<void> {
     });
     while (!shutdown.signal.aborted) {
       try {
-        await worker.ingest();
-        await worker.processAvailable();
+        const ingestResult = await worker.ingest();
+        const processResult = await worker.processAvailable();
+        if (
+          ingestResult.queued > 0 ||
+          ingestResult.rejected > 0 ||
+          processResult.completed > 0 ||
+          processResult.failed > 0
+        ) {
+          process.stdout.write(
+            `[worker] cycle queued=${String(ingestResult.queued)} rejected=${String(ingestResult.rejected)} completed=${String(processResult.completed)} failed=${String(processResult.failed)}\n`,
+          );
+        }
         await database.checkHealth();
         health.markCycleSucceeded();
         await delay(workerConfig.pollIntervalMs, shutdown.signal);
       } catch (error) {
         if (!(error instanceof XmtpRetryExhaustedError)) throw error;
         process.stderr.write(
-          `[worker] XMTP temporarily unavailable after ${String(error.attempts)} attempts. Health remains stale until the next successful cycle.\n`,
+          `[worker] XMTP temporarily unavailable after ${String(error.attempts)} attempts. Health remains stale until the next successful cycle. ${error.cause instanceof Error ? error.cause.message : ""}\n`,
         );
         await delay(Math.max(workerConfig.pollIntervalMs, 5_000), shutdown.signal);
       }
