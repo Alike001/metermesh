@@ -2,7 +2,7 @@
   "name": "metermesh",
   "version": "0.0.0",
   "private": true,
-  "description": "Buyer-controlled metered payments for AI work over XMTP on X Layer.",
+  "description": "Verifiable AI work over XMTP grounded in X Layer receipts.",
   "type": "module",
   "packageManager": "pnpm@10.33.1",
   "engines": {

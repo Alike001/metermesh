@@ -33,7 +33,9 @@ describe("MeterMesh product surface", () => {
     render(<App />);
 
     expect(
-      screen.getByRole("heading", { name: "AI work over messages, paid only when accepted." }),
+      screen.getByRole("heading", {
+        name: "AI work over messages, proven against X Layer receipts.",
+      }),
     ).toBeInTheDocument();
 
     const [openButton] = screen.getAllByRole("button", { name: /open live verifier/i });
@@ -62,9 +64,11 @@ describe("MeterMesh product surface", () => {
 
     expect(screen.getByTestId("payment-state")).toHaveTextContent("No voucher");
     expect(
-      screen.getByText("The rule would add 0.001 USDT0. No voucher was requested or signed."),
+      screen.getByText(
+        "The buyer marked this delivery useful in an unsigned preview. No voucher was requested or signed.",
+      ),
     ).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "MPP settlement unavailable" })).toBeDisabled();
+    expect(screen.getByRole("button", { name: "Payment outside v1" })).toBeDisabled();
   });
 
   it("fails safely when a live XMTP request has no injected wallet", async () => {
@@ -77,7 +81,7 @@ describe("MeterMesh product surface", () => {
     expect(await screen.findByRole("alert", undefined, { timeout: 10_000 })).toHaveTextContent(
       "Install or open an EVM wallet extension before connecting to XMTP.",
     );
-    expect(screen.getByRole("button", { name: "MPP settlement unavailable" })).toBeDisabled();
+    expect(screen.getByRole("button", { name: "Payment outside v1" })).toBeDisabled();
   });
 
   it("supports the empty state and restores captured evidence", async () => {

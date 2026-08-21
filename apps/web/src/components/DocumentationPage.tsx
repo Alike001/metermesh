@@ -27,16 +27,8 @@ const lifecycle = [
     "Preview",
     "The current interface tests accept or reject locally without authorizing funds.",
   ],
-  [
-    "04",
-    "Voucher · gated",
-    "The protocol rule is tested, but no public buyer voucher path is enabled.",
-  ],
-  [
-    "05",
-    "Settle · gated",
-    "OKX MPP settlement waits for confirmed chain 1952 Service Account support.",
-  ],
+  ["04", "Review", "The buyer records a useful or rejected result as an unsigned local decision."],
+  ["05", "Export", "The browser exports signed evidence that another verifier can check again."],
 ] as const;
 
 const schemaRows = [
@@ -165,11 +157,11 @@ export function DocumentationPage() {
 
         <main className="docs-content">
           <section className="docs-intro" id="start">
-            <h1>One accepted result advances the meter.</h1>
+            <h1>One verified result leaves a portable proof.</h1>
             <p>
               MeterMesh currently proves a signed AI transaction explanation from a buyer wallet
-              through XMTP, PostgreSQL, and an X Layer receipt. The buyer-controlled OKX payment
-              session is the gated next path, and the public verifier cannot authorize funds.
+              through XMTP, PostgreSQL, and an X Layer receipt. The buyer can review and export the
+              evidence. MPP settlement is a future adapter and is not part of the current verifier.
             </p>
             <dl className="docs-facts">
               <div>
@@ -181,12 +173,12 @@ export function DocumentationPage() {
                 <dd>Evidence-bound explanation</dd>
               </div>
               <div>
-                <dt>Billing rule</dt>
-                <dd>Protocol tested, voucher unavailable</dd>
+                <dt>Payment state</dt>
+                <dd>Nonbillable verifier</dd>
               </div>
               <div>
-                <dt>Settlement</dt>
-                <dd>Gated on chain 1952 support</dd>
+                <dt>Proof</dt>
+                <dd>Signed request, delivery, and result hash</dd>
               </div>
             </dl>
 
@@ -209,7 +201,7 @@ export function DocumentationPage() {
               <span>02</span>
               <div>
                 <h2 id="lifecycle-title">Lifecycle</h2>
-                <p>The work path is live. The value path remains visibly gated.</p>
+                <p>The verification path is live. Payment is deliberately outside v1.</p>
               </div>
             </div>
             <ol className="docs-lifecycle">
@@ -222,11 +214,11 @@ export function DocumentationPage() {
               ))}
             </ol>
             <div className="docs-rule-band">
-              <strong>Deterministic billing boundary</strong>
+              <strong>Deterministic evidence boundary</strong>
               <p>
-                Payload hashes, signatures, sequences, references, and voucher arithmetic are
-                re-runnable checks. AI writes summary, outcome, and limitations. AI never signs a
-                buyer voucher.
+                Payload hashes, signatures, sequences, references, and result hashes are re-runnable
+                checks. AI writes summary, outcome, and limitations. AI cannot create a payment
+                authorization.
               </p>
             </div>
           </section>
@@ -293,8 +285,8 @@ export function DocumentationPage() {
                 <h3>X Layer receipts are live truth.</h3>
                 <p>
                   The current worker reads the public transaction and receipt directly from chain
-                  1952. Future escrow and settlement state must also come from chain, and none is
-                  inferred by this documentation or a database projection.
+                  1952. Future escrow and settlement state must also come from chain, but neither is
+                  part of this verifier or inferred by this documentation.
                 </p>
                 <dl>
                   <div>
@@ -312,9 +304,8 @@ export function DocumentationPage() {
                 <h3>Signed messages carry the work.</h3>
                 <p>
                   XMTP carries private requests and deliveries. MeterMesh verifies signatures,
-                  ordering, references, replay protection, and the canonical result hash. Exact
-                  cumulative amounts are enforced in protocol tests while voucher execution stays
-                  gated.
+                  ordering, references, replay protection, and the canonical result hash. Payment
+                  execution is deferred to a future MPP adapter.
                 </p>
                 <dl>
                   <div>
@@ -375,7 +366,7 @@ export function DocumentationPage() {
       </div>
       <footer className="docs-footer">
         <BrandMark />
-        <p>Buyer-controlled metered work on X Layer.</p>
+        <p>Verifiable AI work grounded in X Layer receipts.</p>
         <a href="https://github.com/Alike001/metermesh" rel="noreferrer" target="_blank">
           Inspect source <ArrowUpRight aria-hidden="true" size={14} />
         </a>

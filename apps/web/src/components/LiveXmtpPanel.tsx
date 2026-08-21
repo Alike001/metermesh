@@ -39,7 +39,7 @@ export function LiveXmtpPanel({ controller }: LiveXmtpPanelProps) {
           <h2 id="live-xmtp-title">Request one real X Layer explanation</h2>
         </div>
         <StatusMark
-          label={connected ? "XMTP connected" : "No payment"}
+          label={connected ? "XMTP connected" : "Nonbillable verifier"}
           status={connected ? "verified" : "pending"}
         />
       </div>

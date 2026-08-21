@@ -2,6 +2,16 @@
 
 Research completed on 2026-08-19. Sources were checked live where possible. Official OKX and X Layer sources are treated as primary evidence. GitHub READMEs and project claims are identified as such, and community posts are treated as directional signals rather than proof of market demand.
 
+## 0A. Current support and judging recheck, 2026-08-21
+
+The official [AI Season page](https://web3.okx.com/xlayer/build-x-series) is still the source of truth for this submission. It lists seven judging dimensions: application of AI, innovation, product completeness, user value, integration with X Layer, growth potential, and contribution to the X Layer ecosystem. Its terms also say final rankings may consider onchain data, code quality, innovation, and market potential. Design and UX are not a named scored dimension.
+
+The same page requires AI in the product, deployment on X Layer Testnet during the hackathon followed by Mainnet launch, a dedicated active X account, a submission post mentioning `@XLayerOfficial`, and Google Form submission by 2026-08-21 at 23:59 UTC. MeterMesh currently has a public Railway deployment that reads X Layer Testnet data, but it does not yet have a MeterMesh-owned contract or other application component deployed on X Layer. This is an eligibility and product-completeness risk that must be described honestly or resolved before submission.
+
+The current official [OKX Payments MPP TypeScript guide](https://github.com/okx/payments/blob/master/typescript/bu-payments/app-mpp/README.md) shows the EVM session example with `chainId: 196`. The [seller guide](https://github.com/okx/payments/blob/master/typescript/SELLER.md) specifies `chainId: 196` for session method details, and the MPP EVM README describes support for X Layer chain `196`. The API lifecycle includes open, top-up, settle, close, status, and charge operations, but these sources do not list X Layer Testnet chain `1952`. Separate x402 facilitator documentation mentions broader EVM or testnet networks, but that is a different payment path and cannot be used as evidence that MPP sessions support `1952`.
+
+MeterMesh's public issue [okx/payments#1](https://github.com/okx/payments/issues/1) still asks whether MPP session open, status, settle, and close accept chain `1952`, the published testnet escrow, and test USDt0. It remains open with zero maintainer comments. Until written confirmation or one approved testnet session proves the path, MeterMesh must describe MPP as planned and gated. No payment mutation has been attempted.
+
 ## 1. Judging criteria and track rules
 
 ### Published judging criteria

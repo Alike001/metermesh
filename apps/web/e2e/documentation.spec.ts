@@ -6,10 +6,10 @@ test("a developer can understand the integration boundary and inspect machine ar
   await page.goto("/docs/");
 
   await expect(
-    page.getByRole("heading", { name: "One accepted result advances the meter." }),
+    page.getByRole("heading", { name: "One verified result leaves a portable proof." }),
   ).toBeVisible();
-  await expect(page.getByText("Protocol tested, voucher unavailable")).toBeVisible();
-  await expect(page.getByText("AI never signs a buyer voucher.")).toBeVisible();
+  await expect(page.getByText("Nonbillable verifier")).toBeVisible();
+  await expect(page.getByText(/AI cannot create a payment authorization/i)).toBeVisible();
   await expect(page.getByText("XMTP browser and worker")).toBeVisible();
   await expect(
     page.getByText(/fresh injected browser wallet sent a signed XMTP dev request/i),

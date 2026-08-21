@@ -26,19 +26,20 @@ const mechanismSteps = [
     label: "Verify work over XMTP",
   },
   {
-    detail: "The interface previews the deterministic rule without signing a payment voucher.",
+    detail:
+      "The interface records the buyer's deterministic review without creating payment state.",
     label: "Preview buyer acceptance",
   },
   {
-    detail: "MPP open, voucher, and close stay gated until OKX confirms chain 1952 support.",
-    label: "Unlock MPP settlement",
+    detail: "The browser exports a signed request, delivery, result hash, and X Layer provenance.",
+    label: "Export signed proof",
   },
 ];
 
 const proofItems = [
   ["Signed messages", "The live request and delivery carry re-runnable EIP-191 signatures."],
   ["Buyer control", "The public verifier cannot create a voucher or an amount owed."],
-  ["Deterministic meter", "Protocol tests enforce one fixed increase for each accepted work unit."],
+  ["Deterministic checks", "The result must match the signed request and real X Layer receipt."],
   [
     "Durable recovery",
     "PostgreSQL outbox state survives retries, duplicates, and worker restarts.",
@@ -91,14 +92,15 @@ export function LandingPage({ onOpenWorkspace }: LandingPageProps) {
         <section className="hero-section">
           <div className="hero-copy">
             <p className="section-kicker" data-reveal>
-              Metered agent commerce on X Layer
+              Verifiable agent work on X Layer
             </p>
             <h1 data-reveal>
-              <span>AI work over messages,</span> <span>paid only when accepted.</span>
+              <span>AI work over messages,</span> <span>proven against X Layer receipts.</span>
             </h1>
             <p className="hero-support" data-reveal>
               The live product proves the signed path from a buyer wallet through XMTP, PostgreSQL,
-              an X Layer receipt, and an AI result. OKX MPP settlement remains visibly gated.
+              an X Layer receipt, and an AI result. The buyer can review and export the proof
+              without authorizing payment.
             </p>
             <div className="hero-actions" data-reveal>
               <button className="button button-primary" onClick={onOpenWorkspace} type="button">
@@ -112,7 +114,7 @@ export function LandingPage({ onOpenWorkspace }: LandingPageProps) {
             </div>
             <p className="availability-note" data-reveal>
               <LockKeyhole aria-hidden="true" size={15} />
-              Settlement stays paused until OKX MPP session support for X Layer Testnet is proven.
+              V1 creates no voucher, settlement, or payment. MPP is a future adapter.
             </p>
           </div>
 
@@ -124,7 +126,7 @@ export function LandingPage({ onOpenWorkspace }: LandingPageProps) {
             <div className="anatomy-header">
               <div>
                 <p>Session anatomy</p>
-                <span>Buyer-controlled billing</span>
+                <span>Buyer-controlled evidence</span>
               </div>
               <CircleDot aria-hidden="true" size={18} />
             </div>
@@ -149,30 +151,30 @@ export function LandingPage({ onOpenWorkspace }: LandingPageProps) {
                 <span className="anatomy-index">03</span>
                 <div>
                   <strong>Acceptance</strong>
-                  <p>Buyer previews whether the delivery would advance the meter.</p>
+                  <p>Buyer records whether the delivery is useful.</p>
                 </div>
                 <span className="anatomy-state anatomy-state-blocked">Preview</span>
               </li>
               <li>
                 <span className="anatomy-index">04</span>
                 <div>
-                  <strong>Settlement</strong>
-                  <p>Planned highest voucher settlement through OKX on X Layer.</p>
+                  <strong>Proof export</strong>
+                  <p>Signed evidence can be checked again outside the session.</p>
                 </div>
-                <span className="anatomy-state anatomy-state-blocked">Gated</span>
+                <span className="anatomy-state">Portable</span>
               </li>
             </ol>
             <div className="anatomy-footer">
               <MessageSquareText aria-hidden="true" size={17} />
-              <span>Messages carry the work. X Layer carries settlement truth.</span>
+              <span>Messages carry the work. X Layer carries evidence truth.</span>
             </div>
           </div>
         </section>
 
         <section className="mechanism-section" id="mechanism" aria-labelledby="mechanism-title">
           <div className="section-heading" data-reveal>
-            <p className="section-kicker">One session, one clear rule</p>
-            <h2 id="mechanism-title">Useful work advances the meter.</h2>
+            <p className="section-kicker">One request, one clear proof</p>
+            <h2 id="mechanism-title">Useful work leaves an audit trail.</h2>
           </div>
           <ol className="mechanism-grid">
             {mechanismSteps.map((step, index) => (
@@ -188,10 +190,10 @@ export function LandingPage({ onOpenWorkspace }: LandingPageProps) {
         <section className="evidence-section" id="evidence" aria-labelledby="evidence-title">
           <div className="evidence-intro" data-reveal>
             <p className="section-kicker">Proof before polish</p>
-            <h2 id="evidence-title">Every amount has a reason.</h2>
+            <h2 id="evidence-title">Every explanation has a source.</h2>
             <p>
               The interface exposes the signed request, verified delivery, X Layer receipt, local
-              decision preview, and the exact boundary where payment remains unavailable.
+              decision preview, and the exact boundary where payment remains outside the v1 product.
             </p>
           </div>
           <div className="proof-band">
@@ -207,22 +209,22 @@ export function LandingPage({ onOpenWorkspace }: LandingPageProps) {
             <div>
               <span className="status-dot status-dot-green" />
               <div>
-                <strong>OKX service authentication</strong>
-                <p>Verified with an authenticated read-only capability request.</p>
+                <strong>X Layer receipt reads</strong>
+                <p>Real chain 1952 transaction facts anchor the explanation.</p>
               </div>
             </div>
             <div>
               <span className="status-dot status-dot-green" />
               <div>
-                <strong>MPP session status route</strong>
-                <p>Verified without opening a channel or moving funds.</p>
+                <strong>Signed XMTP delivery</strong>
+                <p>Buyer and seller envelopes, result hashes, and replay checks are live.</p>
               </div>
             </div>
             <div>
               <span className="status-dot status-dot-amber" />
               <div>
-                <strong>X Layer Testnet settlement</strong>
-                <p>Held behind a compatibility gate until chain 1952 support is confirmed.</p>
+                <strong>OKX MPP adapter</strong>
+                <p>Deferred until official chain 1952 session support is confirmed.</p>
               </div>
             </div>
           </div>
@@ -242,7 +244,7 @@ export function LandingPage({ onOpenWorkspace }: LandingPageProps) {
 
       <footer className="site-footer">
         <BrandMark />
-        <p>Buyer-controlled metered payments for AI work over XMTP on X Layer.</p>
+        <p>Verifiable AI work over XMTP, grounded in X Layer receipts.</p>
         <a href="https://github.com/Alike001/metermesh" rel="noreferrer" target="_blank">
           View source
         </a>

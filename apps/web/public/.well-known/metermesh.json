@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "capability": {
     "id": "x-layer-transaction-explanation",
-    "summary": "Explain one X Layer Testnet transaction and bind the delivery to buyer-controlled metered billing.",
+    "summary": "Explain one X Layer Testnet transaction and export a signed, replayable AI-work receipt.",
     "transport": "xmtp-signed-envelopes",
     "input": "MeterMesh work.request v1 with an X Layer transaction hash",
     "output": "metermesh.transaction-explanation.v1 or a signed work.error refusal"
@@ -20,10 +20,10 @@
     }
   },
   "billing": {
-    "basis": "fixed amount per buyer-accepted delivery",
-    "authorization": "buyer signature over a cumulative voucher",
-    "rule": "Delivery alone cannot increase the amount owed. Rejection creates no voucher increase.",
-    "settlement": "planned highest accepted cumulative voucher through OKX MPP escrow, currently gated on X Layer Testnet"
+    "basis": "none in v1, the public verifier is nonbillable",
+    "authorization": "none in v1, acceptance is an unsigned browser preview",
+    "rule": "Delivery and review previews never create a voucher or amount owed.",
+    "settlement": "deferred OKX MPP adapter, not a current capability"
   },
   "authentication": {
     "publicDocs": "none",
@@ -31,7 +31,7 @@
     "permissions": [
       "read the public X Layer transaction",
       "send and receive signed MeterMesh envelopes",
-      "for the future MPP path, ask the buyer wallet to sign only after explicit acceptance"
+      "export signed work evidence for independent verification"
     ]
   },
   "capabilityStatus": [
@@ -63,7 +63,7 @@
       "id": "mpp-testnet-mutation",
       "label": "OKX MPP Testnet mutation",
       "state": "gated",
-      "note": "Read-only authentication is verified. Chain 1952 session mutation support is not yet proven."
+      "note": "MPP session open, voucher, and settlement are deferred until official chain 1952 support is confirmed."
     }
   ],
   "examples": {
@@ -83,7 +83,7 @@
     },
     "explanation": {
       "schemaVersion": "1",
-      "transactionHash": "0x1111111111111111111111111111111111111111111111111111111111111111",
+      "transactionHash": "0xf0bbcf38db1ee7935111b2be46fd1062d097e0461b2f48f34b9a5ba17482fafd",
       "chainId": 1952,
       "chainName": "X Layer Testnet",
       "status": "success",
@@ -140,7 +140,8 @@
   },
   "knownLimitations": [
     "The public workspace separates live signed XMTP proof from an offline local validator fixture.",
-    "The public trial and all preview decisions are nonbillable. They create no voucher and move no funds.",
-    "The live XMTP, X Layer receipt, AI, PostgreSQL, signed delivery, and Railway paths are verified. OKX MPP session mutation on chain 1952 remains gated."
+    "The public trial and all review previews are nonbillable. They create no voucher and move no funds.",
+    "The live XMTP, X Layer receipt, AI, PostgreSQL, signed delivery, and Railway paths are verified. OKX MPP is a future adapter, not a v1 payment capability.",
+    "The public web and worker run on Railway and read X Layer data. A MeterMesh-owned X Layer deployment is still required for full hackathon eligibility."
   ]
 }

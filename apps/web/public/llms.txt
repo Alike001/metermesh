@@ -1,6 +1,6 @@
 # MeterMesh
 
-> Buyer-controlled metered payments for AI work delivered over XMTP on X Layer.
+> Verifiable AI work delivered over XMTP and grounded in X Layer receipts.
 
 Canonical integration guide: /docs/
 Service manifest: /.well-known/metermesh.json
@@ -10,4 +10,4 @@ Source: https://github.com/Alike001/metermesh
 Protocol schema: https://github.com/Alike001/metermesh/blob/main/packages/protocol/src/schema.ts
 Explanation schema: https://github.com/Alike001/metermesh/blob/main/packages/ai/src/schema.ts
 
-Execution is defined by signed MeterMesh envelopes carried over XMTP. No HTTP execution endpoint is published. The public verifier creates no voucher and moves no funds. In the planned MPP path, delivery cannot authorize billing and only explicit buyer acceptance may advance the cumulative voucher.
+Execution is defined by signed MeterMesh envelopes carried over XMTP. No HTTP execution endpoint is published. The v1 public verifier creates no voucher and moves no funds. Buyer review is recorded as an unsigned preview. OKX MPP session open, voucher, and settlement are deferred until chain 1952 support is confirmed.

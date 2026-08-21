@@ -42,6 +42,9 @@ describe("MeterMesh machine-readable documentation", () => {
     expect(() =>
       transactionExplanationSchema.parse(manifestJson.examples.explanation),
     ).not.toThrow();
+    expect(manifestJson.examples.explanation.transactionHash).toBe(
+      manifestJson.examples.request.payload.transactionHash,
+    );
   });
 
   it("fails closed when a required artifact is missing or malformed", async () => {

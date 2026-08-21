@@ -5,9 +5,9 @@ test("a judge can understand the promise and inspect accepted-work proof", async
   await page.goto("/");
 
   await expect(
-    page.getByRole("heading", { name: "AI work over messages, paid only when accepted." }),
+    page.getByRole("heading", { name: "AI work over messages, proven against X Layer receipts." }),
   ).toBeVisible();
-  await expect(page.getByText("OKX service authentication")).toBeVisible();
+  await expect(page.getByText("X Layer receipt reads")).toBeVisible();
 
   await page.getByRole("button", { name: "Open live verifier" }).first().click();
   await expect(
@@ -29,8 +29,10 @@ test("a judge can understand the promise and inspect accepted-work proof", async
   await expect(page.getByTestId("payment-state")).toHaveText("No voucher");
   await page.getByRole("button", { name: "Preview acceptance" }).click();
   await expect(page.getByTestId("payment-state")).toHaveText("No voucher");
-  await expect(page.getByText(/would add 0.001 USDT0.*No voucher/i)).toBeVisible();
-  await expect(page.getByRole("button", { name: "MPP settlement unavailable" })).toBeDisabled();
+  await expect(
+    page.getByText(/marked this delivery useful.*No voucher was requested or signed/i),
+  ).toBeVisible();
+  await expect(page.getByRole("button", { name: "Payment outside v1" })).toBeDisabled();
 
   await page.getByRole("button", { name: "Protocol details" }).click();
   await expect(page.getByRole("dialog", { name: "Where the evidence lives" })).toBeVisible();

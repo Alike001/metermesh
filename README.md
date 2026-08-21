@@ -1,22 +1,22 @@
 # MeterMesh
 
-AI work over messages, paid only when the buyer accepts it.
+Verifiable AI work over XMTP, grounded in X Layer receipts.
 
-MeterMesh connects XMTP-delivered AI work to buyer-signed OKX MPP payment vouchers on X Layer. A buyer funds one capped payment session, requests a transaction explanation, and advances the cumulative payment only after a valid delivery is accepted.
+MeterMesh connects XMTP-delivered AI work to real X Layer transaction evidence. A buyer signs a request, receives a seller-signed AI explanation, reviews the result, and exports proof that another verifier can check. The OKX MPP payment adapter is deferred until official Testnet chain 1952 support is confirmed.
 
 ## Why it matters
 
-Long-running agents need a payment model that survives delayed messages, retries, duplicate delivery, and process restarts. MeterMesh binds each accepted work unit to a deterministic protocol envelope and a buyer-signed cumulative voucher. Rejected or replayed deliveries cannot increase the amount owed.
+Long-running agents need evidence that survives delayed messages, retries, duplicate delivery, and process restarts. MeterMesh binds each requested work unit to a deterministic protocol envelope, a real X Layer receipt, and a seller-signed result hash. Modified or replayed deliveries cannot pass verification.
 
 ## V1 target
 
 - One X Layer transaction-explainer service
-- One funded OKX MPP session
+- One signed X Layer transaction request
 - Requests and deliveries carried through XMTP
 - Buyer-controlled acceptance and rejection
-- Replay-safe cumulative vouchers
-- Final settlement on X Layer
-- Portable evidence for live and offline judging
+- Replay-safe signed evidence
+- Portable proof for live and offline judging
+- Deferred OKX MPP adapter boundary
 
 ## Status
 
@@ -24,7 +24,7 @@ The deterministic protocol kernel, durable PostgreSQL recovery layer, landing pa
 
 The checked-in session evidence is an offline local protocol record. It clearly states that no AI-provider response, network call, or movement of funds occurred. OKX Service Account authentication and the read-only MPP status route are verified. X Layer Testnet session mutation remains disabled until OKX confirms MPP session support for chain `1952`.
 
-The public trial moves no funds and creates no payment voucher. Each wallet can request one real explanation while the server-enforced global capacity remains available.
+The public trial moves no funds and creates no payment voucher. Each wallet can request one real explanation while the server-enforced global capacity remains available. The current public product is a nonbillable verification layer.
 
 ## Local requirements
 
@@ -41,7 +41,7 @@ pnpm install
 pnpm --filter @metermesh/web dev
 ```
 
-Open `http://localhost:5173`. The landing page explains the product, and `Open metered session` enters the complete browser-tested workspace.
+Open `http://localhost:5173`. The landing page explains the product, and `Open live verifier` enters the complete browser-tested workspace.
 
 ## Verify the build
 

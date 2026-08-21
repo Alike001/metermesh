@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import {
@@ -21,7 +21,7 @@ import {
 } from "lucide-react";
 
 import { createLiveEvidenceBundle } from "../domain/live-evidence";
-import { formatAtomicAmount, shortHash, type CapturedSession } from "../domain/session";
+import { shortHash, type CapturedSession } from "../domain/session";
 import { useCapturedSession } from "../hooks/useCapturedSession";
 import { useLiveXmtp, type LiveXmtpState } from "../hooks/useLiveXmtp";
 import { BrandMark } from "./BrandMark";
@@ -100,11 +100,6 @@ export function SessionWorkspace({ onBack }: SessionWorkspaceProps) {
   const { reload, requestState } = useCapturedSession(evidenceVisible);
   const liveXmtp = useLiveXmtp();
   const liveSuccess = liveXmtp.state.status === "success" ? liveXmtp.state : null;
-
-  const previewAmount = useMemo(() => {
-    if (requestState.status !== "success" || reviewStatus !== "accepted") return null;
-    return `${formatAtomicAmount(requestState.data.session.unitPriceAtomic)} USDT0`;
-  }, [requestState, reviewStatus]);
 
   const { contextSafe } = useGSAP({ scope: workspaceRef });
 
@@ -296,7 +291,7 @@ export function SessionWorkspace({ onBack }: SessionWorkspaceProps) {
       <div className="workspace-titlebar">
         <div>
           <p className="section-kicker">Protocol conversation</p>
-          <h1>{successfulSession?.session.title ?? "Metered work session"}</h1>
+          <h1>{successfulSession?.session.title ?? "Verified work session"}</h1>
         </div>
         <div className="titlebar-actions">
           {liveSuccess !== null ? (
@@ -399,21 +394,21 @@ export function SessionWorkspace({ onBack }: SessionWorkspaceProps) {
               <h3>Unsigned decision preview</h3>
               <p>
                 {reviewStatus === "accepted"
-                  ? `The rule would add ${previewAmount ?? "one unit"}. No voucher was requested or signed.`
+                  ? "The buyer marked this delivery useful in an unsigned preview. No voucher was requested or signed."
                   : reviewStatus === "rejected"
-                    ? "The rule keeps the amount at zero. No voucher was requested or signed."
-                    : "This local preview cannot affect billing or authorize funds."}
+                    ? "The buyer rejected this delivery in an unsigned preview. No voucher was requested or signed."
+                    : "This local preview records no payment state and cannot authorize funds."}
               </p>
               <span>Unsigned browser-only state</span>
             </li>
             <li>
               <StatusMark label="Compatibility gate" status="blocked" />
-              <h3>Planned MPP settlement</h3>
+              <h3>Future MPP adapter</h3>
               <p>
-                OKX MPP mutation is unavailable until Service Account support for chain 1952 is
-                proven.
+                V1 records and exports acceptance evidence without creating payment state. A future
+                MPP adapter can consume this verified record after chain 1952 support is confirmed.
               </p>
-              <span>No funds moved</span>
+              <span>Deferred, no funds moved</span>
             </li>
           </ol>
 
@@ -438,9 +433,11 @@ export function SessionWorkspace({ onBack }: SessionWorkspaceProps) {
           <div className="settlement-control">
             <button className="button button-disabled" disabled type="button">
               <LockKeyhole aria-hidden="true" size={17} />
-              MPP settlement unavailable
+              Payment outside v1
             </button>
-            <p>Official MPP support for X Layer Testnet chain 1952 has not been confirmed.</p>
+            <p>
+              No voucher, escrow, settlement, or wallet mutation is part of the current product.
+            </p>
           </div>
 
           <button
