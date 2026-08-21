@@ -6,6 +6,16 @@ Official X account: [@MeterMesh](https://x.com/MeterMesh)
 
 MeterMesh connects XMTP-delivered AI work to real X Layer transaction evidence. A buyer signs a request, receives a seller-signed AI explanation, reviews the result, and exports proof that another verifier can check. The OKX MPP payment adapter is deferred until official Testnet chain 1952 support is confirmed.
 
+## Start here
+
+- [Open the live product](https://metermesh-web-production.up.railway.app)
+- [Watch the narrated 90-second demo](videos/metermesh-submission/renders/metermesh-demo-narrated.mp4)
+- [Read the agent-friendly documentation](https://metermesh-web-production.up.railway.app/docs/)
+- [View the official X Layer AI Season submission post](https://x.com/MeterMesh/status/2090928805145633215)
+- [Inspect the anchored signed proof](https://metermesh-web-production.up.railway.app/evidence/anchored-live-proof.json)
+
+The demo uses the deployed product and published signed evidence. It makes no payment, voucher, settlement, or Mainnet claim. MPP Testnet mutation remains visibly gated until official chain 1952 support is confirmed.
+
 ## Why it matters
 
 Long-running agents need evidence that survives delayed messages, retries, duplicate delivery, and process restarts. MeterMesh binds each requested work unit to a deterministic protocol envelope, a real X Layer receipt, and a seller-signed result hash. Modified or replayed deliveries cannot pass verification.

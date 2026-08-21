@@ -30,7 +30,7 @@ Published deadline: August 21, 2026, at 23:59 UTC.
 
 ## 3. Official submission post
 
-The public introduction already satisfies the published account-post requirement because it is from `@MeterMesh`, describes the project, links the product, and mentions `@XLayerOfficial`. Use this URL in the form if a later video post is not ready: https://x.com/MeterMesh/status/2090855672304816370
+The public introduction satisfies the account-activity requirement. The final narrated video post is the stronger submission evidence and should be used in the form: https://x.com/MeterMesh/status/2090928805145633215
 
 After recording, this stronger video-post copy may replace it in the form:
 
@@ -40,10 +40,10 @@ Publish this from the dedicated MeterMesh account and keep `@XLayerOfficial` in 
 >
 > https://metermesh-web-production.up.railway.app
 
-- [ ] Add the recorded demo video or a short product clip if X allows it.
+- [x] Add the recorded demo video or a short product clip if X allows it.
 - [x] Publish a related post from the dedicated MeterMesh account with `@XLayerOfficial`.
 - [x] Verify the published post through X's public official embed endpoint.
-- [x] Record the current post URL: `https://x.com/MeterMesh/status/2090855672304816370`.
+- [x] Record the current post URL: `https://x.com/MeterMesh/status/2090928805145633215`.
 - [ ] Save a screenshot of the post as submission backup evidence.
 
 ## 4. Google Form values
@@ -58,7 +58,7 @@ Publish this from the dedicated MeterMesh account and keep `@XLayerOfficial` in 
 - Email: `[YOUR_ACTIVE_EMAIL]`
 - Telegram: `[YOUR_TELEGRAM_HANDLE]`
 - X handle: `@MeterMesh`
-- X post URL: `https://x.com/MeterMesh/status/2090855672304816370`
+- X post URL: `https://x.com/MeterMesh/status/2090928805145633215`
 
 - [ ] Check every link in a private browser window before submitting.
 - [ ] Submit the form before the published deadline.
