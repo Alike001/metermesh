@@ -726,7 +726,7 @@ a:focus-visible {
     min-height: auto;
     max-height: none;
     padding: 18px 0;
-    overflow-x: auto;
+    overflow: visible;
     border-right: 0;
     border-bottom: 1px solid var(--border);
   }
@@ -737,15 +737,17 @@ a:focus-visible {
   }
 
   .docs-chapter-rail nav {
-    width: max-content;
+    width: 100%;
     margin-top: 0;
-    display: flex;
-    gap: 22px;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px 16px;
   }
 
   .docs-chapter-rail nav a,
   .docs-chapter-rail nav a:last-child {
-    min-height: 26px;
+    min-width: 0;
+    min-height: 30px;
     display: flex;
     gap: 7px;
     border: 0;
@@ -2406,16 +2408,12 @@ a:focus-visible {
 
   .hero-copy h1 {
     margin-top: 20px;
-    font-size: clamp(37px, 9.8vw, 44px);
-    line-height: 0.94;
+    font-size: clamp(36px, 9.4vw, 42px);
+    line-height: 0.98;
   }
 
   .hero-copy h1 span {
-    display: inline;
-  }
-
-  .hero-copy h1 span:first-child::after {
-    content: " ";
+    display: block;
   }
 
   .hero-support {

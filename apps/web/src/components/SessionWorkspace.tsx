@@ -131,7 +131,7 @@ export function SessionWorkspace({ onBack }: SessionWorkspaceProps) {
           <CircleSlash2 aria-hidden="true" size={28} />
           <h2>No evidence is loaded</h2>
           <p>
-            Load the captured local protocol run to inspect the request, delivery, and billing
+            Load the captured local protocol run to inspect the request, delivery, and verification
             proof.
           </p>
           <button className="button button-primary" onClick={restoreEvidence} type="button">
@@ -340,13 +340,13 @@ export function SessionWorkspace({ onBack }: SessionWorkspaceProps) {
       </div>
 
       <main className="workspace-grid">
-        <section className="conversation-pane" aria-label="Metered session conversation">
+        <section className="conversation-pane" aria-label="Verified work conversation">
           {renderConversation()}
         </section>
 
         <aside
           className={`proof-rail ${proofOpenOnMobile ? "proof-rail-mobile-open" : ""}`}
-          aria-label="Payment and protocol proof"
+          aria-label="Verification and protocol proof"
         >
           <div className="proof-rail-header">
             <div>
@@ -405,8 +405,9 @@ export function SessionWorkspace({ onBack }: SessionWorkspaceProps) {
               <StatusMark label="Compatibility gate" status="blocked" />
               <h3>Future MPP adapter</h3>
               <p>
-                V1 records and exports acceptance evidence without creating payment state. A future
-                MPP adapter can consume this verified record after chain 1952 support is confirmed.
+                V1 previews the buyer decision without creating signed acceptance or payment state.
+                A future MPP adapter can consume a signed record after chain 1952 support is
+                confirmed.
               </p>
               <span>Deferred, no funds moved</span>
             </li>

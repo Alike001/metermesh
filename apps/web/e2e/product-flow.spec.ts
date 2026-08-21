@@ -4,9 +4,16 @@ import { readFile } from "node:fs/promises";
 test("a judge can understand the promise and inspect accepted-work proof", async ({ page }) => {
   await page.goto("/");
 
+  await expect(page).toHaveTitle("MeterMesh | Verify AI work on X Layer");
   await expect(
     page.getByRole("heading", { name: "AI work over messages. X Layer proves the result." }),
   ).toBeVisible();
+  if (test.info().project.name === "mobile-chromium") {
+    await expect(page.locator(".hero-copy h1 span")).toHaveCount(2);
+    for (const line of await page.locator(".hero-copy h1 span").all()) {
+      await expect(line).toHaveCSS("display", "block");
+    }
+  }
   await expect(page.getByText("X Layer receipt reads")).toBeVisible();
 
   await page.getByRole("button", { name: "Open live verifier" }).first().click();

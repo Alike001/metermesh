@@ -6,7 +6,7 @@ This script follows the published AI Season dimensions: AI application, innovati
 
 Show the MeterMesh landing page.
 
-Say: “AI agents can deliver useful work over messages, but the buyer still has to trust that the result belongs to the request and the chain evidence. MeterMesh makes AI work acceptable only when the request, delivery, result, and X Layer evidence verify together.”
+Say: “AI agents can deliver useful work over messages, but the buyer still has to trust that the result belongs to the request and the chain evidence. MeterMesh lets the buyer verify the request, delivery, result, and X Layer evidence together before deciding whether the work is useful.”
 
 Judging signal: user value, product clarity, innovation.
 
@@ -30,7 +30,7 @@ Judging signal: AI application, data quality, technical depth.
 
 Click the acceptance preview, then open Protocol details or the evidence export.
 
-Say: “The buyer can accept or reject the delivery. Acceptance is a local preview in v1, not a hidden payment claim. Change the transaction, result, signature, or sequence and the verifier rejects the bundle.”
+Say: “The buyer can preview an accept or reject decision. That decision stays local and unsigned in v1, so it cannot create a voucher or payment claim. Change the transaction, result, signature, or sequence and the verifier rejects the bundle.”
 
 Judging signal: product completeness, verifiability, user control.
 

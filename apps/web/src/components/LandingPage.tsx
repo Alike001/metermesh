@@ -27,7 +27,7 @@ const mechanismSteps = [
   },
   {
     detail:
-      "The interface records the buyer's deterministic review without creating payment state.",
+      "The interface previews the buyer's deterministic review without creating payment state.",
     label: "Preview buyer acceptance",
   },
   {
@@ -151,7 +151,7 @@ export function LandingPage({ onOpenWorkspace }: LandingPageProps) {
                 <span className="anatomy-index">03</span>
                 <div>
                   <strong>Acceptance</strong>
-                  <p>Buyer records whether the delivery is useful.</p>
+                  <p>Buyer previews whether the delivery is useful.</p>
                 </div>
                 <span className="anatomy-state anatomy-state-blocked">Preview</span>
               </li>

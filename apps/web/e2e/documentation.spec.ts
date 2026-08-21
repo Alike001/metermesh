@@ -8,6 +8,16 @@ test("a developer can understand the integration boundary and inspect machine ar
   await expect(
     page.getByRole("heading", { name: "One verified result leaves a portable proof." }),
   ).toBeVisible();
+  if (test.info().project.name === "mobile-chromium") {
+    const navigationFitsViewport = await page.locator(".docs-chapter-rail nav").evaluate((nav) => {
+      const viewportWidth = document.documentElement.clientWidth;
+      return Array.from(nav.querySelectorAll("a")).every((link) => {
+        const bounds = link.getBoundingClientRect();
+        return bounds.left >= 0 && bounds.right <= viewportWidth;
+      });
+    });
+    expect(navigationFitsViewport).toBe(true);
+  }
   await expect(page.getByText("Nonbillable verifier")).toBeVisible();
   await expect(page.getByText(/AI cannot create a payment authorization/i)).toBeVisible();
   await expect(page.getByText("XMTP browser and worker")).toBeVisible();

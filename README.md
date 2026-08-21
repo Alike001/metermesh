@@ -13,7 +13,7 @@ Long-running agents need evidence that survives delayed messages, retries, dupli
 - One X Layer transaction-explainer service
 - One signed X Layer transaction request
 - Requests and deliveries carried through XMTP
-- Buyer-controlled acceptance and rejection
+- Buyer-controlled acceptance and rejection previews, explicitly unsigned in v1
 - Replay-safe signed evidence
 - Portable proof for live and offline judging
 - Deterministic OKX MPP voucher verification boundary, with settlement still gated
