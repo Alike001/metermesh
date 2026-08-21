@@ -36,9 +36,9 @@ Judging signal: product completeness, verifiability, user control.
 
 ## 0:57-1:10, X Layer-owned proof anchor
 
-Show the proof anchor entry and the public X Layer transaction reference. If connectivity is uncertain, use the captured proof screenshot and the checked-in deployment metadata.
+Show the proof anchor entry, open the public signed proof JSON, and point to the X Layer transaction link. If connectivity is uncertain, use the saved proof screenshot and the checked-in evidence files.
 
-Say: “The same deterministic evidence hash is committed by MeterMesh's proof-anchor contract on X Layer Testnet. The public transaction and readback prove that this evidence commitment exists independently of the frontend.”
+Say: “This captured live proof rechecks the buyer signature, seller signature, result hash, and transaction binding. Its deterministic evidence hash is committed by MeterMesh's proof-anchor contract on X Layer Testnet, and the public transaction proves that commitment exists independently of the frontend.”
 
 Judging signal: X Layer integration, ecosystem contribution, verifiability.
 

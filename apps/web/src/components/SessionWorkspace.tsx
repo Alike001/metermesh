@@ -4,6 +4,7 @@ import gsap from "gsap";
 import {
   AlertTriangle,
   ArrowLeft,
+  ArrowUpRight,
   Check,
   ChevronDown,
   CircleSlash2,
@@ -22,6 +23,7 @@ import {
 
 import { createLiveEvidenceBundle } from "../domain/live-evidence";
 import { shortHash, type CapturedSession } from "../domain/session";
+import { ANCHORED_LIVE_EVIDENCE, xLayerTestnetTransactionUrl } from "../domain/x-layer-evidence";
 import { useCapturedSession } from "../hooks/useCapturedSession";
 import { useLiveXmtp, type LiveXmtpState } from "../hooks/useLiveXmtp";
 import { BrandMark } from "./BrandMark";
@@ -380,6 +382,29 @@ export function SessionWorkspace({ onBack }: SessionWorkspaceProps) {
                     <span>{record.protocol}</span>
                   </li>
                 ))}
+            <li className="anchored-proof-record">
+              <StatusMark label="Anchored live proof" status="verified" />
+              <h3>X Layer proof anchor</h3>
+              <p>
+                A separate signed XMTP proof for source transaction{" "}
+                {shortHash(ANCHORED_LIVE_EVIDENCE.sourceTransactionHash)} is committed as{" "}
+                {shortHash(ANCHORED_LIVE_EVIDENCE.anchorEvidenceHash)} on Testnet.
+              </p>
+              <div className="proof-evidence-links">
+                <a
+                  href={xLayerTestnetTransactionUrl(ANCHORED_LIVE_EVIDENCE.anchorTransactionHash)}
+                  rel="noreferrer"
+                  target="_blank"
+                >
+                  View anchor transaction
+                  <ArrowUpRight aria-hidden="true" size={13} />
+                </a>
+                <a href={ANCHORED_LIVE_EVIDENCE.proofPath} rel="noreferrer" target="_blank">
+                  Inspect signed proof JSON
+                  <ArrowUpRight aria-hidden="true" size={13} />
+                </a>
+              </div>
+            </li>
             <li ref={acceptanceRef} data-testid="acceptance-proof">
               <StatusMark
                 label={
@@ -414,21 +439,33 @@ export function SessionWorkspace({ onBack }: SessionWorkspaceProps) {
           </ol>
 
           {liveSuccess !== null ? (
-            <div className="fixture-reference">
+            <a
+              className="fixture-reference"
+              href={xLayerTestnetTransactionUrl(liveSuccess.delivery.result.transactionHash)}
+              rel="noreferrer"
+              target="_blank"
+            >
               <FileJson aria-hidden="true" size={17} />
               <div>
                 <span>Live X Layer transaction</span>
                 <code>{shortHash(liveSuccess.delivery.result.transactionHash)}</code>
               </div>
-            </div>
+              <ArrowUpRight aria-hidden="true" size={14} />
+            </a>
           ) : successfulSession !== null ? (
-            <div className="fixture-reference">
+            <a
+              className="fixture-reference"
+              href={xLayerTestnetTransactionUrl(successfulSession.result.fixtureTransactionHash)}
+              rel="noreferrer"
+              target="_blank"
+            >
               <FileJson aria-hidden="true" size={17} />
               <div>
                 <span>Offline fixture transaction reference</span>
                 <code>{shortHash(successfulSession.result.fixtureTransactionHash)}</code>
               </div>
-            </div>
+              <ArrowUpRight aria-hidden="true" size={14} />
+            </a>
           ) : null}
 
           <div className="settlement-control">

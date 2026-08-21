@@ -1,0 +1,117 @@
+{
+  "chainId": 1952,
+  "anchorEvidenceHash": "0x9a40e300b85f3e055b7e181bca644f35575bf0c10d3ab3e591b76e69fd830e33",
+  "delivery": {
+    "carrierMessageId": "74fc83201ec4d1b73ad8c2d6fdcb62f8bb200c1b9249429a2fca029fbe552786",
+    "envelope": {
+      "createdAt": "2026-08-21T12:38:38.725Z",
+      "messageId": "delivery-request-e52288bf-b2e3-4f57-899f-b2a4d56ed846",
+      "protocol": "metermesh",
+      "senderInboxId": "36ba4d5f9a5cd2cd3b23f46b27f1173edd9c33458a818095004a26cc1a91e6f1",
+      "sequence": 1,
+      "sessionId": "transport-a3a30db7-84d9-4f64-8395-1324f2bacf80",
+      "version": 1,
+      "payload": {
+        "deliverySchema": "metermesh.transaction-explanation.v1",
+        "requestMessageId": "request-e52288bf-b2e3-4f57-899f-b2a4d56ed846",
+        "resultHash": "0xf2df237a37f4dc63b8315a558b5c340e2f62fc75d0d6703aeeabb48e97a3b641",
+        "transactionHash": "0xf0bbcf38db1ee7935111b2be46fd1062d097e0461b2f48f34b9a5ba17482fafd",
+        "workUnitId": "work-e08ec15b-0650-48de-a88c-f57cbaacc7de"
+      },
+      "type": "work.delivery",
+      "payloadHash": "0xb6a47828c4a3ae5afa1387de5ff47a7cf5fa4e03581c7f6feb721b19e3fc8ec4",
+      "signature": {
+        "scheme": "eip191",
+        "signer": "0x89F2EF6b27051B2998CB455861b57080C3fF00D3",
+        "value": "0xe300cbec0ba112b7863b3ed802c7a4ebe2cb48c3a909c871ddcb28bd0b1177fd51e44494054c7e428a32673cd5f4612c9e980599221f2df75ed846829d80405d1c"
+      }
+    }
+  },
+  "exportedAt": "2026-08-21T12:38:45.882Z",
+  "fundsMoved": false,
+  "kind": "live-nonbillable-verification",
+  "request": {
+    "carrierMessageId": "9a6277d3eca9ab0a4ceffd92219ed1a93cfcefcfc03933598198813427f5fbfc",
+    "envelope": {
+      "createdAt": "2026-08-21T12:38:29.058Z",
+      "messageId": "request-e52288bf-b2e3-4f57-899f-b2a4d56ed846",
+      "protocol": "metermesh",
+      "senderInboxId": "3a13ddda94f3ce5ca2ee1ff5b1a6d77438c295d63779d18ac7873f1a9eb5b2d6",
+      "sequence": 1,
+      "sessionId": "transport-a3a30db7-84d9-4f64-8395-1324f2bacf80",
+      "version": 1,
+      "payload": {
+        "transactionHash": "0xf0bbcf38db1ee7935111b2be46fd1062d097e0461b2f48f34b9a5ba17482fafd",
+        "workUnitId": "work-e08ec15b-0650-48de-a88c-f57cbaacc7de"
+      },
+      "type": "work.request",
+      "payloadHash": "0x45fef3a20b6c1a0fd5e8b58878dda74ca86e73c72a580539953547e052b78852",
+      "signature": {
+        "scheme": "eip191",
+        "signer": "0xcdA18A5EBB9D7070ACD4a18Acbd38CDDF38EE140",
+        "value": "0xd37e32ce26acf61a27e56b2dfb6277b20a7b1a120e8be02f812a7e01cd1ec68905f04f8ebf076ab3dbb548e7896bc1c06c8d2cced655cfc31601906c9e46c6f01c"
+      }
+    }
+  },
+  "result": {
+    "schemaVersion": "1",
+    "transactionHash": "0xf0bbcf38db1ee7935111b2be46fd1062d097e0461b2f48f34b9a5ba17482fafd",
+    "chainId": 1952,
+    "chainName": "X Layer Testnet",
+    "status": "success",
+    "summary": "On the X Layer Testnet, the account 0xe57c69ccae19418483bf0eb8f88c7b78df385045 sent a transaction to contract 0x9e29b3aada05bf2d2c827af80bd28dc0b9b4fb0c. The transaction executed successfully, spending 51,218 gas at an effective gas price of 20,000,001 wei per gas. The calldata’s function selector (0x095ea7b3) matches the standard ERC‑20 `approve` function, but the exact amount approved is not shown in the supplied data.",
+    "outcome": "The transaction completed without reverting, and the contract emitted an `Approval` event indicating that 0xe57c69ccae19418483bf0eb8f88c7b78df385045 has approved the address 0x923acdf2327ae1eea0fec5e75cf802c37ac5997c to spend a certain amount of tokens.",
+    "financials": {
+      "valueWei": "0",
+      "valueOkb": "0",
+      "executionFeeWei": "1024360051218",
+      "executionFeeOkb": "0.000001024360051218"
+    },
+    "call": {
+      "from": "0xe57c69ccae19418483bf0eb8f88c7b78df385045",
+      "to": "0x9e29b3aada05bf2d2c827af80bd28dc0b9b4fb0c",
+      "createdContract": null,
+      "inputSelector": "0x095ea7b3",
+      "inputByteLength": 68
+    },
+    "emittedLogs": [
+      {
+        "logIndex": 1,
+        "emitter": "0x9e29b3aada05bf2d2c827af80bd28dc0b9b4fb0c",
+        "topic0": "0x8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b925",
+        "topicCount": 3,
+        "dataByteLength": 32,
+        "decodedName": null
+      }
+    ],
+    "failureReason": null,
+    "limitations": [
+      "Contract calldata and event logs are not ABI-decoded, so no function or event names are claimed.",
+      "The calldata’s parameter values (such as the approved allowance) are undecoded because the facts provide only the selector and byte length.",
+      "The specific token contract or the numeric value approved is not specified in the supplied facts.",
+      "No off‑chain context or intent is available; we can only confirm the transaction’s technical outcome."
+    ],
+    "provenance": {
+      "source": "x-layer-rpc",
+      "blockHash": "0x2b9483c7103a1636ad970db5347fe95d4741e50b3eb4bbe497e1977d8dd2ee2f",
+      "blockNumber": "38827533",
+      "confirmations": "29547",
+      "factsFetchedAt": "2026-08-21T12:38:37.117Z"
+    },
+    "generation": {
+      "provider": "groq",
+      "model": "openai/gpt-oss-20b",
+      "responseId": "resp_01m0j595vjevx81884b4hwb4mb",
+      "aiAuthoredFields": ["summary", "outcome", "limitations"]
+    }
+  },
+  "schemaVersion": "1.0",
+  "transport": "xmtp-dev",
+  "verification": {
+    "buyerEnvelope": "verified",
+    "resultBinding": "verified",
+    "sellerEnvelope": "verified",
+    "sellerInboxAuthorization": "observed-online-at-receipt"
+  },
+  "voucherSigned": false
+}

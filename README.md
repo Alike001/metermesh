@@ -29,6 +29,8 @@ The checked-in session evidence is an offline local protocol record. It clearly 
 
 The public trial moves no funds and creates no payment voucher. Each wallet can request one real explanation while the server-enforced global capacity remains available. The current public product is a nonbillable verification layer.
 
+The signed live proof committed by the Testnet proof anchor is published at [metermesh-web-production.up.railway.app/evidence/anchored-live-proof.json](https://metermesh-web-production.up.railway.app/evidence/anchored-live-proof.json). It rechecks the buyer request, seller delivery, canonical result hash, X Layer transaction binding, and explicit nonpayment state.
+
 ## Local requirements
 
 - Node.js 22 or newer

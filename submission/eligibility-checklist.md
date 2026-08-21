@@ -25,10 +25,14 @@ Published deadline: August 21, 2026, at 23:59 UTC.
 - [ ] Add the MeterMesh mark as the profile image.
 - [x] Set the website to `https://metermesh-web-production.up.railway.app`.
 - [x] Use this bio: `Verifiable AI work over XMTP, grounded in X Layer receipts. Built for the X Layer AI Season.`
-- [ ] Publish one short introduction or build-progress post so the account is active.
+- [x] Publish one short introduction or build-progress post so the account is active: https://x.com/MeterMesh/status/2090855672304816370
 - [x] Record the final handle: `@MeterMesh`.
 
-## 3. Official submission post, user action required
+## 3. Official submission post
+
+The public introduction already satisfies the published account-post requirement because it is from `@MeterMesh`, describes the project, links the product, and mentions `@XLayerOfficial`. Use this URL in the form if a later video post is not ready: https://x.com/MeterMesh/status/2090855672304816370
+
+After recording, this stronger video-post copy may replace it in the form:
 
 Publish this from the dedicated MeterMesh account and keep `@XLayerOfficial` in the post:
 
@@ -37,9 +41,9 @@ Publish this from the dedicated MeterMesh account and keep `@XLayerOfficial` in 
 > https://metermesh-web-production.up.railway.app
 
 - [ ] Add the recorded demo video or a short product clip if X allows it.
-- [ ] Publish the post from the dedicated MeterMesh account.
-- [ ] Open the published post in a private browser window to prove it is public.
-- [ ] Record the post URL here: `[METER_MESH_X_POST_URL]`.
+- [x] Publish a related post from the dedicated MeterMesh account with `@XLayerOfficial`.
+- [x] Verify the published post through X's public official embed endpoint.
+- [x] Record the current post URL: `https://x.com/MeterMesh/status/2090855672304816370`.
 - [ ] Save a screenshot of the post as submission backup evidence.
 
 ## 4. Google Form values
@@ -54,7 +58,7 @@ Publish this from the dedicated MeterMesh account and keep `@XLayerOfficial` in 
 - Email: `[YOUR_ACTIVE_EMAIL]`
 - Telegram: `[YOUR_TELEGRAM_HANDLE]`
 - X handle: `@MeterMesh`
-- X post URL: `[METER_MESH_X_POST_URL]`
+- X post URL: `https://x.com/MeterMesh/status/2090855672304816370`
 
 - [ ] Check every link in a private browser window before submitting.
 - [ ] Submit the form before the published deadline.

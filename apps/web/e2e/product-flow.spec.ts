@@ -34,6 +34,20 @@ test("a judge can understand the promise and inspect accepted-work proof", async
   }
 
   await expect(page.getByTestId("payment-state")).toHaveText("No voucher");
+  await expect(page.getByRole("link", { name: "View anchor transaction" })).toHaveAttribute(
+    "href",
+    "https://web3.okx.com/explorer/x-layer-testnet/tx/0xf518187f13559ab46cfa1c85d64089a8c99eca8d1ee9d77a41840046f0e7aa5a",
+  );
+  await expect(page.getByRole("link", { name: "Inspect signed proof JSON" })).toHaveAttribute(
+    "href",
+    "/evidence/anchored-live-proof.json",
+  );
+  await expect(
+    page.getByRole("link", { name: /Offline fixture transaction reference/i }),
+  ).toHaveAttribute(
+    "href",
+    "https://web3.okx.com/explorer/x-layer-testnet/tx/0xf0bbcf38db1ee7935111b2be46fd1062d097e0461b2f48f34b9a5ba17482fafd",
+  );
   await page.getByRole("button", { name: "Preview acceptance" }).click();
   await expect(page.getByTestId("payment-state")).toHaveText("No voucher");
   await expect(

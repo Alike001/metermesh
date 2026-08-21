@@ -163,6 +163,7 @@ export function parseMeterMeshManifest(value: unknown): MeterMeshManifest {
   const links = requireRecord(
     value.links,
     [
+      "anchoredEvidence",
       "capturedEvidence",
       "documentation",
       "explanationSchema",

@@ -6,6 +6,7 @@ Canonical integration guide: /docs/
 Service manifest: /.well-known/metermesh.json
 Public HTTP read surfaces: /openapi.json
 Captured offline evidence: /evidence/captured-session.json
+Anchored signed live proof: /evidence/anchored-live-proof.json
 Source: https://github.com/Alike001/metermesh
 Protocol schema: https://github.com/Alike001/metermesh/blob/main/packages/protocol/src/schema.ts
 Explanation schema: https://github.com/Alike001/metermesh/blob/main/packages/ai/src/schema.ts

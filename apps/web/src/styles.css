@@ -2033,12 +2033,43 @@ a:focus-visible {
   text-transform: uppercase;
 }
 
+.proof-evidence-links {
+  margin-top: 13px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+}
+
+.proof-evidence-links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--ink);
+  font-family: "Geist Mono Variable", monospace;
+  font-size: 9px;
+  font-weight: 620;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-transform: uppercase;
+}
+
 .fixture-reference {
   padding: 16px 20px;
   display: flex;
   align-items: center;
   gap: 11px;
+  color: var(--ink);
   border-bottom: 1px solid var(--border);
+  text-decoration: none;
+  transition: background-color 140ms ease;
+}
+
+.fixture-reference:hover {
+  background: #f2f3f0;
+}
+
+.fixture-reference > svg:last-child {
+  margin-left: auto;
 }
 
 .fixture-reference span {

@@ -86,6 +86,7 @@ describe("MeterMesh machine-readable documentation", () => {
       "/openapi.json",
       "/llms.txt",
       "/evidence/captured-session.json",
+      "/evidence/anchored-live-proof.json",
     ];
     expect(Object.keys(openApiJson.paths).sort()).toEqual(expectedPaths.sort());
     for (const pathItem of Object.values(openApiJson.paths)) {
@@ -98,6 +99,7 @@ describe("MeterMesh machine-readable documentation", () => {
       resolve(webRoot, "public/openapi.json"),
       resolve(webRoot, "public/llms.txt"),
       resolve(webRoot, "public/evidence/captured-session.json"),
+      resolve(webRoot, "public/evidence/anchored-live-proof.json"),
     ];
     await Promise.all(localFiles.map((file) => access(file)));
     expect(DOCUMENTATION_ARTIFACTS).toHaveLength(3);

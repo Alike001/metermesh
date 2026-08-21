@@ -146,6 +146,7 @@
     "openapi": "/openapi.json",
     "llms": "/llms.txt",
     "capturedEvidence": "/evidence/captured-session.json",
+    "anchoredEvidence": "/evidence/anchored-live-proof.json",
     "source": "https://github.com/Alike001/metermesh",
     "protocolSchema": "https://github.com/Alike001/metermesh/blob/main/packages/protocol/src/schema.ts",
     "explanationSchema": "https://github.com/Alike001/metermesh/blob/main/packages/ai/src/schema.ts"
@@ -154,6 +155,6 @@
     "The public workspace separates live signed XMTP proof from an offline local validator fixture.",
     "The public trial and all review previews are nonbillable. They create no voucher and move no funds.",
     "The live XMTP, X Layer receipt, AI, PostgreSQL, signed delivery, and Railway paths are verified. OKX MPP is a future adapter, not a v1 payment capability.",
-    "The public web and worker run on Railway and read X Layer data. The MeterMesh proof-anchor primitive is deployed on X Layer Testnet. A live evidence anchor write and Mainnet launch remain future steps."
+    "The public web and worker run on Railway and read X Layer data. The MeterMesh proof-anchor primitive and one signed evidence commitment are deployed on X Layer Testnet. The required later Mainnet launch remains outstanding."
   ]
 }

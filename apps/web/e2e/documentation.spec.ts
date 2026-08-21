@@ -37,6 +37,14 @@ test("a developer can understand the integration boundary and inspect machine ar
   expect(openApiResponse.ok()).toBe(true);
   const llmsResponse = await page.request.get("/llms.txt");
   expect(llmsResponse.ok()).toBe(true);
+  const anchoredProofResponse = await page.request.get("/evidence/anchored-live-proof.json");
+  expect(anchoredProofResponse.ok()).toBe(true);
+  expect(await anchoredProofResponse.json()).toMatchObject({
+    anchorEvidenceHash: "0x9a40e300b85f3e055b7e181bca644f35575bf0c10d3ab3e591b76e69fd830e33",
+    fundsMoved: false,
+    kind: "live-nonbillable-verification",
+    voucherSigned: false,
+  });
 
   await expect(page.getByRole("link", { name: "MeterMesh product home" })).toHaveAttribute(
     "href",
@@ -49,6 +57,9 @@ test("a developer can understand the integration boundary and inspect machine ar
 
   await page.getByRole("link", { name: "Machine access" }).click();
   await expect(page.locator("#machine")).toBeInViewport();
+  await expect(
+    page.getByRole("link", { name: "/evidence/anchored-live-proof.json" }),
+  ).toHaveAttribute("href", "/evidence/anchored-live-proof.json");
 });
 
 test("the request example copies and the page stays usable by keyboard", async ({

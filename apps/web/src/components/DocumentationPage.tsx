@@ -347,6 +347,11 @@ export function DocumentationPage() {
                 <span>/evidence/captured-session.json</span>
                 <ArrowUpRight aria-hidden="true" size={15} />
               </a>
+              <a href="/evidence/anchored-live-proof.json">
+                <FileJson2 aria-hidden="true" size={18} />
+                <span>/evidence/anchored-live-proof.json</span>
+                <ArrowUpRight aria-hidden="true" size={15} />
+              </a>
             </div>
             <p className="docs-machine-note">
               OpenAPI describes public GET resources only. XMTP execution remains a signed envelope

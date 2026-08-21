@@ -37,6 +37,13 @@
         "description": "This evidence states that no funds moved and no live provider call occurred.",
         "responses": { "200": { "description": "Captured local protocol verification JSON" } }
       }
+    },
+    "/evidence/anchored-live-proof.json": {
+      "get": {
+        "summary": "Read the signed live proof committed on X Layer Testnet",
+        "description": "The bundle contains a buyer-signed request, seller-signed delivery, canonical AI result, explicit nonpayment state, and the evidence hash anchored on X Layer Testnet.",
+        "responses": { "200": { "description": "Anchored live nonbillable proof JSON" } }
+      }
     }
   }
 }
