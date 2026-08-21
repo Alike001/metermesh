@@ -218,7 +218,7 @@ describe("createGroqResponsesClient", () => {
     });
 
     await expect(
-      client.createNarrative({ factsJson: '{"chainId":1952}', model: "openai/gpt-oss-20b" }),
+      client.createNarrative({ factsJson: '{"chainId":1952}', model: "openai/gpt-oss-120b" }),
     ).resolves.toMatchObject({
       provider: "groq",
       responseId: "resp_123",
@@ -232,7 +232,7 @@ describe("createGroqResponsesClient", () => {
     if (typeof requestBody !== "string") throw new Error("Expected a JSON request body.");
     expect(requestBody).not.toContain("test-groq-key");
     expect(JSON.parse(requestBody)).toMatchObject({
-      model: "openai/gpt-oss-20b",
+      model: "openai/gpt-oss-120b",
       reasoning: { effort: "low" },
       text: {
         format: {

@@ -31,6 +31,8 @@ The public trial moves no funds and creates no payment voucher. Each wallet can 
 
 The signed live proof committed by the Testnet proof anchor is published at [metermesh-web-production.up.railway.app/evidence/anchored-live-proof.json](https://metermesh-web-production.up.railway.app/evidence/anchored-live-proof.json). It rechecks the buyer request, seller delivery, canonical result hash, X Layer transaction binding, and explicit nonpayment state.
 
+A separate [signed reverted Testnet proof](https://metermesh-web-production.up.railway.app/evidence/reverted-live-proof.json) records a fresh buyer-signed XMTP request, seller-signed delivery, real failed receipt, and strict AI explanation. It preserves the missing revert reason as an explicit limitation instead of guessing.
+
 ## Local requirements
 
 - Node.js 22 or newer

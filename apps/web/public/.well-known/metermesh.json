@@ -147,6 +147,7 @@
     "llms": "/llms.txt",
     "capturedEvidence": "/evidence/captured-session.json",
     "anchoredEvidence": "/evidence/anchored-live-proof.json",
+    "revertedEvidence": "/evidence/reverted-live-proof.json",
     "source": "https://github.com/Alike001/metermesh",
     "protocolSchema": "https://github.com/Alike001/metermesh/blob/main/packages/protocol/src/schema.ts",
     "explanationSchema": "https://github.com/Alike001/metermesh/blob/main/packages/ai/src/schema.ts"

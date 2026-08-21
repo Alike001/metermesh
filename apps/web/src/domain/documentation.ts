@@ -170,6 +170,7 @@ export function parseMeterMeshManifest(value: unknown): MeterMeshManifest {
       "llms",
       "openapi",
       "protocolSchema",
+      "revertedEvidence",
       "source",
     ],
     "links",

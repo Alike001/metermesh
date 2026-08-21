@@ -3,7 +3,7 @@ import { z } from "zod";
 import { aiNarrativeSchema, type AiNarrative } from "./schema.js";
 
 export const DEFAULT_OPENAI_MODEL = "gpt-5.6-luna" as const;
-export const DEFAULT_GROQ_MODEL = "openai/gpt-oss-20b" as const;
+export const DEFAULT_GROQ_MODEL = "openai/gpt-oss-120b" as const;
 
 export type AiProviderName = "groq" | "openai";
 

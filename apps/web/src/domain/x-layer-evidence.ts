@@ -8,6 +8,11 @@ export const ANCHORED_LIVE_EVIDENCE = {
   sourceTransactionHash: "0xf0bbcf38db1ee7935111b2be46fd1062d097e0461b2f48f34b9a5ba17482fafd",
 } as const;
 
+export const REVERTED_LIVE_EVIDENCE = {
+  proofPath: "/evidence/reverted-live-proof.json",
+  transactionHash: "0x2a0f80f0297f4cb0944471015a5cd3dec9f031c4c4dfe335a2a4ba6a6d82b865",
+} as const;
+
 export function xLayerTestnetTransactionUrl(transactionHash: string): string {
   if (!/^0x[\dA-Fa-f]{64}$/.test(transactionHash)) {
     throw new Error("X Layer explorer links require a complete transaction hash.");

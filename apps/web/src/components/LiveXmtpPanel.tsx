@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 
 import { shortHash } from "../domain/session";
-import { liveExplanation, type LiveXmtpController } from "../hooks/useLiveXmtp";
+import { type LiveXmtpController } from "../hooks/useLiveXmtp";
 import { StatusMark } from "./StatusMark";
 
 export const EXAMPLE_APPROVAL_TRANSACTION_HASH =
@@ -22,7 +22,6 @@ interface LiveXmtpPanelProps {
 export function LiveXmtpPanel({ controller }: LiveXmtpPanelProps) {
   const [transactionHash, setTransactionHash] = useState(EXAMPLE_APPROVAL_TRANSACTION_HASH);
   const { connect, disconnect, request, reset, state } = controller;
-  const explanation = liveExplanation(state);
   const busy =
     state.status === "connecting" || state.status === "sending" || state.status === "waiting";
   const connected =
@@ -142,38 +141,17 @@ export function LiveXmtpPanel({ controller }: LiveXmtpPanelProps) {
         </div>
       )}
 
-      {state.status === "success" && explanation !== null && (
-        <article className="live-delivery" aria-label="Verified live XMTP delivery">
-          <div className="live-delivery-title">
-            <div>
-              <span className="message-label">Agent delivery</span>
-              <h3>{explanation.summary}</h3>
-            </div>
-            <StatusMark label="Verified live" status="verified" />
-          </div>
-          <p>{explanation.outcome}</p>
-          <dl>
-            <div>
-              <dt>Transaction</dt>
-              <dd>{shortHash(explanation.transactionHash)}</dd>
-            </div>
-            <div>
-              <dt>Block</dt>
-              <dd>{explanation.provenance.blockNumber}</dd>
-            </div>
-            <div>
-              <dt>Confirmations</dt>
-              <dd>{explanation.provenance.confirmations}</dd>
-            </div>
-            <div>
-              <dt>Result hash</dt>
-              <dd>{shortHash(state.delivery.envelope.payload.resultHash)}</dd>
-            </div>
-          </dl>
+      {state.status === "success" && (
+        <article
+          className="live-delivery live-delivery-compact"
+          aria-label="Verified live XMTP delivery"
+        >
           <div className="live-delivery-proof">
             <Check aria-hidden="true" size={16} />
-            XMTP sender, signer authorization, envelope signature, transaction reference, schema,
-            and result hash all passed.
+            <span>
+              The fresh signed request and delivery are now the active proof below. XMTP identity,
+              envelope signatures, transaction binding, and result hash all passed.
+            </span>
           </div>
           <button className="text-action" onClick={disconnect} type="button">
             <RotateCcw aria-hidden="true" size={15} />

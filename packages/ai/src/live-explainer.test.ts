@@ -1,4 +1,5 @@
 import { fetchTransactionFacts } from "@metermesh/chain";
+import { writeFile } from "node:fs/promises";
 import { describe, expect, it } from "vitest";
 
 import { explainTransaction } from "./explain.js";
@@ -22,6 +23,35 @@ describe("live X Layer and Groq explainer", () => {
       expect(explanation.provenance.blockHash).toBe(facts.blockHash);
       expect(explanation.generation.provider).toBe("groq");
       expect(explanation.summary.length).toBeGreaterThan(0);
+
+      const outputPath = process.env.METERMESH_LIVE_EXPLANATION_OUTPUT?.trim();
+      if (outputPath !== undefined && outputPath !== "") {
+        const evidence = {
+          capturedAt: new Date().toISOString(),
+          chainId: 1952,
+          explanation,
+          facts,
+          kind: "live-reverted-explanation",
+          meterMeshFundsMoved: false,
+          schemaVersion: "1.0",
+          source: "x-layer-rpc+groq",
+          transactionHash,
+          verification: {
+            blockBindingMatches: explanation.provenance.blockHash === facts.blockHash,
+            explanationStatusMatchesReceipt: explanation.status === facts.status,
+            receiptStatus: facts.status,
+            transactionBindingMatches:
+              explanation.transactionHash.toLowerCase() === facts.transactionHash.toLowerCase(),
+            unknownReasonPreserved:
+              facts.status !== "reverted" ||
+              explanation.limitations.includes(
+                "The receipt reports a revert, but the RPC facts do not include a verified revert reason.",
+              ),
+          },
+          voucherSigned: false,
+        };
+        await writeFile(outputPath, JSON.stringify(evidence, null, 2) + "\n", "utf8");
+      }
     },
     45_000,
   );

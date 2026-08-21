@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import type { TransactionExplanation } from "@metermesh/ai";
 
 import type {
   BrowserXmtpConnection,
@@ -144,8 +143,4 @@ export function useLiveXmtp(): LiveXmtpController {
   }, []);
 
   return { connect, disconnect, request, reset, state };
-}
-
-export function liveExplanation(state: LiveXmtpState): TransactionExplanation | null {
-  return state.status === "success" ? state.delivery.result : null;
 }

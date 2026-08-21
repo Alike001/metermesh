@@ -44,6 +44,13 @@
         "description": "The bundle contains a buyer-signed request, seller-signed delivery, canonical AI result, explicit nonpayment state, and the evidence hash anchored on X Layer Testnet.",
         "responses": { "200": { "description": "Anchored live nonbillable proof JSON" } }
       }
+    },
+    "/evidence/reverted-live-proof.json": {
+      "get": {
+        "summary": "Read the signed XMTP proof for a reverted X Layer receipt",
+        "description": "The bundle contains a buyer-signed request, seller-signed delivery, strict AI output, and a real reverted receipt with no invented revert reason.",
+        "responses": { "200": { "description": "Signed reverted transaction proof JSON" } }
+      }
     }
   }
 }

@@ -168,13 +168,14 @@ test("a real injected buyer wallet receives one verified worker delivery", async
   try {
     await page.goto("/#workspace");
     await expect(
-      page.getByRole("heading", { name: "Explain an X Layer token approval before signing" }),
+      page.getByRole("heading", { name: "Verified X Layer transaction explanation" }),
     ).toBeVisible({ timeout: 30_000 });
     await page.getByRole("button", { name: "Connect wallet to XMTP" }).click();
     await waitForXmtpConnection(page);
-    await expect(page.getByLabel("X Layer Testnet transaction hash")).toHaveValue(
-      "0xf0bbcf38db1ee7935111b2be46fd1062d097e0461b2f48f34b9a5ba17482fafd",
-    );
+    const transactionHash =
+      process.env.X_LAYER_TEST_TRANSACTION_HASH?.trim() ??
+      "0xf0bbcf38db1ee7935111b2be46fd1062d097e0461b2f48f34b9a5ba17482fafd";
+    await page.getByLabel("X Layer Testnet transaction hash").fill(transactionHash);
     await page.getByRole("button", { name: "Request explanation" }).click();
     await expect(page.getByRole("button", { name: "Waiting for agent" })).toBeVisible({
       timeout: 60_000,
@@ -191,13 +192,13 @@ test("a real injected buyer wallet receives one verified worker delivery", async
     }
     await expect(page.getByText("Verified live").first()).toBeVisible({ timeout: 120_000 });
     await expect(page.getByLabel("Verified live XMTP delivery")).toContainText(
-      "XMTP sender, signer authorization, envelope signature",
+      "XMTP identity, envelope signatures, transaction binding",
     );
     await expect(page.getByRole("heading", { name: "X Layer receipt" })).toBeVisible();
     await expect(page.getByTestId("payment-state")).toHaveText("No voucher");
 
     const proofDownloadPromise = page.waitForEvent("download");
-    await page.getByRole("button", { name: "Export signed proof" }).click();
+    await page.getByRole("button", { name: "Export active proof" }).click();
     const proofDownload = await proofDownloadPromise;
     const proofPath = await proofDownload.path();
     const proof = JSON.parse(await readFile(proofPath, "utf8")) as unknown;

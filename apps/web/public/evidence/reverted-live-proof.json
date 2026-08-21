@@ -1,0 +1,109 @@
+{
+  "chainId": 1952,
+  "anchorEvidenceHash": "0xe799e044fa2b4307c25fdea4169c07cd3ad679d8a62d9d284fd32c2c30521910",
+  "delivery": {
+    "carrierMessageId": "03b1db157e7776eea468372f7cd020db3b3209f8398117dab2cf35be220c6704",
+    "envelope": {
+      "createdAt": "2026-08-21T20:20:16.593Z",
+      "messageId": "delivery-request-2fd822e4-22f6-4153-8c6f-8805fdbc5025",
+      "protocol": "metermesh",
+      "senderInboxId": "36ba4d5f9a5cd2cd3b23f46b27f1173edd9c33458a818095004a26cc1a91e6f1",
+      "sequence": 1,
+      "sessionId": "transport-0472eede-c852-41ed-8408-0bac66728add",
+      "version": 1,
+      "payload": {
+        "deliverySchema": "metermesh.transaction-explanation.v1",
+        "requestMessageId": "request-2fd822e4-22f6-4153-8c6f-8805fdbc5025",
+        "resultHash": "0xe0818aa888825d29d39d1bb5cadd8e475af566140f94356a1476c8dd89ad15ae",
+        "transactionHash": "0x2a0f80f0297f4cb0944471015a5cd3dec9f031c4c4dfe335a2a4ba6a6d82b865",
+        "workUnitId": "work-af55cb32-c24d-4e2e-b4f6-b2951a3c4876"
+      },
+      "type": "work.delivery",
+      "payloadHash": "0x311ee274c7ccbeb3bb828ec9b08d74913185a4209015e8a0789ad1bf36d584ba",
+      "signature": {
+        "scheme": "eip191",
+        "signer": "0x89F2EF6b27051B2998CB455861b57080C3fF00D3",
+        "value": "0x3e267a2c5c5b88cc8ac5c613b58bce3d03b872d37e53b452ca94879f71e6ee1444097b1aadb83fb3a887a5126800c0e746e5d2d08da0e5ff0ea22c9afadcc6531b"
+      }
+    }
+  },
+  "exportedAt": "2026-08-21T20:20:22.056Z",
+  "fundsMoved": false,
+  "kind": "live-nonbillable-verification",
+  "request": {
+    "carrierMessageId": "59aa26e69b679717755149e7605a7467a887cc52d3582f9d763df6d4c614d05d",
+    "envelope": {
+      "createdAt": "2026-08-21T20:19:47.799Z",
+      "messageId": "request-2fd822e4-22f6-4153-8c6f-8805fdbc5025",
+      "protocol": "metermesh",
+      "senderInboxId": "2e9fd21df367872b0b70dfee1426ed5a06cc5876686c9d1ae047a1e584fe8a1c",
+      "sequence": 1,
+      "sessionId": "transport-0472eede-c852-41ed-8408-0bac66728add",
+      "version": 1,
+      "payload": {
+        "transactionHash": "0x2a0f80f0297f4cb0944471015a5cd3dec9f031c4c4dfe335a2a4ba6a6d82b865",
+        "workUnitId": "work-af55cb32-c24d-4e2e-b4f6-b2951a3c4876"
+      },
+      "type": "work.request",
+      "payloadHash": "0xe2e9ad7579b360bc2a9ff0eb407d6a083e094395a8ce73439e76885ece58c350",
+      "signature": {
+        "scheme": "eip191",
+        "signer": "0xa05125c3fE254b139bE88aA19e4D1309A43834Fa",
+        "value": "0x02b6ffd6898bba235cd373e9af4f791cac081b92db9fb8030244e3491d377399080806fde519a5b361ee3f552327e01952555a263913de8c1d785acc17d86a3a1b"
+      }
+    }
+  },
+  "result": {
+    "schemaVersion": "1",
+    "transactionHash": "0x2a0f80f0297f4cb0944471015a5cd3dec9f031c4c4dfe335a2a4ba6a6d82b865",
+    "chainId": 1952,
+    "chainName": "X Layer Testnet",
+    "status": "reverted",
+    "summary": "A transaction on X Layer Testnet sent from 0x004b12c79b93cd0f6663124da40b538167646a29 to 0xa966faf0f886b92761d34ad520761266e2d9a6ab with 0 ETH value. The call data begins with selector 0x9f1d0f59 and is 100 bytes long. No contract was created and no event logs were emitted.",
+    "outcome": "The transaction was executed but reverted, consuming 60,817 gas. No on‑chain state changes are recorded because the execution did not complete successfully.",
+    "financials": {
+      "valueWei": "0",
+      "valueOkb": "0",
+      "executionFeeWei": "1459608060817",
+      "executionFeeOkb": "0.000001459608060817"
+    },
+    "call": {
+      "from": "0x004b12c79b93cd0f6663124da40b538167646a29",
+      "to": "0xa966faf0f886b92761d34ad520761266e2d9a6ab",
+      "createdContract": null,
+      "inputSelector": "0x9f1d0f59",
+      "inputByteLength": 100
+    },
+    "emittedLogs": [],
+    "failureReason": null,
+    "limitations": [
+      "Contract calldata and event logs are not ABI-decoded, so no function or event names are claimed.",
+      "The receipt reports a revert, but the RPC facts do not include a verified revert reason.",
+      "The function invoked by selector 0x9f1d0f59 cannot be identified from the supplied facts; calldata is undecoded.",
+      "No event logs were emitted, so no further on‑chain actions can be inferred.",
+      "The revert reason is not provided in the data; the cause of the revert is unknown."
+    ],
+    "provenance": {
+      "source": "x-layer-rpc",
+      "blockHash": "0x26912227b5eb07d79fa76a52b5b260a6d51459a1b01d5a8b7cae34f021c9a827",
+      "blockNumber": "38880541",
+      "confirmations": "4234",
+      "factsFetchedAt": "2026-08-21T20:20:12.711Z"
+    },
+    "generation": {
+      "provider": "groq",
+      "model": "openai/gpt-oss-120b",
+      "responseId": "resp_01m0jzpe7xek5bsgff4gyhf84x",
+      "aiAuthoredFields": ["summary", "outcome", "limitations"]
+    }
+  },
+  "schemaVersion": "1.0",
+  "transport": "xmtp-dev",
+  "verification": {
+    "buyerEnvelope": "verified",
+    "resultBinding": "verified",
+    "sellerEnvelope": "verified",
+    "sellerInboxAuthorization": "observed-online-at-receipt"
+  },
+  "voucherSigned": false
+}

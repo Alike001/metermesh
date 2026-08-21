@@ -5,12 +5,15 @@ import { cleanup, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
+import anchoredLiveProof from "../public/evidence/anchored-live-proof.json";
 import capturedSession from "../public/evidence/captured-session.json";
 import App from "./App";
 
-function successfulEvidenceResponse() {
+function successfulEvidenceResponse(input?: RequestInfo | URL) {
+  const url = input instanceof Request ? input.url : String(input ?? "");
+  const value = url.includes("anchored-live-proof") ? anchoredLiveProof : capturedSession;
   return Promise.resolve(
-    new Response(JSON.stringify(capturedSession), {
+    new Response(JSON.stringify(value), {
       headers: { "Content-Type": "application/json" },
       status: 200,
     }),
@@ -45,11 +48,11 @@ describe("MeterMesh product surface", () => {
 
     expect(
       await screen.findByRole("heading", {
-        name: "Explain an X Layer token approval before signing",
+        name: "Verified X Layer transaction explanation",
       }),
     ).toBeInTheDocument();
-    expect(screen.getByText("Captured local protocol run.")).toBeInTheDocument();
-    expect(screen.getByText(/public XMTP worker.*have passed/i)).toBeInTheDocument();
+    expect(screen.getByText("Published anchored proof.")).toBeInTheDocument();
+    expect(screen.getByText(/XMTP transport.*are working/i)).toBeInTheDocument();
   });
 
   it("previews the acceptance rule without creating payment evidence", async () => {
@@ -57,7 +60,7 @@ describe("MeterMesh product surface", () => {
     window.location.hash = "workspace";
     render(<App />);
 
-    await screen.findByText("Local delivery fixture");
+    await screen.findByText("Published anchored proof.");
     expect(screen.getByTestId("payment-state")).toHaveTextContent("No voucher");
 
     await user.click(screen.getByRole("button", { name: "Preview acceptance" }));
@@ -74,7 +77,7 @@ describe("MeterMesh product surface", () => {
   it("fails safely when a live XMTP request has no injected wallet", async () => {
     window.location.hash = "workspace";
     render(<App />);
-    await screen.findByText("Local delivery fixture");
+    await screen.findByText("Published anchored proof.");
 
     await userEvent.click(screen.getByRole("button", { name: "Connect wallet to XMTP" }));
 
@@ -84,39 +87,31 @@ describe("MeterMesh product surface", () => {
     expect(screen.getByRole("button", { name: "Payment outside v1" })).toBeDisabled();
   });
 
-  it("supports the empty state and restores captured evidence", async () => {
-    const user = userEvent.setup();
+  it("shows a retryable error when the signed proof cannot be read", async () => {
+    let anchoredAttempts = 0;
+    vi.mocked(fetch).mockImplementation((input) => {
+      const url = input instanceof Request ? input.url : String(input);
+      if (url.includes("anchored-live-proof") && anchoredAttempts === 0) {
+        anchoredAttempts += 1;
+        return Promise.reject(new Error("Signed proof unavailable."));
+      }
+      return successfulEvidenceResponse(input);
+    });
     window.location.hash = "workspace";
     render(<App />);
 
-    await screen.findByText("Local delivery fixture");
-    await user.click(screen.getByRole("button", { name: "Remove captured evidence" }));
-
-    expect(screen.getByTestId("empty-state")).toBeInTheDocument();
-    const [loadButton] = screen.getAllByRole("button", { name: "Load captured run" });
-    expect(loadButton).toBeDefined();
-    if (loadButton === undefined) throw new Error("The evidence restore action is missing.");
-    await user.click(loadButton);
-    expect(await screen.findByText("Local delivery fixture")).toBeInTheDocument();
-  });
-
-  it("shows a retryable error when evidence cannot be read", async () => {
-    vi.mocked(fetch).mockRejectedValueOnce(new Error("Local evidence unavailable."));
-    window.location.hash = "workspace";
-    render(<App />);
-
-    expect(await screen.findByRole("alert")).toHaveTextContent("Local evidence unavailable.");
+    expect(await screen.findByRole("alert")).toHaveTextContent("Signed proof unavailable.");
     vi.mocked(fetch).mockImplementation(successfulEvidenceResponse);
 
-    await userEvent.click(screen.getByRole("button", { name: "Retry evidence load" }));
-    expect(await screen.findByText("Local delivery fixture")).toBeInTheDocument();
+    await userEvent.click(screen.getByRole("button", { name: "Retry proof verification" }));
+    expect(await screen.findByText("Published anchored proof.")).toBeInTheDocument();
   });
 
   it("opens protocol details and closes them with Escape", async () => {
     const user = userEvent.setup();
     window.location.hash = "workspace";
     render(<App />);
-    await screen.findByText("Local delivery fixture");
+    await screen.findByText("Published anchored proof.");
 
     await user.click(screen.getByRole("button", { name: "Protocol details" }));
     expect(screen.getByRole("dialog", { name: "Where the evidence lives" })).toBeInTheDocument();

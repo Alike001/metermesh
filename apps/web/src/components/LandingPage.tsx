@@ -10,6 +10,7 @@ import {
   MessageSquareText,
 } from "lucide-react";
 
+import { REVERTED_LIVE_EVIDENCE, xLayerTestnetTransactionUrl } from "../domain/x-layer-evidence";
 import { BrandMark } from "./BrandMark";
 
 interface LandingPageProps {
@@ -228,11 +229,24 @@ export function LandingPage({ onOpenWorkspace }: LandingPageProps) {
               </div>
             </div>
             <div>
-              <span className="status-dot status-dot-amber" />
+              <span className="status-dot status-dot-green" />
               <div>
-                <strong>Proof anchor source</strong>
+                <strong>Reverted receipt handling</strong>
                 <p>
-                  One signed live proof is anchored on Testnet. MPP payment writes remain gated.
+                  A signed XMTP proof preserves a real failed Testnet call with no invented failure
+                  reason.{" "}
+                  <a href={REVERTED_LIVE_EVIDENCE.proofPath} rel="noreferrer" target="_blank">
+                    Inspect evidence
+                  </a>{" "}
+                  or{" "}
+                  <a
+                    href={xLayerTestnetTransactionUrl(REVERTED_LIVE_EVIDENCE.transactionHash)}
+                    rel="noreferrer"
+                    target="_blank"
+                  >
+                    view the receipt
+                  </a>
+                  .
                 </p>
               </div>
             </div>
