@@ -60,6 +60,12 @@
       "note": "The public Railway deployment passed a fresh-wallet browser-to-XMTP request and returned a verified X Layer explanation. A second request from the same wallet returned the expected seller-signed trial_wallet_used refusal."
     },
     {
+      "id": "proof-anchor-source",
+      "label": "X Layer evidence anchor source",
+      "state": "gated",
+      "note": "The deterministic evidence hash and MeterMesh proof-anchor contract source are tested locally. Deployment and a live anchor transaction still require separate approval."
+    },
+    {
       "id": "mpp-testnet-mutation",
       "label": "OKX MPP Testnet mutation",
       "state": "gated",

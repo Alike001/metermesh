@@ -2,6 +2,7 @@ import { transactionExplanationSchema, type TransactionExplanation } from "@mete
 import {
   envelopeSchema,
   hashCanonical,
+  hashSchema,
   validateEnvelope,
   type CanonicalValue,
   type Envelope,
@@ -14,6 +15,7 @@ type WorkDeliveryEnvelope = Extract<Envelope, { type: "work.delivery" }>;
 
 export interface LiveEvidenceBundle {
   chainId: 1952;
+  anchorEvidenceHash: `0x${string}`;
   delivery: {
     carrierMessageId: string;
     envelope: WorkDeliveryEnvelope;
@@ -76,6 +78,7 @@ function parseBundle(value: unknown): LiveEvidenceBundle | null {
     !isRecord(value) ||
     !hasExactKeys(value, [
       "chainId",
+      "anchorEvidenceHash",
       "delivery",
       "exportedAt",
       "fundsMoved",
@@ -101,8 +104,10 @@ function parseBundle(value: unknown): LiveEvidenceBundle | null {
 
   const request = parseCarrierRecord(value.request, "work.request");
   const delivery = parseCarrierRecord(value.delivery, "work.delivery");
+  const anchorEvidenceHash = hashSchema.safeParse(value.anchorEvidenceHash);
   const result = transactionExplanationSchema.safeParse(value.result);
-  if (request === null || delivery === null || !result.success) return null;
+  if (request === null || delivery === null || !anchorEvidenceHash.success || !result.success)
+    return null;
 
   if (
     !isRecord(value.verification) ||
@@ -122,6 +127,7 @@ function parseBundle(value: unknown): LiveEvidenceBundle | null {
 
   return {
     chainId: 1952,
+    anchorEvidenceHash: anchorEvidenceHash.data,
     delivery: {
       carrierMessageId: delivery.carrierMessageId,
       envelope: delivery.envelope as WorkDeliveryEnvelope,
@@ -151,8 +157,10 @@ export function createLiveEvidenceBundle(
   delivery: ReceivedBrowserDelivery,
   exportedAt = new Date(),
 ): LiveEvidenceBundle {
+  const anchorEvidenceHash = hashLiveEvidenceAnchor(request, delivery);
   return {
     chainId: 1952,
+    anchorEvidenceHash,
     delivery: {
       carrierMessageId: delivery.carrierMessageId,
       envelope: delivery.envelope,
@@ -175,6 +183,21 @@ export function createLiveEvidenceBundle(
     },
     voucherSigned: false,
   };
+}
+
+export function hashLiveEvidenceAnchor(
+  request: SentBrowserRequest,
+  delivery: ReceivedBrowserDelivery,
+): `0x${string}` {
+  return hashCanonical(
+    asCanonical({
+      chainId: 1952,
+      delivery: delivery.envelope,
+      request: request.envelope,
+      result: delivery.result,
+      schemaVersion: "1.0",
+    }),
+  );
 }
 
 export async function verifyLiveEvidenceBundle(value: unknown): Promise<LiveEvidenceVerification> {
@@ -208,6 +231,22 @@ export async function verifyLiveEvidenceBundle(value: unknown): Promise<LiveEvid
   if (hashCanonical(asCanonical(bundle.result)) !== delivery.payload.resultHash) {
     return {
       detail: "The explanation no longer matches the seller-signed result hash.",
+      ok: false,
+    };
+  }
+
+  const expectedAnchorEvidenceHash = hashCanonical(
+    asCanonical({
+      chainId: 1952,
+      delivery: bundle.delivery.envelope,
+      request: bundle.request.envelope,
+      result: bundle.result,
+      schemaVersion: "1.0",
+    }),
+  );
+  if (bundle.anchorEvidenceHash !== expectedAnchorEvidenceHash) {
+    return {
+      detail: "The evidence anchor hash does not match the stable proof contents.",
       ok: false,
     };
   }

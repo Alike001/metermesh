@@ -6,6 +6,8 @@ playwright-report
 test-results
 pnpm-lock.yaml
 research
+contracts/cache
+contracts/out
 
 AGENTS.md
 PROMPTS.md

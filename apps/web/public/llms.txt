@@ -10,4 +10,4 @@ Source: https://github.com/Alike001/metermesh
 Protocol schema: https://github.com/Alike001/metermesh/blob/main/packages/protocol/src/schema.ts
 Explanation schema: https://github.com/Alike001/metermesh/blob/main/packages/ai/src/schema.ts
 
-Execution is defined by signed MeterMesh envelopes carried over XMTP. No HTTP execution endpoint is published. The v1 public verifier creates no voucher and moves no funds. Buyer review is recorded as an unsigned preview. OKX MPP session open, voucher, and settlement are deferred until chain 1952 support is confirmed.
+Execution is defined by signed MeterMesh envelopes carried over XMTP. No HTTP execution endpoint is published. The v1 public verifier creates no voucher and moves no funds. Buyer review is recorded as an unsigned preview. The proof-anchor contract source and deterministic evidence hash are tested locally, but no X Layer deployment or live anchor transaction has been performed. OKX MPP session open, voucher, and settlement are deferred until chain 1952 support is confirmed.

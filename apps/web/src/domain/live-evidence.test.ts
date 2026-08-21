@@ -78,6 +78,27 @@ describe("live evidence bundle", () => {
     expect(bundle.voucherSigned).toBe(false);
   });
 
+  it("keeps the anchor hash stable when export metadata changes", async () => {
+    const bundle = await fixtureBundle();
+    const reexported = structuredClone(bundle);
+    reexported.exportedAt = "2026-08-22T10:00:10.000Z";
+
+    await expect(verifyLiveEvidenceBundle(reexported)).resolves.toMatchObject({ ok: true });
+    expect(reexported.anchorEvidenceHash).toBe(bundle.anchorEvidenceHash);
+  });
+
+  it("rejects a proof whose anchor hash was changed", async () => {
+    const bundle = await fixtureBundle();
+    const modified = structuredClone(bundle);
+    modified.anchorEvidenceHash =
+      "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
+
+    await expect(verifyLiveEvidenceBundle(modified)).resolves.toEqual({
+      detail: "The evidence anchor hash does not match the stable proof contents.",
+      ok: false,
+    });
+  });
+
   it("detects a modified AI result even when the signed delivery is unchanged", async () => {
     const bundle = await fixtureBundle();
     const modified = structuredClone(bundle);

@@ -227,6 +227,13 @@ export function LandingPage({ onOpenWorkspace }: LandingPageProps) {
                 <p>Deferred until official chain 1952 session support is confirmed.</p>
               </div>
             </div>
+            <div>
+              <span className="status-dot status-dot-amber" />
+              <div>
+                <strong>Proof anchor source</strong>
+                <p>Deterministic hash and contract tests are ready. Deployment remains gated.</p>
+              </div>
+            </div>
           </div>
         </section>
 

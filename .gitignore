@@ -21,6 +21,8 @@ dist/
 build/
 coverage/
 *.tsbuildinfo
+contracts/cache/
+contracts/out/
 
 # Test and browser artifacts
 test-results/

@@ -18,7 +18,8 @@ test("a developer can understand the integration boundary and inspect machine ar
   await expect(page.getByText(/public Railway deployment passed a fresh-wallet/i)).toBeVisible();
   await expect(page.getByText(/seller-signed trial_wallet_used refusal/i)).toBeVisible();
   await expect(page.getByText("OKX MPP Testnet mutation")).toBeVisible();
-  await expect(page.getByText("gated", { exact: true })).toBeVisible();
+  await expect(page.getByText("X Layer evidence anchor source")).toBeVisible();
+  await expect(page.getByText("gated", { exact: true })).toHaveCount(2);
 
   const manifestResponse = await page.request.get("/.well-known/metermesh.json");
   expect(manifestResponse.ok()).toBe(true);
