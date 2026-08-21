@@ -63,7 +63,7 @@
       "id": "proof-anchor-source",
       "label": "X Layer evidence anchor source",
       "state": "verified",
-      "note": "The deterministic evidence hash and MeterMesh proof-anchor contract are deployed and read-verified on X Layer Testnet at 0xE9827c90f742C593F966B7E878e2a13fdC8f1683. A live evidence anchor write remains separately gated."
+      "note": "The deterministic evidence hash and MeterMesh proof-anchor contract are deployed on X Layer Testnet at 0xE9827c90f742C593F966B7E878e2a13fdC8f1683. One fresh signed live proof is anchored in transaction 0xf518187f13559ab46cfa1c85d64089a8c99eca8d1ee9d77a41840046f0e7aa5a."
     },
     {
       "id": "mpp-testnet-mutation",

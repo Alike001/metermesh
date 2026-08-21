@@ -1,4 +1,4 @@
-import { readFile } from "node:fs/promises";
+import { readFile, writeFile } from "node:fs/promises";
 
 import { explainTransaction } from "@metermesh/ai";
 import { fetchTransactionFacts } from "@metermesh/chain";
@@ -208,6 +208,10 @@ test("a real injected buyer wallet receives one verified worker delivery", async
       kind: "live-nonbillable-verification",
       voucherSigned: false,
     });
+    const proofOutput = process.env.METERMESH_LIVE_PROOF_OUTPUT?.trim();
+    if (proofOutput !== undefined && proofOutput !== "") {
+      await writeFile(proofOutput, `${JSON.stringify(proof, null, 2)}\n`, "utf8");
+    }
     const successScreenshot = process.env.METERMESH_PUBLIC_PROOF_SCREENSHOT?.trim();
     if (successScreenshot !== undefined && successScreenshot !== "") {
       await page.screenshot({ fullPage: true, path: successScreenshot });

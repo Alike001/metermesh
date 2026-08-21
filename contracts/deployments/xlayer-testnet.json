@@ -8,5 +8,12 @@
   "deploymentBlock": 38854879,
   "deployer": "0x404B8abf1034A548076FB2175c7740306Dd43B2C",
   "receiptStatus": 1,
-  "anchorWrite": "not performed"
+  "anchorWrite": {
+    "evidenceHash": "0x9a40e300b85f3e055b7e181bca644f35575bf0c10d3ab3e591b76e69fd830e33",
+    "sourceTransactionHash": "0xf0bbcf38db1ee7935111b2be46fd1062d097e0461b2f48f34b9a5ba17482fafd",
+    "transaction": "0xf518187f13559ab46cfa1c85d64089a8c99eca8d1ee9d77a41840046f0e7aa5a",
+    "block": 38857159,
+    "receiptStatus": 1,
+    "storedChainId": 1952
+  }
 }

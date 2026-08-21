@@ -232,8 +232,7 @@ export function LandingPage({ onOpenWorkspace }: LandingPageProps) {
               <div>
                 <strong>Proof anchor source</strong>
                 <p>
-                  Contract is deployed and read-verified on Testnet. Live evidence writes remain
-                  gated.
+                  One signed live proof is anchored on Testnet. MPP payment writes remain gated.
                 </p>
               </div>
             </div>

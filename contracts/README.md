@@ -10,6 +10,6 @@ Run the local tests with:
 forge test --root contracts
 ```
 
-The browser computes `anchorEvidenceHash` from the canonical signed request, signed delivery, and structured result. The deployed contract can emit `EvidenceAnchored`, while the existing worker can index the event and attach the record to the exported proof after an approved live anchor write.
+The browser computes `anchorEvidenceHash` from the canonical signed request, signed delivery, and structured result. One fresh signed XMTP proof is now anchored on Testnet. The anchor transaction and readback metadata are recorded in `contracts/deployments/xlayer-testnet.json`.
 
 Deployment metadata is recorded in `contracts/deployments/xlayer-testnet.json`.
