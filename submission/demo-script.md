@@ -1,66 +1,92 @@
-# MeterMesh 90-second judge demo
+# MeterMesh judging map, pitch, and 90-second demo
 
-This script follows the published AI Season dimensions: AI application, innovation, product completeness, user value, X Layer integration, growth potential, and ecosystem contribution. It presents only capabilities that are live or independently verifiable.
+This plan uses the seven dimensions published for X Layer AI Season: application of AI, innovation, product completeness, user value, integration with X Layer, growth potential, and contribution to the X Layer ecosystem. The terms also allow judges to consider onchain data, code quality, and market potential. Design and UX are not separately scored.
 
-## 0:00-0:10, the problem and product
+## Feature-to-criterion map
 
-Show the MeterMesh landing page.
+| Scored dimension               | MeterMesh evidence                                                                                                                                                                                                                                                          | Current strength                                                                                                | Remaining weakness                                                                                                    |
+| ------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| Application of AI              | The worker gives Groq normalized X Layer receipt facts and accepts only a strict transaction-explanation schema. The model authors the summary, outcome, and limitations while deterministic code owns status, fees, addresses, logs, hashes, and authorization boundaries. | Strong and easy to prove from the signed evidence JSON.                                                         | The AI use case is intentionally narrow, one transaction explanation rather than several agent skills.                |
+| Innovation                     | A buyer-signed XMTP request, seller-signed delivery, canonical result hash, browser verification, and X Layer evidence anchor create a portable proof for asynchronous AI work.                                                                                             | Stronger than a conventional chatbot or transaction dashboard because the result can be checked independently.  | The buyer decision remains an unsigned preview, so the full acceptance record is not yet portable.                    |
+| Product completeness           | Public landing page, working verifier, bounded trial, PostgreSQL recovery, signed export, failure handling, documentation, and Railway deployment form one usable path.                                                                                                     | Strong for the approved verification-first scope.                                                               | Required Mainnet launch is outstanding. MPP settlement is deliberately unavailable.                                   |
+| User value                     | Buyers can check that an AI result belongs to their request and to the exact X Layer transaction before trusting it.                                                                                                                                                        | Clear real problem for agent-to-agent work.                                                                     | Public demand is supported by ecosystem direction, but MeterMesh has no external user or integration metrics yet.     |
+| X Layer integration            | Real chain 1952 receipt reads, explorer-linked success and revert evidence, and `MeterMeshProofAnchor` deployed on X Layer Testnet.                                                                                                                                         | Strong, live, and independently verifiable.                                                                     | Mainnet deployment is missing, and v1 performs no economic action.                                                    |
+| Growth potential               | Versioned signed envelopes, machine manifest, OpenAPI read surfaces, `llms.txt`, portable proof export, and a pluggable MPP verifier let other agents integrate.                                                                                                            | Credible infrastructure path beyond this one interface.                                                         | The public trial is deliberately capacity-limited and there is no third-party adopter yet.                            |
+| X Layer ecosystem contribution | MeterMesh supplies a reusable verification and evidence layer for agents using XMTP, X Layer receipts, and future OKX MPP settlement.                                                                                                                                       | Strong sponsor-gap story because X Layer agents need trustworthy work evidence between messages and settlement. | The MPP adapter cannot be demonstrated until OKX confirms chain 1952 session support.                                 |
+| Onchain data                   | The UI and public JSON expose source transaction hashes, receipt status, block provenance, and the proof-anchor transaction.                                                                                                                                                | Strong and directly inspectable.                                                                                | The reverted RPC receipt has no verified revert reason, which MeterMesh correctly discloses.                          |
+| Code quality                   | Protocol, MPP, AI, chain, database, worker, browser, and Foundry tests cover tampering, replay, wrong bindings, failure paths, and recovery.                                                                                                                                | Stronger than the partly mocked or untested prior winners found in research.                                    | A few live-network paths stay outside the normal deterministic test command and require the separate recorded checks. |
+| Market potential               | MeterMesh can become the acceptance and evidence layer for paid agent work once settlement support is available.                                                                                                                                                            | The agent-commerce problem is growing and the proof format is portable.                                         | V1 proves work but does not yet prove revenue, settlement, or adoption.                                               |
 
-Say: “AI agents can deliver useful work over messages, but the buyer still has to trust that the result belongs to the request and the chain evidence. MeterMesh lets the buyer verify the request, delivery, result, and X Layer evidence together before deciding whether the work is useful.”
+## Honest positioning
 
-Judging signal: user value, product clarity, innovation.
+MeterMesh is strongest on AI application, innovation, verifiability, code quality, and real X Layer Testnet evidence. It is weakest on Mainnet eligibility, visible economic action, adoption, and proven market traction. Keep the recording focused on the signed proof lifecycle because that is real, distinctive, and stronger than making an unsupported payment claim.
 
-## 0:10-0:25, one real X Layer request
+## Four-sentence pitch
 
-Open the workspace and point to the real X Layer Testnet transaction hash. Show the request boundary before any AI result appears.
+AI agents can deliver work through messages, but buyers still have to trust that the answer matches their request and the claimed onchain evidence. MeterMesh is a verification and acceptance layer for AI work on X Layer. It binds a buyer-signed XMTP request to real X Layer receipt facts, a strict AI explanation, a seller-signed result hash, and a portable proof that the browser rechecks and can anchor onchain. As agents become economic participants, this proof layer lets users and future payment systems act on verified work instead of unverifiable messages.
 
-Say: “The buyer chooses one real X Layer transaction. The signed XMTP request binds this work unit to that transaction hash, so the agent cannot quietly explain a different transaction.”
+## 90-second demo script
 
-Judging signal: X Layer integration, verifiability.
+### 0:00-0:09, problem and product
 
-## 0:25-0:42, AI delivery with chain facts separated from model text
+Show the landing-page headline and the primary `Open live verifier` action.
 
-Show the delivery timeline and structured explanation.
+Say: “AI agents can deliver useful work through messages, but a buyer still has to trust that the answer matches the request and the claimed chain evidence. MeterMesh makes that work independently verifiable.”
 
-Say: “The worker reads the receipt from X Layer, normalizes status, value, fees, addresses, and logs, then asks the AI provider for structured explanation. The model writes the prose. It does not invent the chain facts or authorize payment. The seller signs the delivery and its canonical result hash.”
+Judging signal: user value, innovation, product clarity.
 
-Judging signal: AI application, data quality, technical depth.
+### 0:09-0:22, one active proof
 
-## 0:42-0:57, buyer acceptance and tamper proof
+Open the workspace. Point to the signed request, X Layer Testnet transaction hash, and `Verified` state.
 
-Click the acceptance preview, then open Protocol details or the evidence export.
+Say: “This is one real proof lifecycle. The buyer signed an XMTP request for this exact X Layer transaction, so the worker cannot silently substitute another transaction.”
 
-Say: “The buyer can preview an accept or reject decision. That decision stays local and unsigned in v1, so it cannot create a voucher or payment claim. Change the transaction, result, signature, or sequence and the verifier rejects the bundle.”
+Judging signal: X Layer integration, onchain data, product completeness.
 
-Judging signal: product completeness, verifiability, user control.
+### 0:22-0:39, bounded AI explanation
 
-## 0:57-1:10, X Layer-owned proof anchor
+Move through the delivery and receipt facts. Point to the successful or reverted status, provenance, and limitations.
 
-Show the proof anchor entry, open the public signed proof JSON, and point to the X Layer transaction link. If connectivity is uncertain, use the saved proof screenshot and the checked-in evidence files.
+Say: “The worker reads the receipt from X Layer and normalizes status, fees, addresses, logs, and provenance. AI writes only the explanation fields under a strict schema. It cannot alter the receipt facts, approve payment, or hide a missing revert reason.”
 
-Say: “This captured live proof rechecks the buyer signature, seller signature, result hash, and transaction binding. Its deterministic evidence hash is committed by MeterMesh's proof-anchor contract on X Layer Testnet, and the public transaction proves that commitment exists independently of the frontend.”
+Judging signal: application of AI, data quality, responsible AI, technical depth.
 
-Judging signal: X Layer integration, ecosystem contribution, verifiability.
+### 0:39-0:54, deterministic verification
 
-## 1:10-1:22, recovery and machine-readable surface
+Point to the buyer signature, seller signature, result binding, and proof checks. Open protocol details if needed.
 
-Show `/docs/` or `/.well-known/metermesh.json` briefly.
+Say: “The seller signs the canonical result hash. The browser then rechecks both signatures, the request-to-transaction binding, the delivery sequence, and the result hash. Any changed request, result, signer, or sequence fails closed.”
 
-Say: “This is built for agents and builders too. The protocol schema, OpenAPI read surfaces, machine manifest, and portable evidence make the workflow inspectable. XMTP retries, PostgreSQL outbox recovery, and replay checks protect the same proof when delivery is delayed or duplicated.”
+Judging signal: innovation, code quality, verifiability.
 
-Judging signal: scalability, growth potential, ecosystem contribution.
+### 0:54-1:07, X Layer proof anchor
 
-## 1:22-1:30, honest MPP boundary and close
+Open the anchored proof or its explorer link. Keep the contract address and anchor transaction visible.
 
-Show the MPP capability status with the verifier marked verified and Testnet mutation marked gated.
+Say: “The stable evidence hash is also committed by MeterMesh’s proof-anchor contract on X Layer Testnet. This explorer transaction proves the commitment exists independently of the frontend or database.”
 
-Say: “MeterMesh also includes a deterministic verifier for OKX's published MPP EIP-712 voucher shape. It checks signer, chain, escrow, cap, cumulative amount, and replay safety. OKX has not confirmed session mutation for Testnet chain 1952, so MeterMesh does not fake a payment. The value is verifiable AI work over X Layer, with settlement ready to plug in when the chain support is official.”
+Judging signal: X Layer integration, ecosystem contribution, onchain data.
 
-Judging signal: ecosystem fit, product honesty, technical depth.
+### 1:07-1:19, real failure path
 
-## Demo safety
+Show the published reverted proof and its `reverted` status, `failureReason: null`, and limitation.
 
-- Primary path: use the prerecorded live-proof capture and public deployment for the first five beats.
-- If the public worker or RPC is unavailable, use `/evidence/captured-session.json`, the proof-anchor deployment metadata, and screenshots. Do not claim a live call succeeded if it did not.
-- Keep the browser acceptance label visible as “unsigned preview” and the payment state as “No voucher.”
-- Do not open an MPP session, sign a voucher, fund a wallet, settle, or deploy to Mainnet during the demo.
+Say: “The same path handled this real reverted X Layer transaction. MeterMesh reports the revert and gas facts, while clearly stating that the RPC did not provide a verified reason. It does not invent one.”
+
+Judging signal: product completeness, application of AI, user trust.
+
+### 1:19-1:30, ecosystem surface and honest boundary
+
+Show the docs or manifest, then the compact MPP compatibility gate.
+
+Say: “Builders and agents can discover the schemas, machine manifest, OpenAPI reads, and portable evidence. The MPP voucher verifier is ready, while Testnet settlement stays gated until OKX confirms chain 1952 support. MeterMesh proves AI work today and gives future settlement a trustworthy acceptance input.”
+
+Judging signal: growth potential, ecosystem contribution, product honesty.
+
+## Recording safety
+
+- Use the published anchored proof as the primary path. It needs no wallet setup and is reverified in the browser.
+- Use the published reverted proof to show real failure handling. Its missing revert reason is an honest limitation.
+- Keep `No voucher`, `unsigned preview`, and the MPP gate visible whenever payment is discussed.
+- Do not claim MPP session creation, settlement, Mainnet deployment, revenue, or external adoption.
+- If Railway or venue internet fails, use the saved landing, workspace, and reverted-proof captures plus the checked-in evidence JSON.

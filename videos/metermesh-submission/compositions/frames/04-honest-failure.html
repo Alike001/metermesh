@@ -1,0 +1,489 @@
+<template>
+  <style>
+    @font-face {
+      font-family: "Geist Variable";
+      src: url("capture/assets/fonts/geist-latin-wght-normal-BgDaEnEv.woff2") format("woff2");
+      font-style: normal;
+      font-weight: 100 900;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: "Geist Mono Variable";
+      src: url("capture/assets/fonts/geist-mono-latin-wght-normal-XN7g48iV.woff2") format("woff2");
+      font-style: normal;
+      font-weight: 100 900;
+      font-display: swap;
+    }
+
+    #root {
+      position: relative;
+      width: 1920px;
+      height: 1080px;
+      overflow: hidden;
+      container-type: size;
+      color: #ffffff;
+      font-family: "Geist Variable";
+    }
+
+    [data-hf04="ground"] {
+      position: absolute;
+      inset: 0;
+      width: 100cqw;
+      height: 100cqh;
+      background: #0a0a0a;
+    }
+
+    [data-hf04="scene"] {
+      position: absolute;
+      inset: 0 auto auto 0;
+      width: 100cqw;
+      height: 83.333cqh;
+      overflow: hidden;
+      background: #0a0a0a;
+    }
+
+    [data-hf04="kicker"] {
+      color: #138a5b;
+      font-family: "Geist Mono Variable";
+      font-size: 14px;
+      font-weight: 620;
+      letter-spacing: 0.14em;
+      line-height: 1.4;
+      text-transform: uppercase;
+    }
+
+    [data-hf04="proof-layout"] {
+      position: absolute;
+      inset: 70px 100px 76px;
+      display: grid;
+      grid-template-columns: 780px 1fr;
+      column-gap: 92px;
+      align-items: center;
+      transform-origin: 50% 50%;
+    }
+
+    [data-hf04="proof-card"] {
+      width: 780px;
+      height: 724px;
+      overflow: hidden;
+      border: 1px solid #262827;
+      background: #ffffff;
+    }
+
+    [data-hf04="proof-card"] img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: 50% 0%;
+    }
+
+    [data-hf04="proof-copy"] {
+      align-self: center;
+      padding-bottom: 28px;
+    }
+
+    [data-hf04="proof-title"] {
+      margin: 32px 0 50px;
+      max-width: 760px;
+      color: #ffffff;
+      font-size: 132px;
+      font-weight: 700;
+      letter-spacing: -0.055em;
+      line-height: 0.82;
+      text-transform: lowercase;
+    }
+
+    [data-hf04="proof-stat"] {
+      padding: 22px 0;
+      border-top: 1px solid #262827;
+      color: #ffffff;
+      font-family: "Geist Mono Variable";
+      font-size: 30px;
+      font-weight: 560;
+      letter-spacing: -0.025em;
+      line-height: 1.25;
+    }
+
+    [data-hf04="proof-reason"] {
+      padding-top: 22px;
+      border-top: 1px solid #262827;
+      color: #138a5b;
+      font-family: "Geist Mono Variable";
+      font-size: 25px;
+      font-weight: 560;
+      line-height: 1.4;
+    }
+
+    [data-hf04="truth-copy"] {
+      position: absolute;
+      left: 106px;
+      top: 102px;
+      width: 1120px;
+    }
+
+    [data-hf04="truth-title"] {
+      margin: 44px 0 0;
+      max-width: 1100px;
+      color: #ffffff;
+      font-size: 86px;
+      font-weight: 700;
+      letter-spacing: -0.045em;
+      line-height: 0.98;
+    }
+
+    [data-hf04="truth-accent"] {
+      margin-top: 54px;
+      max-width: 1030px;
+      color: #138a5b;
+      font-size: 58px;
+      font-weight: 700;
+      letter-spacing: -0.035em;
+      line-height: 1.02;
+    }
+
+    [data-hf04="landing-crop"] {
+      position: absolute;
+      right: 100px;
+      top: 72px;
+      width: 410px;
+      height: 738px;
+      overflow: hidden;
+      border-left: 1px solid #262827;
+      background: #ffffff;
+    }
+
+    [data-hf04="landing-crop"] img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: 50% 0%;
+      opacity: 0.82;
+    }
+
+    [data-hf04="route-layout"] {
+      position: absolute;
+      inset: 82px 106px auto;
+      height: 718px;
+      border-top: 1px solid #262827;
+      border-bottom: 1px solid #262827;
+    }
+
+    [data-hf04="route-label"] {
+      position: absolute;
+      left: 0;
+      top: 34px;
+    }
+
+    [data-hf04="route-terminal"] {
+      position: absolute;
+      left: 0;
+      top: 136px;
+      display: flex;
+      align-items: flex-start;
+      width: 100%;
+      color: #ffffff;
+      font-family: "Geist Mono Variable";
+      font-size: 58px;
+      font-weight: 560;
+      letter-spacing: -0.045em;
+      line-height: 1.55;
+    }
+
+    [data-hf04="route-prompt"] {
+      flex: 0 0 54px;
+      color: #138a5b;
+    }
+
+    [data-hf04="route-text-wrap"] {
+      display: inline-flex;
+      align-items: flex-start;
+      min-width: 1370px;
+      white-space: nowrap;
+    }
+
+    [data-hf04="route-text"] {
+      white-space: pre;
+    }
+
+    [data-hf04="route-cursor"] {
+      display: inline-block;
+      width: 28px;
+      margin-left: 5px;
+      color: #138a5b;
+    }
+
+    [data-hf04="route-note"] {
+      position: absolute;
+      left: 0;
+      bottom: 34px;
+      color: #48504d;
+      font-family: "Geist Mono Variable";
+      font-size: 16px;
+      font-weight: 560;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    [data-hf04="lockup"] {
+      position: absolute;
+      inset: 98px 106px auto;
+      height: 684px;
+      border-top: 1px solid #262827;
+      border-bottom: 1px solid #262827;
+    }
+
+    [data-hf04="lockup-kicker"] {
+      position: absolute;
+      left: 0;
+      top: 34px;
+      color: #ffffff;
+      font-family: "Geist Mono Variable";
+      font-size: 24px;
+      font-weight: 620;
+      letter-spacing: 0.14em;
+      line-height: 1.35;
+      text-transform: uppercase;
+    }
+
+    [data-hf04="brand"] {
+      position: absolute;
+      left: 0;
+      top: 122px;
+      color: #ffffff;
+      font-size: 164px;
+      font-weight: 700;
+      letter-spacing: -0.06em;
+      line-height: 0.9;
+    }
+
+    [data-hf04="url"] {
+      position: absolute;
+      left: 4px;
+      top: 302px;
+      color: #ffffff;
+      font-family: "Geist Mono Variable";
+      font-size: 27px;
+      font-weight: 560;
+      letter-spacing: -0.02em;
+      line-height: 1.3;
+    }
+
+    [data-hf04="gate"] {
+      position: absolute;
+      left: 0;
+      bottom: 42px;
+      display: inline-flex;
+      align-items: center;
+      min-height: 76px;
+      padding: 0 30px;
+      background: #138a5b;
+      color: #0a0a0a;
+      font-family: "Geist Mono Variable";
+      font-size: 21px;
+      font-weight: 700;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      transform-origin: 0% 50%;
+    }
+
+    [data-hf04="lockup-index"] {
+      position: absolute;
+      right: 0;
+      top: 34px;
+      color: #48504d;
+      font-family: "Geist Mono Variable";
+      font-size: 14px;
+      font-weight: 560;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+  </style>
+
+  <div
+    id="root"
+    data-composition-id="04-honest-failure"
+    data-width="1920"
+    data-height="1080"
+    data-duration="26"
+  >
+    <div
+      id="hf4-ground"
+      class="clip"
+      data-hf04="ground"
+      data-start="0"
+      data-duration="26"
+      data-track-index="0"
+    ></div>
+
+    <section
+      id="hf4-proof-scene"
+      class="clip"
+      data-hf04="scene"
+      data-start="0"
+      data-duration="9"
+      data-track-index="1"
+      aria-label="Real reverted X Layer proof"
+    >
+      <div id="hf4-proof-layout" data-hf04="proof-layout">
+        <figure data-hf04="proof-card">
+          <img
+            src="assets/image_003.png"
+            alt="MeterMesh verified proof for a real reverted X Layer Testnet transaction"
+          />
+        </figure>
+        <div data-hf04="proof-copy">
+          <div data-hf04="kicker">Real X Layer Testnet receipt</div>
+          <div data-hf04="proof-title">reverted.</div>
+          <div data-hf04="proof-stat">60,817 gas · no logs</div>
+          <div data-hf04="proof-reason">verified reason: unavailable.</div>
+        </div>
+      </div>
+    </section>
+
+    <section
+      id="hf4-truth-scene"
+      class="clip"
+      data-hf04="scene"
+      data-start="9"
+      data-duration="8"
+      data-track-index="2"
+      aria-label="Truthful X Layer reporting"
+    >
+      <div data-hf04="truth-copy">
+        <div data-hf04="kicker">Proof without invention</div>
+        <div data-hf04="truth-title">MeterMesh reports what X Layer proves.</div>
+        <div id="hf4-truth-accent" data-hf04="truth-accent">It does not invent the reason.</div>
+      </div>
+      <figure data-hf04="landing-crop">
+        <img src="assets/full-page.png" alt="Deployed MeterMesh product landing page" />
+      </figure>
+    </section>
+
+    <section
+      id="hf4-routes-scene"
+      class="clip"
+      data-hf04="scene"
+      data-start="17"
+      data-duration="5"
+      data-track-index="3"
+      aria-label="Machine-readable MeterMesh routes"
+    >
+      <div data-hf04="route-layout">
+        <div data-hf04="route-label" data-hf04-label="true">
+          <span data-hf04="kicker">For agents and builders</span>
+        </div>
+        <div data-hf04="route-terminal">
+          <span data-hf04="route-prompt">›</span>
+          <span data-hf04="route-text-wrap">
+            <span id="hf4-route-text" data-hf04="route-text"></span>
+            <span id="hf4-route-cursor" data-hf04="route-cursor">_</span>
+          </span>
+        </div>
+        <div data-hf04="route-note">One product surface · human and machine readable</div>
+      </div>
+    </section>
+
+    <section
+      id="hf4-lockup-scene"
+      class="clip"
+      data-hf04="scene"
+      data-start="22"
+      data-duration="4"
+      data-track-index="4"
+      aria-label="MeterMesh final lockup"
+    >
+      <div id="hf4-lockup" data-hf04="lockup">
+        <div data-hf04="lockup-kicker">Verify AI work on X Layer</div>
+        <div data-hf04="lockup-index">MeterMesh · 2026</div>
+        <div data-hf04="brand">MeterMesh</div>
+        <div data-hf04="url">metermesh-web-production.up.railway.app</div>
+        <div id="hf4-gate" data-hf04="gate">MPP Testnet settlement: gated.</div>
+      </div>
+    </section>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+  <script>
+    (() => {
+      const compositionId = "04-honest-failure";
+      const proofLayout = document.getElementById("hf4-proof-layout");
+      const truthAccent = document.getElementById("hf4-truth-accent");
+      const routeText = document.getElementById("hf4-route-text");
+      const routeCursor = document.getElementById("hf4-route-cursor");
+      const gate = document.getElementById("hf4-gate");
+
+      const tl = gsap.timeline({ paused: true });
+
+      tl.fromTo(
+        proofLayout,
+        { scale: 0.74, opacity: 0 },
+        {
+          scale: 1,
+          opacity: 1,
+          duration: 1.1,
+          ease: "back.out(1.4)",
+          immediateRender: false,
+        },
+        0.08,
+      );
+
+      tl.set(truthAccent, { opacity: 0 }, 0);
+      tl.set(truthAccent, { opacity: 1 }, 11.4);
+
+      const ROUTE_STATES = [
+        { t: 0, text: "" },
+        { t: 0.18, text: "/.well" },
+        { t: 0.48, text: "/.well-known/" },
+        { t: 0.82, text: "/.well-known/metermesh.json" },
+        { t: 1.42, text: "/.well-known/metermesh.json\n/open" },
+        { t: 1.76, text: "/.well-known/metermesh.json\n/openapi.json" },
+        { t: 2.48, text: "/.well-known/metermesh.json\n/openapi.json\n/ll" },
+        { t: 2.82, text: "/.well-known/metermesh.json\n/openapi.json\n/llms.txt" },
+      ];
+
+      function routeStateAt(time) {
+        for (let index = ROUTE_STATES.length - 1; index >= 0; index -= 1) {
+          if (time >= ROUTE_STATES[index].t) return ROUTE_STATES[index].text;
+        }
+        return "";
+      }
+
+      const routeDriver = { t: 0 };
+      tl.to(
+        routeDriver,
+        {
+          t: 5,
+          duration: 5,
+          ease: "none",
+          onUpdate: () => {
+            routeText.textContent = routeStateAt(routeDriver.t);
+            routeCursor.style.opacity = Math.sin(routeDriver.t * Math.PI * 2.5) > 0 ? "1" : "0";
+          },
+        },
+        17,
+      );
+
+      tl.fromTo(
+        gate,
+        { scale: 0.72, opacity: 0 },
+        {
+          scale: 1,
+          opacity: 1,
+          duration: 0.72,
+          ease: "back.out(1.4)",
+          immediateRender: false,
+        },
+        22.14,
+      );
+
+      const hold = { t: 0 };
+      tl.to(hold, { t: 1, duration: 3.14, ease: "none" }, 22.86);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines[compositionId] = tl;
+    })();
+  </script>
+</template>

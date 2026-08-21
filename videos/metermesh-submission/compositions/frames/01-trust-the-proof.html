@@ -1,0 +1,419 @@
+<template>
+  <style>
+    @font-face {
+      font-family: "Geist Variable";
+      src: url("capture/assets/fonts/geist-latin-wght-normal-BgDaEnEv.woff2") format("woff2");
+      font-style: normal;
+      font-weight: 100 900;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: "Geist Mono Variable";
+      src: url("capture/assets/fonts/geist-mono-latin-wght-normal-XN7g48iV.woff2") format("woff2");
+      font-style: normal;
+      font-weight: 100 900;
+      font-display: swap;
+    }
+
+    #root {
+      position: relative;
+      width: 1920px;
+      height: 1080px;
+      overflow: hidden;
+      container-type: size;
+      color: #ffffff;
+      font-family: "Geist Variable";
+    }
+
+    .trust-proof-ground,
+    .trust-proof-content {
+      position: absolute;
+      inset: 0;
+      width: 100cqw;
+      height: 100cqh;
+    }
+
+    .trust-proof-ground {
+      background: #0a0a0a;
+    }
+
+    .trust-proof-content {
+      overflow: hidden;
+    }
+
+    .trust-proof-stage {
+      position: absolute;
+      inset: 0 auto auto 0;
+      width: 100cqw;
+      height: 83.333cqh;
+      overflow: hidden;
+    }
+
+    .trust-proof-register {
+      position: absolute;
+      inset: 0;
+      width: 100cqw;
+      height: 83.333cqh;
+      transform-origin: 31% 42%;
+    }
+
+    .trust-proof-copy-zone {
+      position: absolute;
+      left: 5.5cqw;
+      top: 20.5cqh;
+      width: 64.5cqw;
+      min-height: 35cqh;
+    }
+
+    .trust-proof-message,
+    .trust-proof-evidence {
+      position: absolute;
+      inset: 0 auto auto 0;
+      width: 64.5cqw;
+      min-height: 20cqh;
+      font-size: 4.5cqw;
+      font-weight: 700;
+      line-height: 0.98;
+      letter-spacing: -0.04em;
+      text-transform: lowercase;
+    }
+
+    .trust-proof-message-word {
+      display: inline-block;
+      margin-right: 0.2em;
+      opacity: 0;
+      will-change: transform, opacity;
+    }
+
+    .trust-proof-evidence {
+      white-space: nowrap;
+    }
+
+    .trust-proof-payoff {
+      position: absolute;
+      left: 0;
+      top: 12.5cqh;
+      width: 61cqw;
+      color: #138a5b;
+      font-size: 2.8cqw;
+      font-weight: 600;
+      line-height: 1.05;
+      letter-spacing: -0.025em;
+      text-transform: lowercase;
+      opacity: 0;
+      will-change: transform, opacity;
+    }
+
+    .trust-proof-rule {
+      position: absolute;
+      left: 5.5cqw;
+      top: 48.5cqh;
+      width: 25cqw;
+      height: 2px;
+      background: #138a5b;
+      transform-origin: left center;
+      will-change: transform;
+    }
+
+    .trust-proof-divider {
+      position: absolute;
+      left: 72cqw;
+      top: 14cqh;
+      width: 1px;
+      height: 46cqh;
+      background: #262827;
+    }
+
+    .trust-proof-product-surface {
+      position: absolute;
+      inset: 0 auto auto 0;
+      width: 100cqw;
+      height: 83.333cqh;
+      overflow: hidden;
+      will-change: opacity, filter;
+    }
+
+    .trust-proof-product-world {
+      position: absolute;
+      inset: 0;
+      width: 100cqw;
+      height: 83.333cqh;
+      transform-origin: 50% 50%;
+      will-change: transform;
+    }
+
+    .trust-proof-page-frame {
+      position: absolute;
+      left: 40.885cqw;
+      top: 5.93cqh;
+      width: 18.23cqw;
+      height: 71.02cqh;
+      box-sizing: border-box;
+      padding: 0.52cqw;
+      overflow: hidden;
+      background: #0a0a0a;
+      border: 1px solid #262827;
+    }
+
+    .trust-proof-page-media {
+      position: relative;
+      width: 17.19cqw;
+      height: 69.1cqh;
+      overflow: hidden;
+      background: #ffffff;
+    }
+
+    .trust-proof-page-image {
+      display: block;
+      width: 17.19cqw;
+      height: 69.1cqh;
+      object-fit: fill;
+      filter: brightness(0.7);
+    }
+
+    .trust-proof-crop-target {
+      position: absolute;
+      left: 31.1%;
+      top: 12.45%;
+      width: 4px;
+      height: 4px;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .trust-proof-value-label {
+      position: absolute;
+      left: 20cqw;
+      top: 79.1cqh;
+      width: 60cqw;
+      color: #138a5b;
+      font-family: "Geist Mono Variable";
+      font-size: 0.72cqw;
+      font-weight: 560;
+      line-height: 1;
+      letter-spacing: 0.14em;
+      text-align: center;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+  </style>
+
+  <div
+    id="root"
+    data-composition-id="01-trust-the-proof"
+    data-start="0"
+    data-duration="16.4"
+    data-width="1920"
+    data-height="1080"
+  >
+    <div
+      id="hf1-ground"
+      class="clip trust-proof-ground"
+      data-start="0"
+      data-duration="16.4"
+      data-track-index="0"
+    ></div>
+
+    <div
+      id="hf1-content"
+      class="clip trust-proof-content"
+      data-start="0"
+      data-duration="16.4"
+      data-track-index="1"
+    >
+      <div class="trust-proof-stage">
+        <div class="trust-proof-register" id="hf1-register">
+          <div class="trust-proof-copy-zone">
+            <div
+              class="trust-proof-message"
+              id="hf1-message"
+              data-layout-allow-overlap
+              aria-label="AI work arrives as a message."
+            >
+              <span class="trust-proof-message-word">AI</span>
+              <span class="trust-proof-message-word">work</span>
+              <span class="trust-proof-message-word">arrives</span>
+              <span class="trust-proof-message-word">as</span>
+              <span class="trust-proof-message-word">a</span>
+              <span class="trust-proof-message-word">message.</span>
+            </div>
+            <div class="trust-proof-evidence" id="hf1-evidence">Trust needs evidence.</div>
+            <div class="trust-proof-payoff" id="hf1-payoff">MeterMesh verifies both.</div>
+          </div>
+          <div class="trust-proof-rule" id="hf1-rule"></div>
+          <div class="trust-proof-divider"></div>
+        </div>
+
+        <div
+          class="trust-proof-product-surface"
+          id="hf1-product-surface"
+          data-layout-allow-overflow
+        >
+          <div class="trust-proof-product-world" id="hf1-product-world">
+            <div class="trust-proof-page-frame">
+              <div class="trust-proof-page-media">
+                <img
+                  class="trust-proof-page-image"
+                  id="hf1-page-image"
+                  src="assets/image_001.png"
+                  alt=""
+                />
+                <div class="trust-proof-crop-target" id="hf1-crop-target"></div>
+              </div>
+            </div>
+            <div class="trust-proof-value-label" id="hf1-value-label">
+              USER VALUE · INNOVATION · PRODUCT CLARITY.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+  <script>
+    (() => {
+      const compositionId = "01-trust-the-proof";
+      const root = document.querySelector('[data-composition-id="01-trust-the-proof"]');
+      const register = document.getElementById("hf1-register");
+      const message = document.getElementById("hf1-message");
+      const evidence = document.getElementById("hf1-evidence");
+      const payoff = document.getElementById("hf1-payoff");
+      const rule = document.getElementById("hf1-rule");
+      const productSurface = document.getElementById("hf1-product-surface");
+      const productWorld = document.getElementById("hf1-product-world");
+      const cropTarget = document.getElementById("hf1-crop-target");
+      const valueLabel = document.getElementById("hf1-value-label");
+      const words = Array.from(root.querySelectorAll(".trust-proof-message-word"));
+
+      const tl = gsap.timeline({ paused: true });
+
+      const wordContent = words.map((element) => element.textContent.trim());
+      const BASE_WORD_WINDOW = 0.18;
+      const SECONDS_PER_CHARACTER = 0.028;
+      let wordCursor = 0.18;
+      const WORD_TIMELINE = wordContent.map((text, index) => {
+        const duration = BASE_WORD_WINDOW + text.length * SECONDS_PER_CHARACTER;
+        const start = wordCursor;
+        wordCursor += duration;
+        return { index, start, end: wordCursor };
+      });
+
+      WORD_TIMELINE.forEach((entry) => {
+        tl.fromTo(
+          words[entry.index],
+          { y: 0.65 * 86, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.42, ease: "power3.out", immediateRender: false },
+          entry.start,
+        );
+      });
+
+      tl.fromTo(
+        rule,
+        { scaleX: 0 },
+        { scaleX: 1, duration: 1.35, ease: "power3.out", immediateRender: false },
+        0.24,
+      );
+
+      const TEXT_STATES = [
+        { t: 0, key: "message" },
+        { t: 4, key: "evidence" },
+      ];
+
+      function textStateAt(time) {
+        for (let index = TEXT_STATES.length - 1; index >= 0; index -= 1) {
+          if (time >= TEXT_STATES[index].t) return TEXT_STATES[index].key;
+        }
+        return TEXT_STATES[0].key;
+      }
+
+      let lastTextState = "";
+      const textDriver = { t: 0 };
+      message.style.opacity = "1";
+      evidence.style.opacity = "0";
+
+      tl.to(
+        textDriver,
+        {
+          t: 8,
+          duration: 8,
+          ease: "none",
+          onUpdate: () => {
+            const nextState = textStateAt(textDriver.t);
+            if (nextState === lastTextState) return;
+            message.style.opacity = nextState === "message" ? "1" : "0";
+            evidence.style.opacity = nextState === "evidence" ? "1" : "0";
+            lastTextState = nextState;
+          },
+        },
+        0,
+      );
+
+      tl.fromTo(
+        payoff,
+        { y: 36, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.62, ease: "power4.out", immediateRender: false },
+        5.25,
+      );
+
+      tl.to(
+        register,
+        { scale: 1.1, filter: "blur(18px)", duration: 0.25, ease: "power3.in" },
+        7.75,
+      );
+      tl.to(register, { opacity: 0, duration: 0.25, ease: "none" }, 7.75);
+
+      const worldRect = productWorld.getBoundingClientRect();
+      const targetRect = cropTarget.getBoundingClientRect();
+      const measuredOffsetX = targetRect.width
+        ? targetRect.left + targetRect.width / 2 - (worldRect.left + worldRect.width / 2)
+        : -62;
+      const measuredOffsetY = targetRect.height
+        ? targetRect.top + targetRect.height / 2 - (worldRect.top + worldRect.height / 2)
+        : -293;
+      const OPENING_SCALE = 5.6;
+      const cam = {
+        scale: OPENING_SCALE,
+        x: -measuredOffsetX * OPENING_SCALE,
+        y: -measuredOffsetY * OPENING_SCALE,
+      };
+
+      function applyCamera() {
+        productWorld.style.transform = `translate(${cam.x}px, ${cam.y}px) scale(${cam.scale})`;
+      }
+
+      applyCamera();
+      tl.set(productSurface, { opacity: 0 }, 0);
+      tl.set(valueLabel, { opacity: 0 }, 0);
+      tl.fromTo(
+        productSurface,
+        { opacity: 0.15, filter: "blur(18px)" },
+        {
+          opacity: 1,
+          filter: "blur(0px)",
+          duration: 0.34,
+          ease: "expo.out",
+          immediateRender: false,
+        },
+        8,
+      );
+      tl.to(
+        cam,
+        {
+          scale: 1,
+          x: 0,
+          y: 0,
+          duration: 4.7,
+          ease: "power4.out",
+          onUpdate: applyCamera,
+        },
+        8.3,
+      );
+      tl.set(valueLabel, { opacity: 1 }, 14);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines[compositionId] = tl;
+    })();
+  </script>
+</template>

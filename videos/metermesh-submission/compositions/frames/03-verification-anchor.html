@@ -1,0 +1,607 @@
+<template>
+  <div
+    id="root"
+    data-composition-id="03-verification-anchor"
+    data-width="1920"
+    data-height="1080"
+    data-duration="24.4"
+  >
+    <div
+      id="hf3-ground"
+      class="clip hf3-ground"
+      data-start="0"
+      data-duration="24.4"
+      data-track-index="0"
+    ></div>
+
+    <div
+      id="hf3-scene"
+      class="clip hf3-scene"
+      data-start="0"
+      data-duration="24.4"
+      data-track-index="1"
+    >
+      <header class="hf3-title-wrap" data-layout-allow-overlap>
+        <div class="hf3-kicker">INDEPENDENT VERIFICATION / 03</div>
+        <h1 class="hf3-title"><span>proof</span> survives the interface.</h1>
+      </header>
+
+      <div class="hf3-divider" aria-hidden="true"></div>
+
+      <section class="hf3-stage" aria-label="Browser verification and X Layer commitment">
+        <article class="hf3-card hf3-card-left">
+          <div class="hf3-card-head hf3-card-copy">
+            <span>BROWSER PROOF</span>
+            <span>LOCAL / SIGNED</span>
+          </div>
+          <div class="hf3-proof-body">
+            <div class="hf3-check-list" aria-label="Browser verification checks">
+              <div class="hf3-check"><span>01</span><b>BUYER REQUEST</b></div>
+              <div class="hf3-check"><span>02</span><b>SELLER DELIVERY</b></div>
+              <div class="hf3-check"><span>03</span><b>X LAYER RECEIPT</b></div>
+              <div class="hf3-check"><span>04</span><b>RESULT BINDING</b></div>
+            </div>
+            <div
+              class="hf3-proof-crop"
+              aria-label="Real MeterMesh active proof rail"
+              data-layout-allow-overflow
+            >
+              <img
+                class="hf3-proof-image"
+                src="assets/image_002.png"
+                alt="MeterMesh browser proof rail with locally reverified evidence"
+              />
+              <div class="hf3-crop-mark">REAL BROWSER SURFACE</div>
+            </div>
+          </div>
+        </article>
+
+        <article class="hf3-card hf3-card-right">
+          <div class="hf3-card-head hf3-card-copy">
+            <span>X LAYER COMMITMENT</span>
+            <span>PUBLIC / STABLE</span>
+          </div>
+          <div class="hf3-anchor-body">
+            <div class="hf3-anchor-field hf3-anchor-hash">
+              <span>ANCHOR HASH</span>
+              <strong>0x9a40e300…fd830e33</strong>
+            </div>
+            <div class="hf3-anchor-field hf3-anchor-contract">
+              <span>CONTRACT</span>
+              <strong>0xE982…1683</strong>
+            </div>
+            <div class="hf3-anchor-field hf3-anchor-chain">
+              <span>CHAIN</span>
+              <strong>1952</strong>
+            </div>
+            <div class="hf3-anchor-state hf3-card-copy">
+              <span class="hf3-state-dot"></span>
+              <span>COMMITMENT OUTLIVES APP STATE</span>
+            </div>
+          </div>
+        </article>
+
+        <div class="hf3-edge-label hf3-edge-left">BROWSER REVERIFIES</div>
+        <div class="hf3-edge-label hf3-edge-right">X LAYER ANCHORS</div>
+
+        <svg
+          class="hf3-connector"
+          viewBox="0 0 300 74"
+          xmlns="http://www.w3.org/2000/svg"
+          aria-hidden="true"
+        >
+          <path id="hf3-path-left" d="M 10 37 H 126" />
+          <path id="hf3-path-core" d="M 126 37 C 136 20 164 20 174 37 C 164 54 136 54 126 37 Z" />
+          <path id="hf3-path-right" d="M 174 37 H 290" />
+        </svg>
+      </section>
+
+      <footer class="hf3-criteria" aria-label="Judging criteria">
+        <div class="hf3-criterion"><span>01</span>CODE QUALITY</div>
+        <div class="hf3-criterion"><span>02</span>ONCHAIN DATA</div>
+        <div class="hf3-criterion"><span>03</span>ECOSYSTEM</div>
+      </footer>
+    </div>
+
+    <style>
+      @font-face {
+        font-family: "Geist Variable";
+        src: url("capture/assets/fonts/geist-latin-wght-normal-BgDaEnEv.woff2") format("woff2");
+        font-style: normal;
+        font-weight: 100 900;
+      }
+
+      @font-face {
+        font-family: "IBM Plex Mono";
+        src: url("capture/assets/fonts/geist-mono-latin-wght-normal-XN7g48iV.woff2") format("woff2");
+        font-style: normal;
+        font-weight: 100 900;
+      }
+
+      #root {
+        position: relative;
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        container-type: size;
+        color: #ffffff;
+        font-family: "Geist Variable", sans-serif;
+      }
+
+      .hf3-ground {
+        position: absolute;
+        inset: 0;
+        background: #0a0a0a;
+      }
+
+      .hf3-scene {
+        position: absolute;
+        inset: 0;
+        height: 900px;
+        overflow: hidden;
+        perspective: 1800px;
+      }
+
+      .hf3-title-wrap {
+        position: absolute;
+        top: 54px;
+        left: 106px;
+        right: 106px;
+        text-align: center;
+        z-index: 8;
+      }
+
+      .hf3-kicker,
+      .hf3-card-head,
+      .hf3-check,
+      .hf3-anchor-field > span,
+      .hf3-anchor-field > strong,
+      .hf3-anchor-state,
+      .hf3-edge-label,
+      .hf3-criteria,
+      .hf3-crop-mark {
+        font-family: "IBM Plex Mono", monospace;
+        text-transform: uppercase;
+        letter-spacing: 0.14em;
+      }
+
+      .hf3-kicker {
+        margin-bottom: 10px;
+        color: #138a5b;
+        font-size: 14px;
+        font-weight: 620;
+      }
+
+      .hf3-title {
+        margin: 0;
+        color: #ffffff;
+        font-size: 84px;
+        font-weight: 700;
+        line-height: 0.98;
+        letter-spacing: -0.04em;
+        text-transform: lowercase;
+      }
+
+      .hf3-title span {
+        color: #138a5b;
+      }
+
+      .hf3-divider {
+        position: absolute;
+        top: 184px;
+        left: 959px;
+        width: 2px;
+        height: 610px;
+        background: #138a5b;
+        transform-origin: 50% 0%;
+        z-index: 1;
+      }
+
+      .hf3-stage {
+        position: absolute;
+        inset: 0;
+        transform-style: preserve-3d;
+        z-index: 3;
+      }
+
+      .hf3-card {
+        position: absolute;
+        top: 238px;
+        width: 720px;
+        height: 474px;
+        overflow: hidden;
+        border: 1px solid #262827;
+        transform-style: preserve-3d;
+        transform-origin: 50% 50%;
+        will-change: transform;
+      }
+
+      .hf3-card-left {
+        left: 108px;
+        background: #0a0a0a;
+      }
+
+      .hf3-card-right {
+        right: 108px;
+        color: #0a0a0a;
+        background: #138a5b;
+        border-color: rgba(17, 17, 17, 0.2);
+      }
+
+      .hf3-card-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        height: 54px;
+        padding: 0 24px;
+        border-bottom: 1px solid #262827;
+        color: #138a5b;
+        font-size: 12px;
+        font-weight: 620;
+      }
+
+      .hf3-card-right .hf3-card-head {
+        color: #0a0a0a;
+        border-bottom-color: rgba(17, 17, 17, 0.2);
+      }
+
+      .hf3-proof-body {
+        display: grid;
+        grid-template-columns: 184px 1fr;
+        height: 419px;
+      }
+
+      .hf3-check-list {
+        display: grid;
+        grid-template-rows: repeat(4, 1fr);
+        border-right: 1px solid #262827;
+      }
+
+      .hf3-check {
+        display: grid;
+        align-content: center;
+        gap: 8px;
+        padding: 0 18px;
+        border-bottom: 1px solid #262827;
+        color: #ffffff;
+        font-size: 11px;
+        line-height: 1.35;
+        transform-origin: 50% 50%;
+        will-change: transform;
+      }
+
+      .hf3-check:last-child {
+        border-bottom: 0;
+      }
+
+      .hf3-check span {
+        color: #138a5b;
+        font-size: 10px;
+      }
+
+      .hf3-check b {
+        font-weight: 560;
+      }
+
+      .hf3-proof-crop {
+        position: relative;
+        overflow: hidden;
+        background: #ffffff;
+      }
+
+      .hf3-proof-image {
+        position: absolute;
+        top: -430px;
+        left: -1080px;
+        width: 1620px;
+        height: auto;
+        max-width: none;
+        will-change: transform;
+      }
+
+      .hf3-crop-mark {
+        position: absolute;
+        right: 12px;
+        bottom: 11px;
+        padding: 7px 9px;
+        color: #ffffff;
+        background: #0a0a0a;
+        font-size: 9px;
+      }
+
+      .hf3-anchor-body {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: 190px 116px 58px;
+        height: 419px;
+      }
+
+      .hf3-anchor-field {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 24px 28px;
+        border-right: 1px solid rgba(17, 17, 17, 0.2);
+        border-bottom: 1px solid rgba(17, 17, 17, 0.2);
+        will-change: transform;
+      }
+
+      .hf3-anchor-field > span {
+        margin-bottom: 12px;
+        color: rgba(17, 17, 17, 0.55);
+        font-size: 11px;
+        font-weight: 620;
+      }
+
+      .hf3-anchor-field > strong {
+        color: #0a0a0a;
+        font-size: 23px;
+        font-weight: 660;
+        letter-spacing: -0.03em;
+        text-transform: none;
+      }
+
+      .hf3-anchor-hash {
+        grid-column: 1 / 3;
+        border-right: 0;
+      }
+
+      .hf3-anchor-hash > strong {
+        font-family: "Geist Variable", sans-serif;
+        font-size: 44px;
+        font-weight: 700;
+        letter-spacing: -0.04em;
+      }
+
+      .hf3-anchor-contract {
+        border-bottom: 1px solid rgba(17, 17, 17, 0.2);
+      }
+
+      .hf3-anchor-chain {
+        border-right: 0;
+      }
+
+      .hf3-anchor-chain > strong {
+        font-family: "Geist Variable", sans-serif;
+        font-size: 46px;
+        font-weight: 700;
+      }
+
+      .hf3-anchor-state {
+        grid-column: 1 / 3;
+        display: flex;
+        align-items: center;
+        gap: 11px;
+        padding: 0 28px;
+        color: rgba(17, 17, 17, 0.75);
+        font-size: 10px;
+        font-weight: 620;
+      }
+
+      .hf3-state-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #0a0a0a;
+      }
+
+      .hf3-edge-label {
+        position: absolute;
+        top: 728px;
+        z-index: 6;
+        padding: 9px 12px;
+        font-size: 11px;
+        font-weight: 620;
+        transform-origin: 50% 50%;
+        will-change: transform;
+      }
+
+      .hf3-edge-left {
+        left: 646px;
+        color: #138a5b;
+        background: #0a0a0a;
+        border: 1px solid #262827;
+      }
+
+      .hf3-edge-right {
+        right: 630px;
+        color: #0a0a0a;
+        background: #138a5b;
+        border: 1px solid rgba(17, 17, 17, 0.2);
+      }
+
+      .hf3-connector {
+        position: absolute;
+        top: 748px;
+        left: 810px;
+        width: 300px;
+        height: 74px;
+        overflow: visible;
+        z-index: 5;
+      }
+
+      .hf3-connector path {
+        fill: none;
+        stroke: #138a5b;
+        stroke-width: 2;
+        stroke-linecap: square;
+        stroke-linejoin: miter;
+      }
+
+      .hf3-criteria {
+        position: absolute;
+        left: 106px;
+        right: 106px;
+        top: 840px;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        height: 54px;
+        border-top: 1px solid #262827;
+        border-bottom: 1px solid #262827;
+        color: #ffffff;
+        font-size: 12px;
+        font-weight: 560;
+        z-index: 8;
+        will-change: transform;
+      }
+
+      .hf3-criterion {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 16px;
+        border-right: 1px solid #262827;
+        will-change: transform;
+      }
+
+      .hf3-criterion:last-child {
+        border-right: 0;
+      }
+
+      .hf3-criterion span {
+        color: #138a5b;
+      }
+    </style>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+    <script>
+      (() => {
+        const hf3Root = document.querySelector('[data-composition-id="03-verification-anchor"]');
+        const hf3Timeline = gsap.timeline({ paused: true });
+        window.__timelines = window.__timelines || {};
+        window.__timelines["03-verification-anchor"] = hf3Timeline;
+
+        const hf3Title = hf3Root.querySelector(".hf3-title-wrap");
+        const hf3Divider = hf3Root.querySelector(".hf3-divider");
+        const hf3LeftCard = hf3Root.querySelector(".hf3-card-left");
+        const hf3RightCard = hf3Root.querySelector(".hf3-card-right");
+        const hf3ProofImage = hf3Root.querySelector(".hf3-proof-image");
+        const hf3Checks = Array.from(hf3Root.querySelectorAll(".hf3-check"));
+        const hf3AnchorFields = [
+          hf3Root.querySelector(".hf3-anchor-hash"),
+          hf3Root.querySelector(".hf3-anchor-contract"),
+          hf3Root.querySelector(".hf3-anchor-chain"),
+        ];
+        const hf3CardCopy = Array.from(hf3Root.querySelectorAll(".hf3-card-copy"));
+        const hf3Labels = [
+          hf3Root.querySelector(".hf3-edge-left"),
+          hf3Root.querySelector(".hf3-edge-right"),
+        ];
+        const hf3Paths = Array.from(hf3Root.querySelectorAll(".hf3-connector path"));
+        const hf3Criteria = hf3Root.querySelector(".hf3-criteria");
+        const hf3CriterionItems = Array.from(hf3Root.querySelectorAll(".hf3-criterion"));
+
+        hf3Paths.forEach((hf3Path) => {
+          const hf3Length = hf3Path.getTotalLength();
+          hf3Path.style.strokeDasharray = `${hf3Length}`;
+          hf3Path.style.strokeDashoffset = `${hf3Length}`;
+        });
+
+        hf3Timeline.fromTo(
+          hf3Title,
+          { y: -36, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.5, ease: "power3.out" },
+          0,
+        );
+        hf3Timeline.fromTo(
+          hf3Divider,
+          { scaleY: 0, opacity: 0 },
+          { scaleY: 1, opacity: 1, duration: 1.1, ease: "power3.out" },
+          1.15,
+        );
+
+        hf3Timeline.fromTo(
+          hf3LeftCard,
+          { x: -420, rotateY: 23, opacity: 0 },
+          { x: 0, rotateY: 12, opacity: 1, duration: 1.05, ease: "power3.out" },
+          4.0,
+        );
+        hf3Timeline.fromTo(
+          hf3RightCard,
+          { x: 420, rotateY: -23, opacity: 0 },
+          { x: 0, rotateY: -12, opacity: 1, duration: 1.05, ease: "power3.out" },
+          4.18,
+        );
+
+        hf3CardCopy.forEach((hf3Element, hf3Index) => {
+          hf3Timeline.fromTo(
+            hf3Element,
+            { opacity: 0, y: 18 },
+            { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" },
+            4.55 + hf3Index * 0.08,
+          );
+        });
+
+        hf3Timeline.fromTo(
+          hf3ProofImage,
+          { y: 0 },
+          { y: -286, duration: 6.25, ease: "power1.inOut" },
+          5.0,
+        );
+
+        hf3Checks.forEach((hf3Check, hf3Index) => {
+          hf3Timeline.fromTo(
+            hf3Check,
+            { scale: 0, opacity: 0, y: 12 },
+            { scale: 1, opacity: 1, y: 0, duration: 0.58, ease: "power3.out" },
+            5.6 + hf3Index * 1.42,
+          );
+        });
+
+        hf3AnchorFields.forEach((hf3Field, hf3Index) => {
+          hf3Timeline.fromTo(
+            hf3Field,
+            { opacity: 0, y: 20 },
+            { opacity: 1, y: 0, duration: 0.65, ease: "power3.out" },
+            5.45 + hf3Index * 2.05,
+          );
+        });
+
+        hf3Timeline.to(hf3LeftCard, { y: -5, duration: 1.2, ease: "sine.inOut" }, 10.85);
+        hf3Timeline.to(hf3RightCard, { y: 5, duration: 1.2, ease: "sine.inOut" }, 10.85);
+        hf3Timeline.to(hf3LeftCard, { y: 0, duration: 1.2, ease: "sine.inOut" }, 12.05);
+        hf3Timeline.to(hf3RightCard, { y: 0, duration: 1.2, ease: "sine.inOut" }, 12.05);
+
+        hf3Labels.forEach((hf3Label, hf3Index) => {
+          hf3Timeline.fromTo(
+            hf3Label,
+            { scale: 0, opacity: 0, y: 10 },
+            { scale: 1, opacity: 1, y: 0, duration: 0.65, ease: "power3.out" },
+            12.45 + hf3Index * 1.55,
+          );
+        });
+
+        hf3Timeline.to(
+          hf3Paths[0],
+          { strokeDashoffset: 0, duration: 0.72, ease: "power2.out" },
+          16.0,
+        );
+        hf3Timeline.to(
+          hf3Paths[1],
+          { strokeDashoffset: 0, duration: 0.72, ease: "power2.out" },
+          16.52,
+        );
+        hf3Timeline.to(
+          hf3Paths[2],
+          { strokeDashoffset: 0, duration: 0.52, ease: "power2.out" },
+          17.05,
+        );
+
+        hf3Timeline.fromTo(
+          hf3Criteria,
+          { y: 28, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.55, ease: "power3.out" },
+          20.15,
+        );
+        hf3CriterionItems.forEach((hf3Item, hf3Index) => {
+          hf3Timeline.fromTo(
+            hf3Item,
+            { x: -14, opacity: 0 },
+            { x: 0, opacity: 1, duration: 0.45, ease: "power3.out" },
+            20.45 + hf3Index * 0.26,
+          );
+        });
+      })();
+    </script>
+  </div>
+</template>
