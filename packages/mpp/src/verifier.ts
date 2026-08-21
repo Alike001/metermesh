@@ -20,10 +20,13 @@ const hashSchema = z
   .string()
   .refine((value) => isHash(value), "Expected a 32-byte hash.")
   .transform((value): Hex => value.toLowerCase() as Hex);
-const amountSchema = z
+const unsignedAmountSchema = z
   .string()
-  .regex(DECIMAL_AMOUNT, "Amount must be an unsigned decimal string.")
-  .refine((value) => BigInt(value) > 0n, "Amount must be greater than zero.");
+  .regex(DECIMAL_AMOUNT, "Amount must be an unsigned decimal string.");
+const positiveAmountSchema = unsignedAmountSchema.refine(
+  (value) => BigInt(value) > 0n,
+  "Amount must be greater than zero.",
+);
 const signatureSchema = z
   .string()
   .regex(SIGNATURE, "Expected a 65-byte EVM signature.")
@@ -47,7 +50,7 @@ export const DEFAULT_MPP_ESCROW_CONTRACT = getAddress("0x5E550002e64FaF79B41D89f
 export const mppSessionCredentialSchema = z.strictObject({
   action: z.literal("session"),
   authorizedSigner: addressSchema.nullable(),
-  cap: amountSchema,
+  cap: positiveAmountSchema,
   chainId: z.number().int().positive(),
   channelId: hashSchema,
   currency: addressSchema,
@@ -62,7 +65,7 @@ export const mppSessionCredentialSchema = z.strictObject({
 export const mppVoucherSchema = z.strictObject({
   action: z.literal("voucher"),
   channelId: hashSchema,
-  cumulativeAmount: amountSchema,
+  cumulativeAmount: unsignedAmountSchema,
   signature: signatureSchema,
 });
 
@@ -186,6 +189,13 @@ export async function verifyMppVoucher(
   if (isFailure(credential)) return credential;
   const voucher = parseVoucher(voucherInput);
   if (isFailure(voucher)) return voucher;
+  const previousParsed = unsignedAmountSchema.safeParse(previousAmount);
+  if (!previousParsed.success) {
+    return failure(
+      "amount_invalid",
+      "Previous cumulative amount must be an unsigned decimal string.",
+    );
+  }
 
   if (
     credential.chainId === X_LAYER_TESTNET_CHAIN_ID &&
@@ -225,7 +235,7 @@ export async function verifyMppVoucher(
   }
 
   const amount = BigInt(voucher.cumulativeAmount);
-  const previous = BigInt(previousAmount);
+  const previous = BigInt(previousParsed.data);
   const cap = BigInt(credential.cap);
   if (amount > (1n << 128n) - 1n) {
     return failure("amount_invalid", "Voucher amount does not fit the published uint128 field.");

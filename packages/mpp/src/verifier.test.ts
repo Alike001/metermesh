@@ -165,5 +165,14 @@ describe("deterministic gated MPP voucher verifier", () => {
 
     expect(malformed).toMatchObject({ ok: false, code: "malformed_credential" });
     expect(invalidSignature).toMatchObject({ ok: false, code: "invalid_signature" });
+
+    const malformedPrevious = await verifyMppVoucher(
+      baseCredential,
+      await voucher("250"),
+      "not-a-number",
+      new InMemoryMppReplayGuard(),
+      policy,
+    );
+    expect(malformedPrevious).toMatchObject({ ok: false, code: "amount_invalid" });
   });
 });
