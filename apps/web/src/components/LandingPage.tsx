@@ -95,7 +95,7 @@ export function LandingPage({ onOpenWorkspace }: LandingPageProps) {
               Verifiable agent work on X Layer
             </p>
             <h1 data-reveal>
-              <span>AI work over messages,</span> <span>proven against X Layer receipts.</span>
+              <span>AI work over messages.</span> <span>X Layer proves the result.</span>
             </h1>
             <p className="hero-support" data-reveal>
               The live product proves the signed path from a buyer wallet through XMTP, PostgreSQL,

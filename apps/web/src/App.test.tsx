@@ -34,7 +34,7 @@ describe("MeterMesh product surface", () => {
 
     expect(
       screen.getByRole("heading", {
-        name: "AI work over messages, proven against X Layer receipts.",
+        name: "AI work over messages. X Layer proves the result.",
       }),
     ).toBeInTheDocument();
 

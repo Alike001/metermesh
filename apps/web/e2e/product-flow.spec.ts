@@ -5,7 +5,7 @@ test("a judge can understand the promise and inspect accepted-work proof", async
   await page.goto("/");
 
   await expect(
-    page.getByRole("heading", { name: "AI work over messages, proven against X Layer receipts." }),
+    page.getByRole("heading", { name: "AI work over messages. X Layer proves the result." }),
   ).toBeVisible();
   await expect(page.getByText("X Layer receipt reads")).toBeVisible();
 
