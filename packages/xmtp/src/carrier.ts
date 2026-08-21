@@ -165,6 +165,7 @@ export class NodeXmtpCarrier {
       backend,
       dbEncryptionKey: config.dbEncryptionKey,
       dbPath: config.dbPath,
+      disableDeviceSync: true,
       useSingleConnection: true,
     });
     await secureXmtpDatabasePath(config.dbPath);
