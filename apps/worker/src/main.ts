@@ -41,6 +41,7 @@ async function main(): Promise<void> {
       await database.ensurePublicTrialBudget(workerConfig.access.globalLimit);
     }
     carrier = await NodeXmtpCarrier.connect(xmtpConfig);
+    process.stdout.write(`[worker] XMTP client connected inbox=${carrier.inboxId}\n`);
     const worker = new MeterMeshTransportWorker({
       authorizeRequest: createRequestAuthorizer(workerConfig.access, database),
       carrier,
@@ -50,6 +51,7 @@ async function main(): Promise<void> {
       sellerWalletKey: xmtpConfig.walletKey,
       workerId: workerConfig.workerId,
     });
+    process.stdout.write("[worker] entering poll loop\n");
     while (!shutdown.signal.aborted) {
       try {
         const ingestResult = await worker.ingest();
