@@ -2,7 +2,7 @@
 
 This source-only Foundry package defines the smallest X Layer primitive for MeterMesh: a one-time commitment of a stable signed-evidence hash and the X Layer transaction hash that the evidence explains.
 
-The contract stores no funds, AI text, profiles, vouchers, or payment state. It is deployed on X Layer Testnet at `0xE9827c90f742C593F966B7E878e2a13fdC8f1683`. Deployment receipt and read-only bytecode verification passed. A live evidence anchor transaction remains separately gated because it spends gas and mutates the deployer wallet.
+The contract stores no funds, AI text, profiles, vouchers, or payment state. It is deployed on X Layer Testnet at `0xE9827c90f742C593F966B7E878e2a13fdC8f1683`. Deployment receipt and read-only bytecode verification passed. One approved live evidence anchor transaction also succeeded and is recorded in the deployment metadata below.
 
 Run the local tests with:
 

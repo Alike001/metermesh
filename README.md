@@ -16,6 +16,7 @@ Long-running agents need evidence that survives delayed messages, retries, dupli
 - Buyer-controlled acceptance and rejection
 - Replay-safe signed evidence
 - Portable proof for live and offline judging
+- Deterministic OKX MPP voucher verification boundary, with settlement still gated
 - Deferred OKX MPP adapter boundary
 
 ## Status
