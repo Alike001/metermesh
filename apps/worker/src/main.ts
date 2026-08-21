@@ -1,7 +1,7 @@
 import { explainTransaction } from "@metermesh/ai";
 import { fetchTransactionFacts } from "@metermesh/chain";
 import { MeterMeshDatabase } from "@metermesh/db";
-import { getMeterMeshXmtpConfig, NodeXmtpCarrier } from "@metermesh/xmtp";
+import { getMeterMeshXmtpConfig, NodeXmtpCarrier, XmtpRetryExhaustedError } from "@metermesh/xmtp";
 
 import { getMeterMeshWorkerConfig } from "./config.js";
 import { createRequestAuthorizer } from "./access.js";
@@ -51,11 +51,19 @@ async function main(): Promise<void> {
       workerId: workerConfig.workerId,
     });
     while (!shutdown.signal.aborted) {
-      await worker.ingest();
-      await worker.processAvailable();
-      await database.checkHealth();
-      health.markCycleSucceeded();
-      await delay(workerConfig.pollIntervalMs, shutdown.signal);
+      try {
+        await worker.ingest();
+        await worker.processAvailable();
+        await database.checkHealth();
+        health.markCycleSucceeded();
+        await delay(workerConfig.pollIntervalMs, shutdown.signal);
+      } catch (error) {
+        if (!(error instanceof XmtpRetryExhaustedError)) throw error;
+        process.stderr.write(
+          `[worker] XMTP temporarily unavailable after ${String(error.attempts)} attempts. Health remains stale until the next successful cycle.\n`,
+        );
+        await delay(Math.max(workerConfig.pollIntervalMs, 5_000), shutdown.signal);
+      }
     }
   } finally {
     health.markStopped();

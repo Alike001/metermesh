@@ -79,6 +79,62 @@ export interface InspectMessagesOptions {
   seenCarrierMessageIds?: ReadonlySet<string>;
 }
 
+export interface XmtpRetryOptions {
+  attempts?: number;
+  delayMs?: number;
+  sleep?: (durationMs: number) => Promise<void>;
+}
+
+export class XmtpRetryExhaustedError extends Error {
+  readonly attempts: number;
+
+  constructor(attempts: number, cause: unknown) {
+    super(`XMTP sync remained unavailable after ${String(attempts)} attempts.`, { cause });
+    this.name = "XmtpRetryExhaustedError";
+    this.attempts = attempts;
+  }
+}
+
+export function isRetryableXmtpError(error: unknown): boolean {
+  const message = error instanceof Error ? error.message : String(error);
+  return /(?:429|rate.?limit|resource has been exhausted|temporarily unavailable|unavailable|deadline exceeded|try again)/iu.test(
+    message,
+  );
+}
+
+export async function withXmtpRetry<T>(
+  operation: () => Promise<T>,
+  options: XmtpRetryOptions = {},
+): Promise<T> {
+  const attempts = options.attempts ?? 4;
+  const delayMs = options.delayMs ?? 2_000;
+  const sleep =
+    options.sleep ??
+    ((durationMs) => new Promise<void>((resolve) => setTimeout(resolve, durationMs)));
+  if (!Number.isSafeInteger(attempts) || attempts < 1) {
+    throw new RangeError("XMTP retry attempts must be a positive integer.");
+  }
+  if (!Number.isSafeInteger(delayMs) || delayMs < 0) {
+    throw new RangeError("XMTP retry delay must be a non-negative integer.");
+  }
+
+  let lastError: unknown;
+  for (let attempt = 1; attempt <= attempts; attempt += 1) {
+    try {
+      return await operation();
+    } catch (error) {
+      lastError = error;
+      if (!isRetryableXmtpError(error) || attempt === attempts) break;
+      await sleep(delayMs * 2 ** (attempt - 1));
+    }
+  }
+
+  if (isRetryableXmtpError(lastError)) {
+    throw new XmtpRetryExhaustedError(attempts, lastError);
+  }
+  throw lastError;
+}
+
 function toTextMessage(message: DecodedMessage): CarrierTextMessage | null {
   if (!isText(message) || typeof message.content !== "string") return null;
   return {
@@ -143,21 +199,23 @@ export class NodeXmtpCarrier {
   }
 
   async syncMessages(): Promise<DecodedMessage[]> {
-    await this.#client.conversations.syncAll(consentStates);
-    const conversations = this.#client.conversations.listDms({
-      consentStates,
-    });
-    const nestedMessages = await Promise.all(
-      conversations.map(async (conversation) => {
-        await conversation.sync();
-        return conversation.messages();
-      }),
-    );
-    return nestedMessages
-      .flat()
-      .sort((left, right) =>
-        left.sentAtNs < right.sentAtNs ? -1 : left.sentAtNs > right.sentAtNs ? 1 : 0,
+    return withXmtpRetry(async () => {
+      await this.#client.conversations.syncAll(consentStates);
+      const conversations = this.#client.conversations.listDms({
+        consentStates,
+      });
+      const nestedMessages = await Promise.all(
+        conversations.map(async (conversation) => {
+          await conversation.sync();
+          return conversation.messages();
+        }),
       );
+      return nestedMessages
+        .flat()
+        .sort((left, right) =>
+          left.sentAtNs < right.sentAtNs ? -1 : left.sentAtNs > right.sentAtNs ? 1 : 0,
+        );
+    });
   }
 
   async inspectMessages(
