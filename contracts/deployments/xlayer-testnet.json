@@ -1,0 +1,12 @@
+{
+  "network": "X Layer Testnet",
+  "chainId": 1952,
+  "rpcUrl": "https://testrpc.xlayer.tech/terigon",
+  "contract": "MeterMeshProofAnchor",
+  "address": "0xE9827c90f742C593F966B7E878e2a13fdC8f1683",
+  "deploymentTransaction": "0xf19caa7335ae10929aadc444ba149b803e64db428ac16dc2730df3dd0f241b65",
+  "deploymentBlock": 38854879,
+  "deployer": "0x404B8abf1034A548076FB2175c7740306Dd43B2C",
+  "receiptStatus": 1,
+  "anchorWrite": "not performed"
+}

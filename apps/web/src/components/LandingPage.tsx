@@ -231,7 +231,10 @@ export function LandingPage({ onOpenWorkspace }: LandingPageProps) {
               <span className="status-dot status-dot-amber" />
               <div>
                 <strong>Proof anchor source</strong>
-                <p>Deterministic hash and contract tests are ready. Deployment remains gated.</p>
+                <p>
+                  Contract is deployed and read-verified on Testnet. Live evidence writes remain
+                  gated.
+                </p>
               </div>
             </div>
           </div>
