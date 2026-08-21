@@ -10,4 +10,4 @@ Source: https://github.com/Alike001/metermesh
 Protocol schema: https://github.com/Alike001/metermesh/blob/main/packages/protocol/src/schema.ts
 Explanation schema: https://github.com/Alike001/metermesh/blob/main/packages/ai/src/schema.ts
 
-Execution is defined by signed MeterMesh envelopes carried over XMTP. No HTTP execution endpoint is published. Delivery cannot authorize billing. Only explicit buyer acceptance can advance the cumulative voucher.
+Execution is defined by signed MeterMesh envelopes carried over XMTP. No HTTP execution endpoint is published. The public verifier creates no voucher and moves no funds. In the planned MPP path, delivery cannot authorize billing and only explicit buyer acceptance may advance the cumulative voucher.

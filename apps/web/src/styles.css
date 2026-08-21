@@ -2102,6 +2102,25 @@ a:focus-visible {
   display: none;
 }
 
+.mobile-proof-summary {
+  display: grid;
+  gap: 2px;
+  text-align: left;
+}
+
+.mobile-proof-summary > span {
+  color: #707570;
+  font-family: "Geist Mono Variable", monospace;
+  font-size: 8px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.mobile-proof-summary strong {
+  font-size: 11px;
+  font-weight: 620;
+}
+
 .drawer-layer {
   position: fixed;
   z-index: 20;
@@ -2356,6 +2375,8 @@ a:focus-visible {
 
   .mobile-proof-toggle {
     display: inline-flex;
+    min-height: 46px;
+    justify-content: space-between;
   }
 }
 
@@ -2486,7 +2507,12 @@ a:focus-visible {
 
   .titlebar-actions {
     width: 100%;
-    justify-content: space-between;
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .titlebar-actions > .button {
+    width: 100%;
   }
 
   .message-row {

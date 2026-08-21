@@ -8,7 +8,7 @@ test("a developer can understand the integration boundary and inspect machine ar
   await expect(
     page.getByRole("heading", { name: "One accepted result advances the meter." }),
   ).toBeVisible();
-  await expect(page.getByText("Fixed amount per accepted delivery")).toBeVisible();
+  await expect(page.getByText("Protocol tested, voucher unavailable")).toBeVisible();
   await expect(page.getByText("AI never signs a buyer voucher.")).toBeVisible();
   await expect(page.getByText("XMTP browser and worker")).toBeVisible();
   await expect(

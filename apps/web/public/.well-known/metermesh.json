@@ -23,7 +23,7 @@
     "basis": "fixed amount per buyer-accepted delivery",
     "authorization": "buyer signature over a cumulative voucher",
     "rule": "Delivery alone cannot increase the amount owed. Rejection creates no voucher increase.",
-    "settlement": "highest accepted cumulative voucher through OKX MPP escrow on X Layer"
+    "settlement": "planned highest accepted cumulative voucher through OKX MPP escrow, currently gated on X Layer Testnet"
   },
   "authentication": {
     "publicDocs": "none",
@@ -31,7 +31,7 @@
     "permissions": [
       "read the public X Layer transaction",
       "send and receive signed MeterMesh envelopes",
-      "ask the buyer wallet to sign only after explicit acceptance"
+      "for the future MPP path, ask the buyer wallet to sign only after explicit acceptance"
     ]
   },
   "capabilityStatus": [
@@ -76,7 +76,7 @@
       "sessionId": "session-example-001",
       "version": 1,
       "payload": {
-        "transactionHash": "0xafe21e8d40d641bec6bba559ed40a2289689cab89d306f67c99e0ee38873973f",
+        "transactionHash": "0xf0bbcf38db1ee7935111b2be46fd1062d097e0461b2f48f34b9a5ba17482fafd",
         "workUnitId": "work-example-001"
       },
       "type": "work.request"
@@ -139,8 +139,8 @@
     "explanationSchema": "https://github.com/Alike001/metermesh/blob/main/packages/ai/src/schema.ts"
   },
   "knownLimitations": [
-    "The primary session visualization replays captured local protocol evidence, while the live XMTP verifier is a separate labeled panel.",
-    "No captured or documentation-only interaction proves that funds moved.",
-    "The live XMTP and AI path plus bounded trial controls are verified in development. Public Railway deployment and OKX MPP session mutation remain pending."
+    "The public workspace separates live signed XMTP proof from an offline local validator fixture.",
+    "The public trial and all preview decisions are nonbillable. They create no voucher and move no funds.",
+    "The live XMTP, X Layer receipt, AI, PostgreSQL, signed delivery, and Railway paths are verified. OKX MPP session mutation on chain 1952 remains gated."
   ]
 }

@@ -28,6 +28,6 @@ describe("captured session evidence", () => {
   });
 
   it("shortens fixture hashes while keeping both ends visible", () => {
-    expect(shortHash(capturedSession.result.fixtureTransactionHash)).toBe("0x11111111…11111111");
+    expect(shortHash(capturedSession.result.fixtureTransactionHash)).toBe("0xf0bbcf38…7482fafd");
   });
 });

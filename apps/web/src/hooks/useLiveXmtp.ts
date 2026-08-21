@@ -8,7 +8,7 @@ import type {
   SentBrowserRequest,
 } from "../services/browser-xmtp";
 
-type LiveXmtpState =
+export type LiveXmtpState =
   | { status: "disconnected" }
   | { status: "connecting" }
   | { address: `0x${string}`; inboxId: string; status: "ready" }

@@ -18,28 +18,31 @@ interface LandingPageProps {
 
 const mechanismSteps = [
   {
-    detail: "One deposit sets the maximum exposure before any work begins.",
-    label: "Fund one capped session",
+    detail: "The buyer wallet signs a versioned request for one X Layer transaction.",
+    label: "Sign one request",
   },
   {
-    detail: "The buyer and agent exchange signed work envelopes over XMTP.",
-    label: "Request work over XMTP",
+    detail: "XMTP carries the request and seller-signed result through a durable worker.",
+    label: "Verify work over XMTP",
   },
   {
-    detail: "Only buyer-accepted delivery advances the cumulative voucher.",
-    label: "Accept useful deliveries",
+    detail: "The interface previews the deterministic rule without signing a payment voucher.",
+    label: "Preview buyer acceptance",
   },
   {
-    detail: "The highest accepted voucher settles once through OKX Payments.",
-    label: "Settle once on X Layer",
+    detail: "MPP open, voucher, and close stay gated until OKX confirms chain 1952 support.",
+    label: "Unlock MPP settlement",
   },
 ];
 
 const proofItems = [
-  ["Signed messages", "Every request, delivery, and acceptance has a verifiable envelope."],
-  ["Buyer control", "Delivery alone never creates an amount owed."],
-  ["Cumulative billing", "One monotonic voucher replaces repeated per-message transfers."],
-  ["Recoverable proof", "Indexed state can be rebuilt from signed messages and chain events."],
+  ["Signed messages", "The live request and delivery carry re-runnable EIP-191 signatures."],
+  ["Buyer control", "The public verifier cannot create a voucher or an amount owed."],
+  ["Deterministic meter", "Protocol tests enforce one fixed increase for each accepted work unit."],
+  [
+    "Durable recovery",
+    "PostgreSQL outbox state survives retries, duplicates, and worker restarts.",
+  ],
 ];
 
 export function LandingPage({ onOpenWorkspace }: LandingPageProps) {
@@ -94,12 +97,12 @@ export function LandingPage({ onOpenWorkspace }: LandingPageProps) {
               <span>AI work over messages,</span> <span>paid only when accepted.</span>
             </h1>
             <p className="hero-support" data-reveal>
-              MeterMesh connects XMTP-delivered AI work to an OKX metered payment session and
-              settles the accepted amount on X Layer.
+              The live product proves the signed path from a buyer wallet through XMTP, PostgreSQL,
+              an X Layer receipt, and an AI result. OKX MPP settlement remains visibly gated.
             </p>
             <div className="hero-actions" data-reveal>
               <button className="button button-primary" onClick={onOpenWorkspace} type="button">
-                Open metered session
+                Open live verifier
                 <ArrowRight aria-hidden="true" size={18} />
               </button>
               <button className="text-action" onClick={inspectEvidence} type="button">
@@ -146,15 +149,15 @@ export function LandingPage({ onOpenWorkspace }: LandingPageProps) {
                 <span className="anatomy-index">03</span>
                 <div>
                   <strong>Acceptance</strong>
-                  <p>Buyer decides if the delivery advances the amount owed.</p>
+                  <p>Buyer previews whether the delivery would advance the meter.</p>
                 </div>
-                <span className="anatomy-state">Controlled</span>
+                <span className="anatomy-state anatomy-state-blocked">Preview</span>
               </li>
               <li>
                 <span className="anatomy-index">04</span>
                 <div>
                   <strong>Settlement</strong>
-                  <p>Highest accepted voucher settles through OKX on X Layer.</p>
+                  <p>Planned highest voucher settlement through OKX on X Layer.</p>
                 </div>
                 <span className="anatomy-state anatomy-state-blocked">Gated</span>
               </li>
@@ -187,8 +190,8 @@ export function LandingPage({ onOpenWorkspace }: LandingPageProps) {
             <p className="section-kicker">Proof before polish</p>
             <h2 id="evidence-title">Every amount has a reason.</h2>
             <p>
-              The interface exposes the exact relationship between a work request, its delivery,
-              buyer acceptance, and the final chain receipt.
+              The interface exposes the signed request, verified delivery, X Layer receipt, local
+              decision preview, and the exact boundary where payment remains unavailable.
             </p>
           </div>
           <div className="proof-band">
@@ -231,7 +234,7 @@ export function LandingPage({ onOpenWorkspace }: LandingPageProps) {
             <h2>See the work and the proof in one place.</h2>
           </div>
           <button className="button button-inverse" onClick={onOpenWorkspace} type="button">
-            Open metered session
+            Open live verifier
             <ArrowRight aria-hidden="true" size={18} />
           </button>
         </section>

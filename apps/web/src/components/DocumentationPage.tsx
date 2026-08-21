@@ -22,9 +22,21 @@ const navigation = [
 const lifecycle = [
   ["01", "Request", "Buyer sends a signed transaction-hash request over XMTP."],
   ["02", "Deliver", "The agent returns a schema-valid explanation bound to chain evidence."],
-  ["03", "Decide", "The buyer accepts useful work or rejects it without increasing the meter."],
-  ["04", "Voucher", "Acceptance authorizes the next cumulative voucher amount."],
-  ["05", "Settle", "The highest accepted voucher settles once through OKX MPP."],
+  [
+    "03",
+    "Preview",
+    "The current interface tests accept or reject locally without authorizing funds.",
+  ],
+  [
+    "04",
+    "Voucher · gated",
+    "The protocol rule is tested, but no public buyer voucher path is enabled.",
+  ],
+  [
+    "05",
+    "Settle · gated",
+    "OKX MPP settlement waits for confirmed chain 1952 Service Account support.",
+  ],
 ] as const;
 
 const schemaRows = [
@@ -155,9 +167,9 @@ export function DocumentationPage() {
           <section className="docs-intro" id="start">
             <h1>One accepted result advances the meter.</h1>
             <p>
-              MeterMesh connects an AI transaction explanation delivered over XMTP to a
-              buyer-controlled OKX payment session on X Layer. A delivery can ask to be paid. Only
-              the buyer can authorize that payment.
+              MeterMesh currently proves a signed AI transaction explanation from a buyer wallet
+              through XMTP, PostgreSQL, and an X Layer receipt. The buyer-controlled OKX payment
+              session is the gated next path, and the public verifier cannot authorize funds.
             </p>
             <dl className="docs-facts">
               <div>
@@ -170,11 +182,11 @@ export function DocumentationPage() {
               </div>
               <div>
                 <dt>Billing rule</dt>
-                <dd>Fixed amount per accepted delivery</dd>
+                <dd>Protocol tested, voucher unavailable</dd>
               </div>
               <div>
                 <dt>Settlement</dt>
-                <dd>Highest voucher on X Layer</dd>
+                <dd>Gated on chain 1952 support</dd>
               </div>
             </dl>
 
@@ -197,7 +209,7 @@ export function DocumentationPage() {
               <span>02</span>
               <div>
                 <h2 id="lifecycle-title">Lifecycle</h2>
-                <p>Work moves through messages. Value moves only after a buyer decision.</p>
+                <p>The work path is live. The value path remains visibly gated.</p>
               </div>
             </div>
             <ol className="docs-lifecycle">
@@ -278,10 +290,11 @@ export function DocumentationPage() {
             <div className="docs-trust-grid">
               <article>
                 <span>Onchain authority</span>
-                <h3>X Layer is settlement truth.</h3>
+                <h3>X Layer receipts are live truth.</h3>
                 <p>
-                  The MPP escrow, token balance, highest valid voucher, and final receipt cannot be
-                  overridden by documentation or a database projection.
+                  The current worker reads the public transaction and receipt directly from chain
+                  1952. Future escrow and settlement state must also come from chain, and none is
+                  inferred by this documentation or a database projection.
                 </p>
                 <dl>
                   <div>
@@ -299,7 +312,9 @@ export function DocumentationPage() {
                 <h3>Signed messages carry the work.</h3>
                 <p>
                   XMTP carries private requests and deliveries. MeterMesh verifies signatures,
-                  ordering, references, replay protection, and exact cumulative amounts.
+                  ordering, references, replay protection, and the canonical result hash. Exact
+                  cumulative amounts are enforced in protocol tests while voucher execution stays
+                  gated.
                 </p>
                 <dl>
                   <div>

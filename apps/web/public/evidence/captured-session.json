@@ -62,7 +62,7 @@
         "result": "X Layer Testnet"
       }
     ],
-    "fixtureTransactionHash": "0x1111111111111111111111111111111111111111111111111111111111111111",
-    "note": "This fixture proves the local message and billing state flow. It is not an onchain transaction or an AI-provider response."
+    "fixtureTransactionHash": "0xf0bbcf38db1ee7935111b2be46fd1062d097e0461b2f48f34b9a5ba17482fafd",
+    "note": "This local fixture references a real confirmed X Layer Testnet USDT0 approval. Its prose and checks are offline validator examples, not a captured network or AI-provider response."
   }
 }

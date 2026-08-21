@@ -7,6 +7,7 @@ import { expect, test, type Page } from "@playwright/test";
 import { generatePrivateKey, privateKeyToAccount } from "viem/accounts";
 
 import { MeterMeshTransportWorker } from "../../worker/src/orchestrator";
+import { verifyLiveEvidenceBundle } from "../src/domain/live-evidence";
 import { LiveMemoryOutbox } from "./helpers/memory-outbox";
 
 declare global {
@@ -171,6 +172,9 @@ test("a real injected buyer wallet receives one verified worker delivery", async
     ).toBeVisible({ timeout: 30_000 });
     await page.getByRole("button", { name: "Connect wallet to XMTP" }).click();
     await waitForXmtpConnection(page);
+    await expect(page.getByLabel("X Layer Testnet transaction hash")).toHaveValue(
+      "0xf0bbcf38db1ee7935111b2be46fd1062d097e0461b2f48f34b9a5ba17482fafd",
+    );
     await page.getByRole("button", { name: "Request explanation" }).click();
     await expect(page.getByRole("button", { name: "Waiting for agent" })).toBeVisible({
       timeout: 60_000,
@@ -185,10 +189,25 @@ test("a real injected buyer wallet receives one verified worker delivery", async
       await worker.processAvailable();
       await worker.processAvailable();
     }
-    await expect(page.getByText("Verified live")).toBeVisible({ timeout: 120_000 });
+    await expect(page.getByText("Verified live").first()).toBeVisible({ timeout: 120_000 });
     await expect(page.getByLabel("Verified live XMTP delivery")).toContainText(
       "XMTP sender, signer authorization, envelope signature",
     );
+    await expect(page.getByRole("heading", { name: "X Layer receipt" })).toBeVisible();
+    await expect(page.getByTestId("payment-state")).toHaveText("No voucher");
+
+    const proofDownloadPromise = page.waitForEvent("download");
+    await page.getByRole("button", { name: "Export signed proof" }).click();
+    const proofDownload = await proofDownloadPromise;
+    const proofPath = await proofDownload.path();
+    const proof = JSON.parse(await readFile(proofPath, "utf8")) as unknown;
+    await expect(verifyLiveEvidenceBundle(proof)).resolves.toMatchObject({ ok: true });
+    expect(proof).toMatchObject({
+      chainId: 1952,
+      fundsMoved: false,
+      kind: "live-nonbillable-verification",
+      voucherSigned: false,
+    });
     const successScreenshot = process.env.METERMESH_PUBLIC_PROOF_SCREENSHOT?.trim();
     if (successScreenshot !== undefined && successScreenshot !== "") {
       await page.screenshot({ fullPage: true, path: successScreenshot });

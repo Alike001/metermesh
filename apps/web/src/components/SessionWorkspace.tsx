@@ -20,8 +20,10 @@ import {
   X,
 } from "lucide-react";
 
+import { createLiveEvidenceBundle } from "../domain/live-evidence";
 import { formatAtomicAmount, shortHash, type CapturedSession } from "../domain/session";
 import { useCapturedSession } from "../hooks/useCapturedSession";
+import { useLiveXmtp, type LiveXmtpState } from "../hooks/useLiveXmtp";
 import { BrandMark } from "./BrandMark";
 import { LiveXmtpPanel } from "./LiveXmtpPanel";
 import { ProtocolDrawer } from "./ProtocolDrawer";
@@ -32,24 +34,60 @@ interface SessionWorkspaceProps {
 }
 
 type ReviewStatus = "pending" | "accepted" | "rejected";
+type LiveSuccessState = Extract<LiveXmtpState, { status: "success" }>;
+
+interface ProofRecord {
+  detail: string;
+  id: string;
+  label: string;
+  protocol: string;
+}
 
 function formatTime(value: string): string {
   return `${new Date(value).toISOString().slice(11, 16)} UTC`;
 }
 
-function exportEvidence(session: CapturedSession, reviewStatus: ReviewStatus) {
-  const exportPayload = {
-    exportedAt: new Date().toISOString(),
-    localReviewStatus: reviewStatus,
-    session,
-  };
-  const blob = new Blob([JSON.stringify(exportPayload, null, 2)], { type: "application/json" });
+function downloadJson(filename: string, value: unknown) {
+  const blob = new Blob([JSON.stringify(value, null, 2)], { type: "application/json" });
   const url = URL.createObjectURL(blob);
   const anchor = document.createElement("a");
   anchor.href = url;
-  anchor.download = `metermesh-${session.session.id}-evidence.json`;
+  anchor.download = filename;
   anchor.click();
   URL.revokeObjectURL(url);
+}
+
+function downloadCapturedFixture(session: CapturedSession) {
+  downloadJson(`metermesh-${session.session.id}-offline-fixture.json`, session);
+}
+
+function liveProofRecords(state: LiveSuccessState): ProofRecord[] {
+  return [
+    {
+      detail: `Buyer ${shortHash(state.request.envelope.signature.signer)} signed the request carried as ${shortHash(state.request.carrierMessageId)}.`,
+      id: "live-request",
+      label: "Buyer request",
+      protocol: "EIP-191 · XMTP",
+    },
+    {
+      detail: `The seller signer returned ${shortHash(state.delivery.carrierMessageId)} after an online XMTP authorization check and bound it to the buyer request.`,
+      id: "live-delivery",
+      label: "Seller delivery",
+      protocol: "XMTP identity · EIP-191",
+    },
+    {
+      detail: `Receipt block ${state.delivery.result.provenance.blockNumber} has ${state.delivery.result.provenance.confirmations} confirmations.`,
+      id: "live-chain",
+      label: "X Layer receipt",
+      protocol: "Chain 1952 · RPC",
+    },
+    {
+      detail: `The recomputed explanation hash matches ${shortHash(state.delivery.envelope.payload.resultHash)} in the signed delivery.`,
+      id: "live-result",
+      label: "Result binding",
+      protocol: "MeterMesh v1",
+    },
+  ];
 }
 
 export function SessionWorkspace({ onBack }: SessionWorkspaceProps) {
@@ -60,10 +98,12 @@ export function SessionWorkspace({ onBack }: SessionWorkspaceProps) {
   const [proofOpenOnMobile, setProofOpenOnMobile] = useState(false);
   const [reviewStatus, setReviewStatus] = useState<ReviewStatus>("pending");
   const { reload, requestState } = useCapturedSession(evidenceVisible);
+  const liveXmtp = useLiveXmtp();
+  const liveSuccess = liveXmtp.state.status === "success" ? liveXmtp.state : null;
 
-  const amountDue = useMemo(() => {
-    if (requestState.status !== "success" || reviewStatus !== "accepted") return "0";
-    return requestState.data.session.unitPriceAtomic;
+  const previewAmount = useMemo(() => {
+    if (requestState.status !== "success" || reviewStatus !== "accepted") return null;
+    return `${formatAtomicAmount(requestState.data.session.unitPriceAtomic)} USDT0`;
   }, [requestState, reviewStatus]);
 
   const { contextSafe } = useGSAP({ scope: workspaceRef });
@@ -134,7 +174,7 @@ export function SessionWorkspace({ onBack }: SessionWorkspaceProps) {
 
     return (
       <div className="conversation-content" data-testid="conversation-content">
-        <LiveXmtpPanel />
+        <LiveXmtpPanel controller={liveXmtp} />
         <div className="capture-notice">
           <Info aria-hidden="true" size={17} />
           <p>
@@ -173,11 +213,11 @@ export function SessionWorkspace({ onBack }: SessionWorkspaceProps) {
 
         <section className="review-panel" aria-labelledby="review-title">
           <div>
-            <p className="section-kicker">Buyer decision</p>
-            <h2 id="review-title">Did this delivery earn one unit?</h2>
+            <p className="section-kicker">Decision-rule preview</p>
+            <h2 id="review-title">Would this delivery earn one unit?</h2>
             <p>
-              This records a local review decision only. Voucher signing stays disabled until the X
-              Layer Testnet MPP gate is cleared.
+              Test the accept or reject rule locally. This preview is unsigned and cannot request a
+              voucher, authorize payment, or move funds.
             </p>
           </div>
           <div className="review-actions">
@@ -189,7 +229,7 @@ export function SessionWorkspace({ onBack }: SessionWorkspaceProps) {
               type="button"
             >
               <Check aria-hidden="true" size={17} />
-              {reviewStatus === "accepted" ? "Accepted locally" : "Accept local delivery"}
+              {reviewStatus === "accepted" ? "Would accept" : "Preview acceptance"}
             </button>
             <button
               className={`button button-secondary ${reviewStatus === "rejected" ? "button-rejected" : ""}`}
@@ -199,7 +239,7 @@ export function SessionWorkspace({ onBack }: SessionWorkspaceProps) {
               type="button"
             >
               <X aria-hidden="true" size={17} />
-              {reviewStatus === "rejected" ? "Rejected locally" : "Reject local delivery"}
+              {reviewStatus === "rejected" ? "Would reject" : "Preview rejection"}
             </button>
             {reviewStatus !== "pending" && (
               <button
@@ -259,19 +299,35 @@ export function SessionWorkspace({ onBack }: SessionWorkspaceProps) {
           <h1>{successfulSession?.session.title ?? "Metered work session"}</h1>
         </div>
         <div className="titlebar-actions">
-          {successfulSession !== null && (
+          {liveSuccess !== null ? (
             <button
               className="button button-quiet"
               onClick={() => {
-                exportEvidence(successfulSession, reviewStatus);
+                const bundle = createLiveEvidenceBundle(liveSuccess.request, liveSuccess.delivery);
+                downloadJson(
+                  `metermesh-${liveSuccess.request.envelope.sessionId}-signed-proof.json`,
+                  bundle,
+                );
               }}
               type="button"
             >
               <Download aria-hidden="true" size={16} />
-              Export evidence
+              Export signed proof
             </button>
-          )}
+          ) : successfulSession !== null ? (
+            <button
+              className="button button-quiet"
+              onClick={() => {
+                downloadCapturedFixture(successfulSession);
+              }}
+              type="button"
+            >
+              <Download aria-hidden="true" size={16} />
+              Download offline fixture
+            </button>
+          ) : null}
           <button
+            aria-label="Proof rail"
             aria-expanded={proofOpenOnMobile}
             className="button button-quiet mobile-proof-toggle"
             onClick={() => {
@@ -279,7 +335,10 @@ export function SessionWorkspace({ onBack }: SessionWorkspaceProps) {
             }}
             type="button"
           >
-            Proof rail
+            <span className="mobile-proof-summary" data-testid="mobile-proof-summary">
+              <span>Proof</span>
+              <strong>{liveSuccess === null ? "No voucher" : "Live verified · no voucher"}</strong>
+            </span>
             <ChevronDown aria-hidden="true" size={16} />
           </button>
         </div>
@@ -296,76 +355,92 @@ export function SessionWorkspace({ onBack }: SessionWorkspaceProps) {
         >
           <div className="proof-rail-header">
             <div>
-              <p className="section-kicker">Payment proof</p>
-              <h2>What the buyer owes</h2>
+              <p className="section-kicker">Verification proof</p>
+              <h2>What the browser verified</h2>
             </div>
             <ShieldCheck aria-hidden="true" size={20} />
           </div>
 
           <div className="meter-summary">
-            <span>Locally accepted</span>
-            <strong data-testid="amount-due">{formatAtomicAmount(amountDue)} USDT0</strong>
-            <p>
-              {successfulSession === null
-                ? "No session evidence loaded."
-                : `${formatAtomicAmount(successfulSession.session.capAtomic)} USDT0 session cap`}
-            </p>
+            <span>Payment state</span>
+            <strong data-testid="payment-state">No voucher</strong>
+            <p>0 USDT0 authorized or moved by this verification path</p>
           </div>
 
           <ol className="proof-list">
-            {successfulSession?.evidence.map((record) => (
-              <li key={record.id}>
-                <StatusMark label="Verified" status="verified" />
-                <h3>{record.label}</h3>
-                <p>{record.detail}</p>
-                <span>{record.protocol}</span>
-              </li>
-            ))}
+            {liveSuccess === null
+              ? successfulSession?.evidence.map((record) => (
+                  <li key={record.id}>
+                    <StatusMark label="Verified locally" status="verified" />
+                    <h3>{record.label}</h3>
+                    <p>{record.detail}</p>
+                    <span>{record.protocol} · offline fixture</span>
+                  </li>
+                ))
+              : liveProofRecords(liveSuccess).map((record) => (
+                  <li key={record.id}>
+                    <StatusMark label="Verified live" status="verified" />
+                    <h3>{record.label}</h3>
+                    <p>{record.detail}</p>
+                    <span>{record.protocol}</span>
+                  </li>
+                ))}
             <li ref={acceptanceRef} data-testid="acceptance-proof">
               <StatusMark
                 label={
                   reviewStatus === "accepted"
-                    ? "Accepted locally"
+                    ? "Accepted preview"
                     : reviewStatus === "rejected"
-                      ? "Rejected locally"
-                      : "Pending buyer"
+                      ? "Rejected preview"
+                      : "Preview pending"
                 }
                 status={reviewStatus === "pending" ? "pending" : "verified"}
               />
-              <h3>Buyer review</h3>
+              <h3>Unsigned decision preview</h3>
               <p>
                 {reviewStatus === "accepted"
-                  ? "One local unit is marked accepted. No voucher has been signed."
+                  ? `The rule would add ${previewAmount ?? "one unit"}. No voucher was requested or signed.`
                   : reviewStatus === "rejected"
-                    ? "The local delivery is rejected and the amount stays at zero."
-                    : "The delivery does not affect billing until the buyer accepts it."}
+                    ? "The rule keeps the amount at zero. No voucher was requested or signed."
+                    : "This local preview cannot affect billing or authorize funds."}
               </p>
-              <span>Local interface state</span>
+              <span>Unsigned browser-only state</span>
             </li>
             <li>
               <StatusMark label="Compatibility gate" status="blocked" />
-              <h3>X Layer settlement</h3>
-              <p>OKX MPP session mutation remains disabled until chain 1952 support is proven.</p>
+              <h3>Planned MPP settlement</h3>
+              <p>
+                OKX MPP mutation is unavailable until Service Account support for chain 1952 is
+                proven.
+              </p>
               <span>No funds moved</span>
             </li>
           </ol>
 
-          {successfulSession !== null && (
+          {liveSuccess !== null ? (
             <div className="fixture-reference">
               <FileJson aria-hidden="true" size={17} />
               <div>
-                <span>Fixture transaction reference</span>
+                <span>Live X Layer transaction</span>
+                <code>{shortHash(liveSuccess.delivery.result.transactionHash)}</code>
+              </div>
+            </div>
+          ) : successfulSession !== null ? (
+            <div className="fixture-reference">
+              <FileJson aria-hidden="true" size={17} />
+              <div>
+                <span>Offline fixture transaction reference</span>
                 <code>{shortHash(successfulSession.result.fixtureTransactionHash)}</code>
               </div>
             </div>
-          )}
+          ) : null}
 
           <div className="settlement-control">
             <button className="button button-disabled" disabled type="button">
               <LockKeyhole aria-hidden="true" size={17} />
-              Settle on X Layer
+              MPP settlement unavailable
             </button>
-            <p>Paused by the approved architecture gate. This button can’t create a transaction.</p>
+            <p>Official MPP support for X Layer Testnet chain 1952 has not been confirmed.</p>
           </div>
 
           <button

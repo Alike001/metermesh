@@ -9,14 +9,19 @@ import {
 } from "lucide-react";
 
 import { shortHash } from "../domain/session";
-import { liveExplanation, useLiveXmtp } from "../hooks/useLiveXmtp";
+import { liveExplanation, type LiveXmtpController } from "../hooks/useLiveXmtp";
 import { StatusMark } from "./StatusMark";
 
-const exampleTransactionHash = "0xafe21e8d40d641bec6bba559ed40a2289689cab89d306f67c99e0ee38873973f";
+export const EXAMPLE_APPROVAL_TRANSACTION_HASH =
+  "0xf0bbcf38db1ee7935111b2be46fd1062d097e0461b2f48f34b9a5ba17482fafd";
 
-export function LiveXmtpPanel() {
-  const [transactionHash, setTransactionHash] = useState(exampleTransactionHash);
-  const { connect, disconnect, request, reset, state } = useLiveXmtp();
+interface LiveXmtpPanelProps {
+  controller: LiveXmtpController;
+}
+
+export function LiveXmtpPanel({ controller }: LiveXmtpPanelProps) {
+  const [transactionHash, setTransactionHash] = useState(EXAMPLE_APPROVAL_TRANSACTION_HASH);
+  const { connect, disconnect, request, reset, state } = controller;
   const explanation = liveExplanation(state);
   const busy =
     state.status === "connecting" || state.status === "sending" || state.status === "waiting";
@@ -39,9 +44,9 @@ export function LiveXmtpPanel() {
         />
       </div>
       <p className="live-xmtp-summary">
-        Each wallet receives one real public verification request while bounded capacity remains.
-        This path moves no funds and creates no voucher while OKX MPP Testnet mutation remains
-        gated.
+        The default is a confirmed USDT0 approval on X Layer Testnet, so the explanation has a real
+        user decision behind it. Each wallet receives one public verification request while bounded
+        capacity remains. This path moves no funds and creates no voucher.
       </p>
 
       {!connected && state.status !== "connecting" && (

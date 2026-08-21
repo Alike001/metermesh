@@ -1,13 +1,14 @@
 import { useEffect, useRef } from "react";
-import { ArrowDown, ArrowRight, Database, ShieldCheck, X } from "lucide-react";
+import { ArrowDown, ArrowRight, Database, LockKeyhole, ShieldCheck, X } from "lucide-react";
 
 interface ProtocolDrawerProps {
   onClose: () => void;
   open: boolean;
 }
 
-const forwardPath = ["Buyer", "Frontend", "Backend", "OKX API", "X Layer", "Escrow"];
-const reversePath = ["Escrow event", "Indexer", "PostgreSQL", "Backend", "Proof rail"];
+const forwardPath = ["Buyer wallet", "Browser", "XMTP", "Worker", "PostgreSQL", "X Layer RPC"];
+const reversePath = ["X Layer receipt", "Worker", "PostgreSQL", "XMTP", "Browser proof"];
+const plannedPaymentPath = ["MPP open", "Buyer voucher", "MPP close", "Escrow receipt"];
 
 export function ProtocolDrawer({ onClose, open }: ProtocolDrawerProps) {
   const closeButtonRef = useRef<HTMLButtonElement>(null);
@@ -61,11 +62,11 @@ export function ProtocolDrawer({ onClose, open }: ProtocolDrawerProps) {
           <section aria-labelledby="forward-path-title" className="drawer-section">
             <div className="drawer-section-heading">
               <ArrowRight aria-hidden="true" size={18} />
-              <h3 id="forward-path-title">Forward path</h3>
+              <h3 id="forward-path-title">Verified live path</h3>
             </div>
             <p>
-              A buyer requests work, accepts useful delivery, and authorizes only the cumulative
-              amount earned.
+              A buyer signs one request. The worker durably verifies it, reads X Layer, and creates
+              a signed explanation without authorizing payment.
             </p>
             <ol className="path-list">
               {forwardPath.map((step, index) => (
@@ -80,14 +81,33 @@ export function ProtocolDrawer({ onClose, open }: ProtocolDrawerProps) {
           <section aria-labelledby="reverse-path-title" className="drawer-section">
             <div className="drawer-section-heading">
               <ArrowDown aria-hidden="true" size={18} />
-              <h3 id="reverse-path-title">Reverse path</h3>
+              <h3 id="reverse-path-title">Verified return path</h3>
             </div>
             <p>
-              Chain events are indexed once, stored durably, and returned to the interface as fast
-              proof reads.
+              The real receipt and seller-signed result return through PostgreSQL and XMTP. The
+              browser verifies every binding before showing proof.
             </p>
             <ol className="path-list">
               {reversePath.map((step, index) => (
+                <li key={step}>
+                  <span>{String(index + 1).padStart(2, "0")}</span>
+                  <strong>{step}</strong>
+                </li>
+              ))}
+            </ol>
+          </section>
+
+          <section aria-labelledby="planned-path-title" className="drawer-section">
+            <div className="drawer-section-heading">
+              <LockKeyhole aria-hidden="true" size={18} />
+              <h3 id="planned-path-title">Planned payment path</h3>
+            </div>
+            <p>
+              These steps stay unavailable until OKX confirms MPP session support for X Layer
+              Testnet chain 1952 and one real session passes end to end.
+            </p>
+            <ol className="path-list">
+              {plannedPaymentPath.map((step, index) => (
                 <li key={step}>
                   <span>{String(index + 1).padStart(2, "0")}</span>
                   <strong>{step}</strong>
@@ -101,8 +121,8 @@ export function ProtocolDrawer({ onClose, open }: ProtocolDrawerProps) {
             <div>
               <h3 id="trust-title">Trust boundary</h3>
               <p>
-                Signed messages and chain receipts are authoritative. The database is a recoverable
-                index and never overrides settlement truth.
+                Signed messages and chain receipts are authoritative for the live verifier. No
+                frontend or database state can create a voucher or settlement.
               </p>
             </div>
           </section>
@@ -115,12 +135,12 @@ export function ProtocolDrawer({ onClose, open }: ProtocolDrawerProps) {
             <dl>
               <div>
                 <dt>Onchain</dt>
-                <dd>Escrow deposit, settled amount, close state, and final receipt.</dd>
+                <dd>The supplied X Layer transaction and confirmed receipt are read-only truth.</dd>
               </div>
               <div>
                 <dt>Offchain</dt>
                 <dd>
-                  XMTP messages, delivery evidence, cached event projections, and interface state.
+                  XMTP messages, signed delivery evidence, PostgreSQL recovery, and interface state.
                 </dd>
               </div>
             </dl>

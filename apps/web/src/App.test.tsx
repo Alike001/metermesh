@@ -36,7 +36,7 @@ describe("MeterMesh product surface", () => {
       screen.getByRole("heading", { name: "AI work over messages, paid only when accepted." }),
     ).toBeInTheDocument();
 
-    const [openButton] = screen.getAllByRole("button", { name: /open metered session/i });
+    const [openButton] = screen.getAllByRole("button", { name: /open live verifier/i });
     expect(openButton).toBeDefined();
     if (openButton === undefined) throw new Error("The landing CTA is missing.");
     await user.click(openButton);
@@ -50,21 +50,21 @@ describe("MeterMesh product surface", () => {
     expect(screen.getByText(/public XMTP worker.*have passed/i)).toBeInTheDocument();
   });
 
-  it("records an honest local acceptance without enabling settlement", async () => {
+  it("previews the acceptance rule without creating payment evidence", async () => {
     const user = userEvent.setup();
     window.location.hash = "workspace";
     render(<App />);
 
     await screen.findByText("Local delivery fixture");
-    expect(screen.getByTestId("amount-due")).toHaveTextContent("0 USDT0");
+    expect(screen.getByTestId("payment-state")).toHaveTextContent("No voucher");
 
-    await user.click(screen.getByRole("button", { name: "Accept local delivery" }));
+    await user.click(screen.getByRole("button", { name: "Preview acceptance" }));
 
-    expect(screen.getByTestId("amount-due")).toHaveTextContent("0.001 USDT0");
+    expect(screen.getByTestId("payment-state")).toHaveTextContent("No voucher");
     expect(
-      screen.getByText("One local unit is marked accepted. No voucher has been signed."),
+      screen.getByText("The rule would add 0.001 USDT0. No voucher was requested or signed."),
     ).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Settle on X Layer" })).toBeDisabled();
+    expect(screen.getByRole("button", { name: "MPP settlement unavailable" })).toBeDisabled();
   });
 
   it("fails safely when a live XMTP request has no injected wallet", async () => {
@@ -77,7 +77,7 @@ describe("MeterMesh product surface", () => {
     expect(await screen.findByRole("alert", undefined, { timeout: 10_000 })).toHaveTextContent(
       "Install or open an EVM wallet extension before connecting to XMTP.",
     );
-    expect(screen.getByRole("button", { name: "Settle on X Layer" })).toBeDisabled();
+    expect(screen.getByRole("button", { name: "MPP settlement unavailable" })).toBeDisabled();
   });
 
   it("supports the empty state and restores captured evidence", async () => {
