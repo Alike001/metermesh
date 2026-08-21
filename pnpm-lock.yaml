@@ -170,6 +170,15 @@ importers:
         specifier: 2.55.19
         version: 2.55.19(typescript@6.0.2)(zod@4.4.3)
 
+  packages/mpp:
+    dependencies:
+      viem:
+        specifier: 2.55.19
+        version: 2.55.19(typescript@6.0.2)(zod@4.4.3)
+      zod:
+        specifier: 4.4.3
+        version: 4.4.3
+
   packages/protocol:
     dependencies:
       viem:

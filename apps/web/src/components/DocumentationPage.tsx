@@ -161,7 +161,8 @@ export function DocumentationPage() {
             <p>
               MeterMesh currently proves a signed AI transaction explanation from a buyer wallet
               through XMTP, PostgreSQL, and an X Layer receipt. The buyer can review and export the
-              evidence. MPP settlement is a future adapter and is not part of the current verifier.
+              evidence. The MPP adapter is gated, while its deterministic voucher verifier is
+              implemented as a side-effect-free boundary for future official support.
             </p>
             <dl className="docs-facts">
               <div>

@@ -73,6 +73,7 @@ describe("MeterMesh machine-readable documentation", () => {
         expect.objectContaining({ id: "xmtp-carrier", state: "verified" }),
         expect.objectContaining({ id: "bounded-public-trial", state: "verified" }),
         expect.objectContaining({ id: "proof-anchor-source", state: "verified" }),
+        expect.objectContaining({ id: "mpp-voucher-verifier", state: "verified" }),
         expect.objectContaining({ id: "mpp-testnet-mutation", state: "gated" }),
       ]),
     );
