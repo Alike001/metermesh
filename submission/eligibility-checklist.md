@@ -18,15 +18,15 @@ Published deadline: August 21, 2026, at 23:59 UTC.
 - [x] Testnet evidence-anchor transaction: `0xf518187f13559ab46cfa1c85d64089a8c99eca8d1ee9d77a41840046f0e7aa5a`
 - [x] Public claims state that MPP mutation, vouchers, settlement, and payment are gated.
 
-## 2. Dedicated MeterMesh X account, user action required
+## 2. Dedicated MeterMesh X account
 
-- [ ] Create a dedicated product account on X. Do not submit a personal account as the project account.
-- [ ] Use `MeterMesh` as the display name and choose an available product handle.
+- [x] Create a dedicated product account on X. Official account: https://x.com/MeterMesh
+- [x] Use `MeterMesh` as the display name and `@MeterMesh` as the product handle.
 - [ ] Add the MeterMesh mark as the profile image.
-- [ ] Set the website to `https://metermesh-web-production.up.railway.app`.
-- [ ] Use this bio: `Verifiable AI work over XMTP, grounded in X Layer receipts. Built for the X Layer AI Season.`
+- [x] Set the website to `https://metermesh-web-production.up.railway.app`.
+- [x] Use this bio: `Verifiable AI work over XMTP, grounded in X Layer receipts. Built for the X Layer AI Season.`
 - [ ] Publish one short introduction or build-progress post so the account is active.
-- [ ] Record the final handle here: `[METER_MESH_X_HANDLE]`.
+- [x] Record the final handle: `@MeterMesh`.
 
 ## 3. Official submission post, user action required
 
@@ -53,7 +53,7 @@ Publish this from the dedicated MeterMesh account and keep `@XLayerOfficial` in 
 - Github: `https://github.com/Alike001/metermesh`
 - Email: `[YOUR_ACTIVE_EMAIL]`
 - Telegram: `[YOUR_TELEGRAM_HANDLE]`
-- X handle: `[METER_MESH_X_HANDLE]`
+- X handle: `@MeterMesh`
 - X post URL: `[METER_MESH_X_POST_URL]`
 
 - [ ] Check every link in a private browser window before submitting.

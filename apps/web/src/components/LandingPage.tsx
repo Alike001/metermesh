@@ -254,9 +254,14 @@ export function LandingPage({ onOpenWorkspace }: LandingPageProps) {
       <footer className="site-footer">
         <BrandMark />
         <p>Verifiable AI work over XMTP, grounded in X Layer receipts.</p>
-        <a href="https://github.com/Alike001/metermesh" rel="noreferrer" target="_blank">
-          View source
-        </a>
+        <div className="site-footer-links">
+          <a href="https://x.com/MeterMesh" rel="noreferrer" target="_blank">
+            @MeterMesh on X
+          </a>
+          <a href="https://github.com/Alike001/metermesh" rel="noreferrer" target="_blank">
+            View source
+          </a>
+        </div>
       </footer>
     </div>
   );

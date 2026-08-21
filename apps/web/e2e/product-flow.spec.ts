@@ -47,6 +47,14 @@ test("a judge can understand the promise and inspect accepted-work proof", async
   await expect(page.getByRole("dialog")).toBeHidden();
 });
 
+test("the landing page links to the official MeterMesh X account", async ({ page }) => {
+  await page.goto("/");
+
+  const xLink = page.getByRole("link", { name: "@MeterMesh on X" });
+  await expect(xLink).toHaveAttribute("href", "https://x.com/MeterMesh");
+  await expect(xLink).toHaveAttribute("target", "_blank");
+});
+
 test("the offline fixture download cannot be mistaken for signed payment proof", async ({
   page,
 }) => {

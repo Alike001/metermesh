@@ -1459,8 +1459,14 @@ a:focus-visible {
   text-align: center;
 }
 
-.site-footer > a {
+.site-footer-links {
   justify-self: end;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.site-footer-links a {
   color: var(--ink);
   text-decoration: underline;
   text-underline-offset: 4px;
@@ -2475,8 +2481,9 @@ a:focus-visible {
     text-align: left;
   }
 
-  .site-footer > a {
+  .site-footer-links {
     justify-self: start;
+    flex-wrap: wrap;
   }
 
   .workspace-header {

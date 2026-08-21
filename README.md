@@ -2,6 +2,8 @@
 
 Verifiable AI work over XMTP, grounded in X Layer receipts.
 
+Official X account: [@MeterMesh](https://x.com/MeterMesh)
+
 MeterMesh connects XMTP-delivered AI work to real X Layer transaction evidence. A buyer signs a request, receives a seller-signed AI explanation, reviews the result, and exports proof that another verifier can check. The OKX MPP payment adapter is deferred until official Testnet chain 1952 support is confirmed.
 
 ## Why it matters
