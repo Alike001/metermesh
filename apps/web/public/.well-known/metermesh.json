@@ -66,6 +66,12 @@
       "note": "The deterministic evidence hash and MeterMesh proof-anchor contract are deployed on X Layer Testnet at 0xE9827c90f742C593F966B7E878e2a13fdC8f1683. One fresh signed live proof is anchored in transaction 0xf518187f13559ab46cfa1c85d64089a8c99eca8d1ee9d77a41840046f0e7aa5a."
     },
     {
+      "id": "x-layer-mainnet-launch",
+      "label": "X Layer Mainnet proof anchor",
+      "state": "verified",
+      "note": "The same non-custodial MeterMeshProofAnchor source is receipt-verified on X Layer Mainnet chain 196 at 0xb91256Fc57403cC096d969606459993fBd944384. The deployment contains no evidence write, payment, voucher, settlement, custody, or upgrade authority."
+    },
+    {
       "id": "mpp-voucher-verifier",
       "label": "Deterministic MPP voucher verifier",
       "state": "verified",
@@ -156,6 +162,6 @@
     "The public workspace separates live signed XMTP proof from an offline local validator fixture.",
     "The public trial and all review previews are nonbillable. They create no voucher and move no funds.",
     "The live XMTP, X Layer receipt, AI, PostgreSQL, signed delivery, and Railway paths are verified. OKX MPP is a future adapter, not a v1 payment capability.",
-    "The public web and worker run on Railway and read X Layer data. The MeterMesh proof-anchor primitive and one signed evidence commitment are deployed on X Layer Testnet. The required later Mainnet launch remains outstanding."
+    "The public web and worker run on Railway and read X Layer Testnet data. The proof-anchor primitive and one signed evidence commitment are deployed on Testnet, and the same empty non-custodial primitive is deployed on X Layer Mainnet chain 196."
   ]
 }

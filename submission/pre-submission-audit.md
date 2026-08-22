@@ -2,9 +2,13 @@
 
 Audit date: August 21, 2026
 
+## Post-submission Mainnet addendum, August 22, 2026
+
+The form confirmation and final `@MeterMesh` post were completed before the published deadline. The same tested `MeterMeshProofAnchor` source was subsequently deployed to X Layer Mainnet chain `196` at `0xb91256Fc57403cC096d969606459993fBd944384` in successful transaction `0xb37205ae09c6719fa12797e472bbc50ac8145035006b7b3b1ab68a6d64e2a627`. Four Foundry tests pass, runtime bytecode is present, and a read-only call confirms the zero evidence hash is not anchored. This deployment contains no evidence write, payment, voucher, settlement, custody, or upgrade authority.
+
 ## Verdict
 
-Conditional pass for recording. The product satisfies its approved verification-first v1 and the tested public flow is stable. Final eligibility still fails until the required X Layer Mainnet launch is completed or the organizer confirms that it may follow judging, and until the final X post and Google Form submission are completed.
+Historical verdict at audit time: conditional pass for recording. The product satisfied its approved verification-first v1 and the tested public flow was stable. The three external gates identified here, the final X post, Google Form submission, and subsequent Mainnet launch, have since been completed and recorded publicly.
 
 ## Artifacts Checked
 
@@ -69,11 +73,11 @@ The first local Playwright command failed before tests because port 4173 was alr
 
 ## Gaps And Risks
 
-Blocking final eligibility:
+Blocking final eligibility at audit time, subsequently completed:
 
-- X Layer Mainnet launch is incomplete.
-- The final `@MeterMesh` submission post mentioning `@XLayerOfficial` is incomplete.
-- The Google Form submission and saved confirmation are incomplete.
+- X Layer Mainnet launch completed on chain `196` in the public transaction recorded below.
+- The final `@MeterMesh` submission post mentioning `@XLayerOfficial` is public.
+- The Google Form submission was recorded, and its supplied confirmation is noted in the session records.
 
 Competitive weaknesses that should be stated honestly:
 
@@ -96,4 +100,6 @@ Competitive weaknesses that should be stated honestly:
 - Reverted proof: `/evidence/reverted-live-proof.json`
 - Testnet proof anchor: `0xE9827c90f742C593F966B7E878e2a13fdC8f1683`
 - Anchor transaction: `0xf518187f13559ab46cfa1c85d64089a8c99eca8d1ee9d77a41840046f0e7aa5a`
+- Mainnet proof anchor: `0xb91256Fc57403cC096d969606459993fBd944384`
+- Mainnet deployment transaction: `0xb37205ae09c6719fa12797e472bbc50ac8145035006b7b3b1ab68a6d64e2a627`
 - Real reverted transaction: `0x2a0f80f0297f4cb0944471015a5cd3dec9f031c4c4dfe335a2a4ba6a6d82b865`

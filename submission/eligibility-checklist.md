@@ -16,6 +16,9 @@ Published deadline: August 21, 2026, at 23:59 UTC.
 - [x] Testnet contract: `0xE9827c90f742C593F966B7E878e2a13fdC8f1683`
 - [x] Testnet deployment transaction: `0xf19caa7335ae10929aadc444ba149b803e64db428ac16dc2730df3dd0f241b65`
 - [x] Testnet evidence-anchor transaction: `0xf518187f13559ab46cfa1c85d64089a8c99eca8d1ee9d77a41840046f0e7aa5a`
+- [x] MeterMesh proof anchor deployed on X Layer Mainnet chain 196.
+- [x] Mainnet contract: `0xb91256Fc57403cC096d969606459993fBd944384`
+- [x] Mainnet deployment transaction: `0xb37205ae09c6719fa12797e472bbc50ac8145035006b7b3b1ab68a6d64e2a627`
 - [x] Public claims state that MPP mutation, vouchers, settlement, and payment are gated.
 
 ## 2. Dedicated MeterMesh X account
@@ -61,21 +64,25 @@ Publish this from the dedicated MeterMesh account and keep `@XLayerOfficial` in 
 - X post URL: `https://x.com/MeterMesh/status/2090928805145633215`
 
 - [ ] Check every link in a private browser window before submitting.
-- [ ] Submit the form before the published deadline.
-- [ ] Save the confirmation screen as a screenshot.
-- [ ] Record the submission time and confirmation evidence locally.
+- [x] Submit the form before the published deadline.
+- [x] Save the supplied confirmation screen as submission evidence.
+- [x] Record the submission confirmation locally in `handoff.md` and `log.md`.
 
-## 5. X Layer Mainnet requirement, separate approval required
+## 5. X Layer Mainnet requirement, completed
 
-The official requirements say the Testnet deployment must subsequently launch on X Layer Mainnet. MeterMesh has no Mainnet deployment yet.
+The official requirements say the Testnet deployment must subsequently launch on X Layer Mainnet. The same tested, non-custodial `MeterMeshProofAnchor` source was deployed and independently verified on chain `196` after the submission was recorded.
 
-- [ ] Approve a separate Mainnet deployment plan before any wallet is funded or any transaction is broadcast.
-- [ ] Use a dedicated self-custodial Mainnet deployment wallet. Never reuse the Testnet-only merchant key.
-- [ ] Run a read-only preflight for chain 196, bytecode, deployer balance, gas estimate, and constructor arguments.
-- [ ] Fund only the approved gas amount after reviewing the estimate.
-- [ ] Deploy the same non-custodial `MeterMeshProofAnchor` source to X Layer Mainnet.
-- [ ] Verify the receipt, bytecode, chain ID, and read-only contract state.
-- [ ] Add public Mainnet deployment metadata and link it from the repository and submission evidence.
+- [x] Approve a separate Mainnet deployment plan before any wallet is funded or any transaction is broadcast.
+- [x] Use a dedicated self-custodial Mainnet deployment wallet. Never reuse the Testnet-only merchant key.
+- [x] Run a read-only preflight for chain 196, bytecode, deployer balance, gas estimate, and constructor arguments.
+- [x] Fund only the approved gas amount after reviewing the estimate.
+- [x] Deploy the same non-custodial `MeterMeshProofAnchor` source to X Layer Mainnet.
+- [x] Verify the receipt, runtime bytecode, chain ID, and empty read-only contract state.
+- [x] Add public Mainnet deployment metadata and link it from the repository and submission evidence.
+
+Mainnet contract: https://web3.okx.com/explorer/x-layer/address/0xb91256Fc57403cC096d969606459993fBd944384
+
+Deployment transaction: https://web3.okx.com/explorer/x-layer/tx/0xb37205ae09c6719fa12797e472bbc50ac8145035006b7b3b1ab68a6d64e2a627
 
 ## 6. Recording gate
 
@@ -84,4 +91,4 @@ The official requirements say the Testnet deployment must subsequently launch on
 - [ ] Worker health is checked before relying on a live XMTP request.
 - [ ] Captured proof, screenshots, and local fallback are available offline.
 - [ ] The presenter has rehearsed `submission/demo-script.md` below 90 seconds.
-- [ ] No part of the recording claims a signed buyer acceptance, MPP session, voucher, settlement, payment, or Mainnet deployment unless that specific capability is completed and independently verified first.
+- [x] The published recording makes no signed buyer acceptance, MPP session, voucher, settlement, payment, or Mainnet claim. The separately completed Mainnet deployment is documented through its later public receipt.

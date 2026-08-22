@@ -10,6 +10,7 @@
 **/test-results/
 coverage/
 test-results/
+videos/
 AGENTS.md
 PROMPTS.md
 design.doc.md

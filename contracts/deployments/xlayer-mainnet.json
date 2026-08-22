@@ -1,0 +1,19 @@
+{
+  "network": "X Layer Mainnet",
+  "chainId": 196,
+  "rpcUrl": "https://rpc.xlayer.tech",
+  "contract": "MeterMeshProofAnchor",
+  "address": "0xb91256Fc57403cC096d969606459993fBd944384",
+  "deploymentTransaction": "0xb37205ae09c6719fa12797e472bbc50ac8145035006b7b3b1ab68a6d64e2a627",
+  "deploymentBlock": 68589282,
+  "deployer": "0xfeC6f95fa9dF6e0A09EA07c5d0D46F7aD580E571",
+  "receiptStatus": 1,
+  "gasUsed": 236492,
+  "effectiveGasPriceWei": "20000001",
+  "runtimeBytecodeVerified": true,
+  "zeroEvidenceHashAnchored": false,
+  "explorer": {
+    "contract": "https://web3.okx.com/explorer/x-layer/address/0xb91256Fc57403cC096d969606459993fBd944384",
+    "deploymentTransaction": "https://web3.okx.com/explorer/x-layer/tx/0xb37205ae09c6719fa12797e472bbc50ac8145035006b7b3b1ab68a6d64e2a627"
+  }
+}

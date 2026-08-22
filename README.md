@@ -13,8 +13,9 @@ MeterMesh connects XMTP-delivered AI work to real X Layer transaction evidence. 
 - [Read the agent-friendly documentation](https://metermesh-web-production.up.railway.app/docs/)
 - [View the official X Layer AI Season submission post](https://x.com/MeterMesh/status/2090928805145633215)
 - [Inspect the anchored signed proof](https://metermesh-web-production.up.railway.app/evidence/anchored-live-proof.json)
+- [Inspect the X Layer Mainnet proof-anchor contract](https://web3.okx.com/explorer/x-layer/address/0xb91256Fc57403cC096d969606459993fBd944384)
 
-The demo uses the deployed product and published signed evidence. It makes no payment, voucher, settlement, or Mainnet claim. MPP Testnet mutation remains visibly gated until official chain 1952 support is confirmed.
+The demo uses the deployed product and published signed evidence. It makes no payment, voucher, or settlement claim. The recording predates the later Mainnet proof-anchor launch, which is independently recorded below. MPP Testnet mutation remains visibly gated until official chain 1952 support is confirmed.
 
 ## Why it matters
 
@@ -40,6 +41,8 @@ The checked-in session evidence is an offline local protocol record. It clearly 
 The public trial moves no funds and creates no payment voucher. Each wallet can request one real explanation while the server-enforced global capacity remains available. The current public product is a nonbillable verification layer.
 
 The signed live proof committed by the Testnet proof anchor is published at [metermesh-web-production.up.railway.app/evidence/anchored-live-proof.json](https://metermesh-web-production.up.railway.app/evidence/anchored-live-proof.json). It rechecks the buyer request, seller delivery, canonical result hash, X Layer transaction binding, and explicit nonpayment state.
+
+The same non-custodial `MeterMeshProofAnchor` source is deployed on X Layer Mainnet chain `196` at [`0xb91256Fc57403cC096d969606459993fBd944384`](https://web3.okx.com/explorer/x-layer/address/0xb91256Fc57403cC096d969606459993fBd944384). The successful [deployment transaction](https://web3.okx.com/explorer/x-layer/tx/0xb37205ae09c6719fa12797e472bbc50ac8145035006b7b3b1ab68a6d64e2a627) is recorded in `contracts/deployments/xlayer-mainnet.json`. This eligibility launch contains no evidence write, payment, voucher, settlement, custody, or upgrade authority.
 
 A separate [signed reverted Testnet proof](https://metermesh-web-production.up.railway.app/evidence/reverted-live-proof.json) records a fresh buyer-signed XMTP request, seller-signed delivery, real failed receipt, and strict AI explanation. It preserves the missing revert reason as an explicit limitation instead of guessing.
 
